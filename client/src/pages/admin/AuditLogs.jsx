@@ -92,58 +92,62 @@ const AuditLogs = () => {
   const [actionOptions, setActionOptions] = useState([]);
   const [targetTypeOptions, setTargetTypeOptions] = useState([]);
 
-  const fetchLogs = useCallback(async ({ silent = false } = {}) => {
-    try {
-      if (silent) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
+  const fetchLogs = useCallback(
+    async ({ silent = false } = {}) => {
+      try {
+        if (silent) {
+          setRefreshing(true);
+        } else {
+          setLoading(true);
+        }
+
+        const params = { page, limit };
+        if (filters.action !== "all") params.action = filters.action;
+        if (filters.targetType !== "all")
+          params.targetType = filters.targetType;
+        if (filters.adminId.trim()) params.adminId = filters.adminId.trim();
+        if (filters.from) params.from = filters.from;
+        if (filters.to) params.to = filters.to;
+
+        const res = await API.get("/admin/audit-logs", { params });
+        const parsed = extractAuditLogList(res.data);
+        const normalizedLogs = (parsed.list || []).map((log) =>
+          normalizeLog(log),
+        );
+
+        setLogs(normalizedLogs);
+        setTotal(parsed.total || normalizedLogs.length);
+        setTotalPages(parsed.totalPages || 1);
+        setError("");
+
+        setActionOptions((prev) => {
+          const merged = new Set([
+            ...prev,
+            ...normalizedLogs.map((log) => log.action).filter(Boolean),
+          ]);
+          return Array.from(merged).sort();
+        });
+
+        setTargetTypeOptions((prev) => {
+          const merged = new Set([
+            ...prev,
+            ...normalizedLogs.map((log) => log.targetType).filter(Boolean),
+          ]);
+          return Array.from(merged).sort();
+        });
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Failed to fetch audit logs",
+        );
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-
-      const params = { page, limit };
-      if (filters.action !== "all") params.action = filters.action;
-      if (filters.targetType !== "all") params.targetType = filters.targetType;
-      if (filters.adminId.trim()) params.adminId = filters.adminId.trim();
-      if (filters.from) params.from = filters.from;
-      if (filters.to) params.to = filters.to;
-
-      const res = await API.get("/admin/audit-logs", { params });
-      const parsed = extractAuditLogList(res.data);
-      const normalizedLogs = (parsed.list || []).map((log) =>
-        normalizeLog(log),
-      );
-
-      setLogs(normalizedLogs);
-      setTotal(parsed.total || normalizedLogs.length);
-      setTotalPages(parsed.totalPages || 1);
-      setError("");
-
-      setActionOptions((prev) => {
-        const merged = new Set([
-          ...prev,
-          ...normalizedLogs.map((log) => log.action).filter(Boolean),
-        ]);
-        return Array.from(merged).sort();
-      });
-
-      setTargetTypeOptions((prev) => {
-        const merged = new Set([
-          ...prev,
-          ...normalizedLogs.map((log) => log.targetType).filter(Boolean),
-        ]);
-        return Array.from(merged).sort();
-      });
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch audit logs",
-      );
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [filters, limit, page]);
+    },
+    [filters, limit, page],
+  );
 
   useEffect(() => {
     fetchLogs();

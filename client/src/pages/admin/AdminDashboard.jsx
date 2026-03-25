@@ -109,7 +109,11 @@ const AdminDashboard = () => {
             const rawStatus =
               user?.status ||
               user?.moderationStatus ||
-              (user?.isBanned ? "banned" : user?.isSuspended ? "suspended" : "active");
+              (user?.isBanned
+                ? "banned"
+                : user?.isSuspended
+                  ? "suspended"
+                  : "active");
 
             const normalized = String(rawStatus || "active").toLowerCase();
             if (normalized === "suspend") return "suspended";
@@ -130,10 +134,15 @@ const AdminDashboard = () => {
           const logsPayload = auditRes.data?.data ?? auditRes.data;
           const logsList = Array.isArray(logsPayload)
             ? logsPayload
-            : logsPayload?.logs || logsPayload?.items || logsPayload?.results || [];
+            : logsPayload?.logs ||
+              logsPayload?.items ||
+              logsPayload?.results ||
+              [];
 
           const recentModerationActions = logsList.filter((log) => {
-            const actionValue = String(log?.action || log?.event || "").toLowerCase();
+            const actionValue = String(
+              log?.action || log?.event || "",
+            ).toLowerCase();
             return (
               actionValue.includes("suspend") ||
               actionValue.includes("ban") ||

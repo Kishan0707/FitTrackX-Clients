@@ -3,6 +3,7 @@ import { Routes } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 import Login from "./pages/auth/Login";
+import AppErrorBoundary from "./components/AppErrorBoundary";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Register from "./pages/auth/Register";
@@ -35,8 +36,9 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <div className="App">
-          <Routes>
+        <AppErrorBoundary>
+          <div className="App">
+            <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -216,8 +218,9 @@ function App() {
 
             <Route path="/coachDashboard" element={<CoachDashboard />} index />
             <Route path="/coach/clients" element={<Clients />} />
-          </Routes>
-        </div>
+            </Routes>
+          </div>
+        </AppErrorBoundary>
       </BrowserRouter>
     </>
   );

@@ -26,6 +26,7 @@ import {
   FaListAlt,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { toDisplayDateTime, toDisplayText } from "../../utils/display";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -48,7 +49,6 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         const res = await API.get("/admin/dashboard");
-        console.log("Dashboard Response:", res.data);
         if (res.data.success) {
           setStats(res.data.data);
           setError("");
@@ -56,18 +56,15 @@ const AdminDashboard = () => {
 
         // Fetch charts data
         const growthRes = await API.get("/admin/user-growth");
-        console.log("User Growth Response:", growthRes.data);
         if (growthRes.data.success) {
           const chartData = growthRes.data.data.months.map((month, idx) => ({
             month,
             users: growthRes.data.data.users[idx],
           }));
-          console.log("Chart Data:", chartData);
           setUserGrowth(chartData);
         }
 
         const distRes = await API.get("/admin/workout-distribution");
-        console.log("Workout Distribution Response:", distRes.data);
         if (distRes.data.success) {
           setWorkoutDist(distRes.data.data);
         }
@@ -82,7 +79,6 @@ const AdminDashboard = () => {
         const performersRes = await API.get("/admin/top-performers");
         if (performersRes.data.success) {
           setTopPerformers(performersRes.data.data);
-          console.log("Top Performers:", performersRes.data.data);
         }
 
         // Fetch system health
@@ -593,9 +589,11 @@ const AdminDashboard = () => {
                     {activity.icon === "apple" && "🍎"}
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-white">{activity.description}</p>
+                    <p className="text-sm text-white">
+                      {toDisplayText(activity.description)}
+                    </p>
                     <p className="mt-1 text-xs text-slate-400">
-                      {new Date(activity.timestamp).toLocaleString()}
+                      {toDisplayDateTime(activity.timestamp)}
                     </p>
                   </div>
                 </div>
@@ -627,13 +625,15 @@ const AdminDashboard = () => {
                           className="flex items-center justify-between p-2 rounded bg-slate-800/50"
                         >
                           <div>
-                            <p className="text-sm text-white">{user.name}</p>
+                            <p className="text-sm text-white">
+                              {toDisplayText(user.name)}
+                            </p>
                             <p className="text-xs text-slate-400">
-                              {user.workouts} workouts
+                              {toDisplayText(user.workouts, "0")} workouts
                             </p>
                           </div>
                           <span className="font-semibold text-yellow-400">
-                            {user.totalCalories} cal
+                            {toDisplayText(user.totalCalories, "0")} cal
                           </span>
                         </div>
                       ))
@@ -656,13 +656,15 @@ const AdminDashboard = () => {
                           className="flex items-center justify-between p-2 rounded bg-slate-800/50"
                         >
                           <div>
-                            <p className="text-sm text-white">{coach.name}</p>
+                            <p className="text-sm text-white">
+                              {toDisplayText(coach.name)}
+                            </p>
                             <p className="text-xs text-slate-400">
-                              {coach.email}
+                              {toDisplayText(coach.email)}
                             </p>
                           </div>
                           <span className="font-semibold text-blue-400">
-                            {coach.clientsCount} clients
+                            {toDisplayText(coach.clientsCount, "0")} clients
                           </span>
                         </div>
                       ))

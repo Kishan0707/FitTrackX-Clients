@@ -3,6 +3,7 @@ import React from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
+import { toDisplayText, toDisplayDateTime } from "../../utils/display";
 
 const defaultFilters = {
   action: "all",
@@ -37,45 +38,6 @@ const extractAuditLogList = (responseData) => {
     Math.max(1, Math.ceil(total / (payload?.limit || 10)));
 
   return { list, total, totalPages };
-};
-
-const toDisplayText = (value, fallback = "N/A") => {
-  if (value === null || value === undefined || value === "") {
-    return fallback;
-  }
-
-  if (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  ) {
-    return String(value);
-  }
-
-  if (Array.isArray(value)) {
-    const combinedValue = value
-      .map((item) => toDisplayText(item, ""))
-      .filter(Boolean)
-      .join(", ");
-
-    return combinedValue || fallback;
-  }
-
-  if (typeof value === "object") {
-    return (
-      value.name ||
-      value.email ||
-      value.title ||
-      value.label ||
-      value.description ||
-      value.message ||
-      value._id ||
-      value.id ||
-      fallback
-    );
-  }
-
-  return fallback;
 };
 
 const normalizeLog = (log = {}) => {
@@ -419,9 +381,7 @@ const AuditLogs = () => {
                     logs.map((log) => (
                       <tr key={log.id} className="hover:bg-slate-700/35">
                         <td className="px-4 py-4 text-sm text-slate-200">
-                          {log.time
-                            ? new Date(log.time).toLocaleString()
-                            : "N/A"}
+                          {toDisplayDateTime(log.time)}
                         </td>
                         <td className="px-4 py-4 text-sm text-slate-200">
                           {log.adminName}

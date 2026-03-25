@@ -147,7 +147,8 @@ const Users = () => {
     return users.filter((user) => {
       const status = getUserStatus(user);
       const role = getUserRole(user);
-      const searchableText = `${user?.name || ""} ${user?.email || ""} ${user?._id || ""}`.toLowerCase();
+      const searchableText =
+        `${user?.name || ""} ${user?.email || ""} ${user?._id || ""}`.toLowerCase();
 
       const matchesSearch = !query || searchableText.includes(query);
       const matchesRole = roleFilter === "all" || role === roleFilter;
@@ -218,6 +219,9 @@ const Users = () => {
         status: actionConfig.targetStatus,
         reason: reason || undefined,
       });
+      console.log("actionKey", actionKey);
+      console.log("actionConfig", actionConfig);
+      console.log("reason", reason || undefined);
 
       setUsers((prevUsers) =>
         prevUsers.map((prevUser) =>
@@ -253,7 +257,7 @@ const Users = () => {
       <DashboardLayout>
         <div className="flex min-h-[70vh] items-center justify-center">
           <div className="flex items-center gap-3 text-slate-300">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-700 border-t-red-500"></div>
+            <div className="w-8 h-8 border-2 rounded-full animate-spin border-slate-700 border-t-red-500"></div>
             <span>Loading users...</span>
           </div>
         </div>
@@ -264,7 +268,7 @@ const Users = () => {
   if (error && users.length === 0) {
     return (
       <DashboardLayout>
-        <div className="mx-auto mt-16 max-w-2xl rounded-xl border border-red-500/25 bg-red-500/10 p-6 text-center">
+        <div className="max-w-2xl p-6 mx-auto mt-16 text-center border rounded-xl border-red-500/25 bg-red-500/10">
           <h2 className="mb-2 text-xl font-semibold text-red-300">
             Unable to load users
           </h2>
@@ -272,7 +276,7 @@ const Users = () => {
           <button
             onClick={() => fetchUsers()}
             type="button"
-            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+            className="px-4 py-2 text-sm font-semibold text-white transition bg-red-600 rounded-lg hover:bg-red-500"
           >
             Retry
           </button>
@@ -288,9 +292,9 @@ const Users = () => {
         onClose={() => setToast({ message: "", type: "info" })}
       />
 
-      <div className="min-h-screen bg-slate-900 text-white">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="mb-7 flex flex-wrap items-start justify-between gap-3">
+      <div className="min-h-screen text-white bg-slate-900">
+        <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-start justify-between gap-3 mb-7">
             <div>
               <h1 className="mb-2 text-3xl font-bold">User Management</h1>
               <p className="text-sm text-slate-300">
@@ -301,7 +305,7 @@ const Users = () => {
               type="button"
               onClick={() => fetchUsers({ silent: true })}
               disabled={refreshing}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-semibold transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition border rounded-lg border-slate-600 bg-slate-800 hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <FaSyncAlt className={refreshing ? "animate-spin" : ""} />
               Refresh
@@ -309,29 +313,29 @@ const Users = () => {
           </div>
 
           {error && (
-            <div className="mb-6 rounded-lg border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            <div className="px-4 py-3 mb-6 text-sm text-red-200 border rounded-lg border-red-500/25 bg-red-500/10">
               {error}
             </div>
           )}
 
-          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-xl border border-slate-700 bg-slate-800 p-4">
+          <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="p-4 border rounded-xl border-slate-700 bg-slate-800">
               <p className="text-sm text-slate-300">Total Users</p>
               <p className="mt-1 text-2xl font-bold">{summary.total}</p>
             </div>
-            <div className="rounded-xl border border-slate-700 bg-slate-800 p-4">
+            <div className="p-4 border rounded-xl border-slate-700 bg-slate-800">
               <p className="text-sm text-slate-300">Active</p>
               <p className="mt-1 text-2xl font-bold text-green-300">
                 {summary.active}
               </p>
             </div>
-            <div className="rounded-xl border border-slate-700 bg-slate-800 p-4">
+            <div className="p-4 border rounded-xl border-slate-700 bg-slate-800">
               <p className="text-sm text-slate-300">Suspended</p>
               <p className="mt-1 text-2xl font-bold text-amber-300">
                 {summary.suspended}
               </p>
             </div>
-            <div className="rounded-xl border border-slate-700 bg-slate-800 p-4">
+            <div className="p-4 border rounded-xl border-slate-700 bg-slate-800">
               <p className="text-sm text-slate-300">Banned</p>
               <p className="mt-1 text-2xl font-bold text-red-300">
                 {summary.banned}
@@ -339,22 +343,22 @@ const Users = () => {
             </div>
           </div>
 
-          <div className="mb-6 rounded-xl border border-slate-700 bg-slate-800 p-4">
+          <div className="p-4 mb-6 border rounded-xl border-slate-700 bg-slate-800">
             <div className="flex flex-col gap-4 lg:flex-row">
               <div className="relative flex-1">
-                <FaSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <FaSearch className="absolute -translate-y-1/2 pointer-events-none left-3 top-1/2 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Search by name, email or user ID"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
-                  className="w-full rounded-lg border border-slate-600 bg-slate-900 py-2 pl-10 pr-3 text-sm text-white outline-none transition focus:border-red-500"
+                  className="w-full py-2 pl-10 pr-3 text-sm text-white transition border rounded-lg outline-none border-slate-600 bg-slate-900 focus:border-red-500"
                 />
               </div>
               <select
                 value={roleFilter}
                 onChange={(event) => setRoleFilter(event.target.value)}
-                className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white outline-none transition focus:border-red-500"
+                className="px-3 py-2 text-sm text-white transition border rounded-lg outline-none border-slate-600 bg-slate-900 focus:border-red-500"
               >
                 <option value="all">All Roles</option>
                 {roleOptions.map((role) => (
@@ -366,7 +370,7 @@ const Users = () => {
               <select
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
-                className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white outline-none transition focus:border-red-500"
+                className="px-3 py-2 text-sm text-white transition border rounded-lg outline-none border-slate-600 bg-slate-900 focus:border-red-500"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
@@ -376,24 +380,24 @@ const Users = () => {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800">
+          <div className="overflow-hidden border rounded-xl border-slate-700 bg-slate-800">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-700">
                 <thead className="bg-slate-900">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    <th className="px-4 py-3 text-xs font-semibold tracking-wide text-left uppercase text-slate-300">
                       User
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    <th className="px-4 py-3 text-xs font-semibold tracking-wide text-left uppercase text-slate-300">
                       Role
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    <th className="px-4 py-3 text-xs font-semibold tracking-wide text-left uppercase text-slate-300">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    <th className="px-4 py-3 text-xs font-semibold tracking-wide text-left uppercase text-slate-300">
                       Joined
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    <th className="px-4 py-3 text-xs font-semibold tracking-wide text-left uppercase text-slate-300">
                       Actions
                     </th>
                   </tr>
@@ -464,7 +468,7 @@ const Users = () => {
                     <tr>
                       <td
                         colSpan="5"
-                        className="px-4 py-10 text-center text-sm text-slate-300"
+                        className="px-4 py-10 text-sm text-center text-slate-300"
                       >
                         No users match your current filters.
                       </td>
@@ -478,13 +482,14 @@ const Users = () => {
       </div>
 
       {reasonModal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-slate-700 bg-slate-900 p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65">
+          <div className="w-full max-w-lg p-6 border rounded-xl border-slate-700 bg-slate-900">
             <h3 className="mb-2 text-lg font-semibold text-white">
               Reason Required
             </h3>
             <p className="mb-4 text-sm text-slate-300">
-              Please enter a reason to {ACTION_CONFIG[reasonModal.actionKey].label.toLowerCase()}{" "}
+              Please enter a reason to{" "}
+              {ACTION_CONFIG[reasonModal.actionKey].label.toLowerCase()}{" "}
               <span className="font-semibold text-white">
                 {reasonModal.user?.name || "this user"}
               </span>
@@ -499,21 +504,21 @@ const Users = () => {
                 }))
               }
               rows={4}
-              className="w-full rounded-lg border border-slate-600 bg-slate-800 p-3 text-sm text-white outline-none transition focus:border-red-500"
+              className="w-full p-3 text-sm text-white transition border rounded-lg outline-none border-slate-600 bg-slate-800 focus:border-red-500"
               placeholder="Enter moderation reason..."
             />
-            <div className="mt-5 flex justify-end gap-3">
+            <div className="flex justify-end gap-3 mt-5">
               <button
                 type="button"
                 onClick={closeModals}
-                className="rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-700"
+                className="px-4 py-2 text-sm font-semibold transition border rounded-lg border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={proceedToConfirmation}
-                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+                className="px-4 py-2 text-sm font-semibold text-white transition bg-red-600 rounded-lg hover:bg-red-500"
               >
                 Continue
               </button>
@@ -523,8 +528,8 @@ const Users = () => {
       )}
 
       {confirmModal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-slate-700 bg-slate-900 p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65">
+          <div className="w-full max-w-lg p-6 border rounded-xl border-slate-700 bg-slate-900">
             <h3 className="mb-2 text-lg font-semibold text-white">
               Are you sure?
             </h3>
@@ -539,19 +544,19 @@ const Users = () => {
               .
             </p>
             {confirmModal.reason && (
-              <div className="mt-4 rounded-lg border border-slate-700 bg-slate-800 p-3">
-                <p className="mb-1 text-xs uppercase tracking-wide text-slate-400">
+              <div className="p-3 mt-4 border rounded-lg border-slate-700 bg-slate-800">
+                <p className="mb-1 text-xs tracking-wide uppercase text-slate-400">
                   Reason
                 </p>
                 <p className="text-sm text-slate-200">{confirmModal.reason}</p>
               </div>
             )}
-            <div className="mt-5 flex justify-end gap-3">
+            <div className="flex justify-end gap-3 mt-5">
               <button
                 type="button"
                 disabled={Boolean(actionLoading.userId)}
                 onClick={closeModals}
-                className="rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="px-4 py-2 text-sm font-semibold transition border rounded-lg border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -559,7 +564,7 @@ const Users = () => {
                 type="button"
                 onClick={handleModerationAction}
                 disabled={Boolean(actionLoading.userId)}
-                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition bg-red-600 rounded-lg hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {actionLoading.userId ? (
                   <>

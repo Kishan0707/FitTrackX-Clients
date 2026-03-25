@@ -39,27 +39,64 @@ const extractAuditLogList = (responseData) => {
   return { list, total, totalPages };
 };
 
+const toDisplayText = (value, fallback = "N/A") => {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    const combinedValue = value
+      .map((item) => toDisplayText(item, ""))
+      .filter(Boolean)
+      .join(", ");
+
+    return combinedValue || fallback;
+  }
+
+  if (typeof value === "object") {
+    return (
+      value.name ||
+      value.email ||
+      value.title ||
+      value.label ||
+      value.description ||
+      value.message ||
+      value._id ||
+      value.id ||
+      fallback
+    );
+  }
+
+  return fallback;
+};
+
 const normalizeLog = (log = {}) => {
-  const adminName =
-    log?.admin?.name ||
-    log?.admin?.email ||
-    log?.adminName ||
-    log?.adminId ||
-    "Unknown Admin";
-  const action = String(log?.action || log?.event || "unknown").toLowerCase();
-  const targetType = String(
-    log?.targetType || log?.target?.type || log?.entityType || "unknown",
+  const adminName = toDisplayText(
+    log?.admin || log?.adminName || log?.adminId,
+    "Unknown Admin",
+  );
+  const action = toDisplayText(log?.action || log?.event, "unknown").toLowerCase();
+  const targetType = toDisplayText(
+    log?.targetType || log?.target?.type || log?.entityType,
+    "unknown",
   ).toLowerCase();
-  const targetValue =
-    log?.target?.name ||
-    log?.target?.email ||
-    log?.target?.id ||
-    log?.targetId ||
-    log?.entityId ||
-    "N/A";
-  const description =
-    log?.description || log?.reason || log?.message || log?.details || "N/A";
-  const ip = log?.ip || log?.ipAddress || log?.meta?.ip || "N/A";
+  const targetValue = toDisplayText(
+    log?.target || log?.targetId || log?.entityId,
+    "N/A",
+  );
+  const description = toDisplayText(
+    log?.description || log?.reason || log?.message || log?.details,
+    "N/A",
+  );
+  const ip = toDisplayText(log?.ip || log?.ipAddress || log?.meta?.ip, "N/A");
   const time = log?.createdAt || log?.timestamp || log?.time || null;
 
   return {
@@ -110,8 +147,6 @@ const AuditLogs = () => {
         if (filters.to) params.to = filters.to;
 
         const res = await API.get("/admin/audit-logs", { params });
-        console.log(res);
-        console.error(res);
 
         const parsed = extractAuditLogList(res.data);
         const normalizedLogs = (parsed.list || []).map((log) =>

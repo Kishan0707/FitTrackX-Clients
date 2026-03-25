@@ -21,8 +21,10 @@ import {
   FaFire,
   FaChartLine,
   FaUserCheck,
+  FaPauseCircle,
+  FaBan,
+  FaListAlt,
 } from "react-icons/fa";
-import StatCard from "../../components/StatCard";
 import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
@@ -34,6 +36,12 @@ const AdminDashboard = () => {
   const [recentActivities, setRecentActivities] = useState([]);
   const [topPerformers, setTopPerformers] = useState(null);
   const [systemHealth, setSystemHealth] = useState(null);
+  const [moderationSummary, setModerationSummary] = useState({
+    suspended: 0,
+    banned: 0,
+    recentActions: 0,
+  });
+  const [moderationLoading, setModerationLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,10 +90,77 @@ const AdminDashboard = () => {
         if (healthRes.data.success) {
           setSystemHealth(healthRes.data.data);
         }
+
+        // Fetch moderation stats for dashboard mini cards
+        try {
+          const [usersRes, auditRes] = await Promise.all([
+            API.get("/admin/users"),
+            API.get("/admin/audit-logs", {
+              params: { page: 1, limit: 20 },
+            }),
+          ]);
+
+          const usersPayload = usersRes.data?.data ?? usersRes.data;
+          const usersList = Array.isArray(usersPayload)
+            ? usersPayload
+            : usersPayload?.users || usersPayload?.items || [];
+
+          const resolveStatus = (user) => {
+            const rawStatus =
+              user?.status ||
+              user?.moderationStatus ||
+              (user?.isBanned ? "banned" : user?.isSuspended ? "suspended" : "active");
+
+            const normalized = String(rawStatus || "active").toLowerCase();
+            if (normalized === "suspend") return "suspended";
+            if (normalized === "ban") return "banned";
+            if (normalized === "suspended" || normalized === "banned") {
+              return normalized;
+            }
+            return "active";
+          };
+
+          const suspendedUsers = usersList.filter(
+            (user) => resolveStatus(user) === "suspended",
+          ).length;
+          const bannedUsers = usersList.filter(
+            (user) => resolveStatus(user) === "banned",
+          ).length;
+
+          const logsPayload = auditRes.data?.data ?? auditRes.data;
+          const logsList = Array.isArray(logsPayload)
+            ? logsPayload
+            : logsPayload?.logs || logsPayload?.items || logsPayload?.results || [];
+
+          const recentModerationActions = logsList.filter((log) => {
+            const actionValue = String(log?.action || log?.event || "").toLowerCase();
+            return (
+              actionValue.includes("suspend") ||
+              actionValue.includes("ban") ||
+              actionValue.includes("activ")
+            );
+          }).length;
+
+          setModerationSummary({
+            suspended: suspendedUsers,
+            banned: bannedUsers,
+            recentActions: recentModerationActions,
+          });
+        } catch (moderationError) {
+          console.error("Error fetching moderation summary:", moderationError);
+          setModerationSummary({
+            suspended: 0,
+            banned: 0,
+            recentActions: 0,
+          });
+        } finally {
+          setModerationLoading(false);
+        }
       } catch (error) {
         console.error("Error fetching stats:", error);
         setError("Failed to fetch dashboard stats");
       } finally {
+        setModerationLoading(false);
         setLoading(false);
       }
     };
@@ -192,6 +267,47 @@ const AdminDashboard = () => {
               </p>
             </div>
             <FaFire className="text-2xl text-slate-600" />
+          </div>
+        </div>
+      </div>
+
+      {/* Moderation Mini Cards */}
+      <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
+        <div className="p-5 border rounded-xl border-amber-500/20 bg-amber-500/10">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-amber-200/90">Total Suspended</p>
+              <p className="mt-1 text-2xl font-bold text-white">
+                {moderationLoading ? "..." : moderationSummary.suspended}
+              </p>
+            </div>
+            <FaPauseCircle className="text-2xl text-amber-300" />
+          </div>
+        </div>
+
+        <div className="p-5 border rounded-xl border-red-500/20 bg-red-500/10">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-red-200/90">Total Banned</p>
+              <p className="mt-1 text-2xl font-bold text-white">
+                {moderationLoading ? "..." : moderationSummary.banned}
+              </p>
+            </div>
+            <FaBan className="text-2xl text-red-300" />
+          </div>
+        </div>
+
+        <div className="p-5 border rounded-xl border-blue-500/20 bg-blue-500/10">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-blue-200/90">
+                Recent Moderation Actions
+              </p>
+              <p className="mt-1 text-2xl font-bold text-white">
+                {moderationLoading ? "..." : moderationSummary.recentActions}
+              </p>
+            </div>
+            <FaListAlt className="text-2xl text-blue-300" />
           </div>
         </div>
       </div>
@@ -310,6 +426,12 @@ const AdminDashboard = () => {
               onClick={() => navigate("/settings")}
             >
               ⚙️ System Settings
+            </button>
+            <button
+              className="w-full px-4 py-2 text-white transition-colors rounded-lg bg-slate-700 hover:bg-slate-600"
+              onClick={() => navigate("/admin/audit-logs")}
+            >
+              🧾 Audit Logs
             </button>
           </div>
         </div>

@@ -22,6 +22,7 @@ import AdminDiet from "./pages/admin/AdminDiet";
 import Reports from "./pages/admin/Reports";
 import CoachManagement from "./pages/admin/CoachManagement";
 import CoachDetails from "./pages/admin/CoachDetails";
+import AuditLogs from "./pages/admin/AuditLogs";
 import Settings from "./pages/Settings";
 import WorkoutAnalytics from "./pages/WorkoutAnalytics";
 import WorkoutsHistory from "./pages/WorkoutsHistory";
@@ -29,6 +30,7 @@ import TestFeatures from "./pages/TestFeatures";
 import DebugPage from "./pages/DebugPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import Unauthorized from "./pages/Unauthorized";
 function App() {
   return (
     <>
@@ -39,6 +41,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
             <Route
               path="/dashboard"
               element={
@@ -109,7 +112,7 @@ function App() {
             <Route
               path="/admin"
               element={
-                <ProtectedRoutes>
+                <ProtectedRoutes allowedRoles={["admin"]}>
                   <AdminDashboard />
                 </ProtectedRoutes>
               }
@@ -117,7 +120,7 @@ function App() {
             <Route
               path="/admin/users"
               element={
-                <ProtectedRoutes>
+                <ProtectedRoutes allowedRoles={["admin"]}>
                   <AdminUsers />
                 </ProtectedRoutes>
               }
@@ -125,7 +128,7 @@ function App() {
             <Route
               path="/admin/workouts"
               element={
-                <ProtectedRoutes>
+                <ProtectedRoutes allowedRoles={["admin"]}>
                   <AdminWorkouts />
                 </ProtectedRoutes>
               }
@@ -133,7 +136,7 @@ function App() {
             <Route
               path="/admin/diet"
               element={
-                <ProtectedRoutes>
+                <ProtectedRoutes allowedRoles={["admin"]}>
                   <AdminDiet />
                 </ProtectedRoutes>
               }
@@ -141,7 +144,7 @@ function App() {
             <Route
               path="/admin/reports"
               element={
-                <ProtectedRoutes>
+                <ProtectedRoutes allowedRoles={["admin"]}>
                   <Reports />
                 </ProtectedRoutes>
               }
@@ -149,7 +152,7 @@ function App() {
             <Route
               path="/admin/coaches"
               element={
-                <ProtectedRoutes>
+                <ProtectedRoutes allowedRoles={["admin"]}>
                   <CoachManagement />
                 </ProtectedRoutes>
               }
@@ -157,8 +160,16 @@ function App() {
             <Route
               path="/admin/coaches/:id"
               element={
-                <ProtectedRoutes>
+                <ProtectedRoutes allowedRoles={["admin"]}>
                   <CoachDetails />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/admin/audit-logs"
+              element={
+                <ProtectedRoutes allowedRoles={["admin"]}>
+                  <AuditLogs />
                 </ProtectedRoutes>
               }
             />

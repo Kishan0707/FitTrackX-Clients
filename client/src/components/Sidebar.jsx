@@ -8,6 +8,7 @@ import {
   FaCrown,
   FaCog,
   FaFileAlt,
+  FaClipboardList,
   FaHistory,
   FaChartPie,
   FaUserTie,
@@ -43,6 +44,11 @@ const Sidebar = ({ menuBtn }) => {
         name: "Reports",
         path: "/admin/reports",
         icon: <FaFileAlt />,
+      },
+      {
+        name: "Audit Logs",
+        path: "/admin/audit-logs",
+        icon: <FaClipboardList />,
       },
       { name: "Settings", path: "/settings", icon: <FaCog /> },
     ];

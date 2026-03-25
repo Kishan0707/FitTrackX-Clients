@@ -356,8 +356,8 @@ const AuditLogs = () => {
 
           <div className="w-full overflow-hidden border rounded-xl border-slate-700 bg-slate-800">
             <div className="overflow-x-scroll md:overflow-auto">
-              <table className="min-w-full divide-y divide-slate-700">
-                <thead className="bg-slate-900">
+              <table className="min-w-full overflow-x-scroll divide-y divide-slate-700">
+                <thead className=" bg-slate-900">
                   <tr>
                     <th className="px-4 py-3 text-xs font-semibold tracking-wide text-left uppercase text-slate-300">
                       Time

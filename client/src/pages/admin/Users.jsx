@@ -219,9 +219,6 @@ const Users = () => {
         status: actionConfig.targetStatus,
         reason: reason || undefined,
       });
-      console.log("actionKey", actionKey);
-      console.log("actionConfig", actionConfig);
-      console.log("reason", reason || undefined);
 
       setUsers((prevUsers) =>
         prevUsers.map((prevUser) =>
@@ -242,8 +239,11 @@ const Users = () => {
       closeModals();
       fetchUsers({ silent: true });
     } catch (err) {
+      const isNotFound = err.response?.status === 404;
       showToast(
-        err.response?.data?.message ||
+        (isNotFound
+          ? "Moderation endpoint returned 404. Verify the backend route and VITE_API_URL."
+          : err.response?.data?.message) ||
           `Failed to ${actionConfig.label.toLowerCase()} user.`,
         "error",
       );

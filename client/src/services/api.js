@@ -17,6 +17,28 @@ const sanitizeApiUrl = (value) => {
   return normalizedValue.replace(/\/+$/, "");
 };
 
+const ensureApiPath = (value) => {
+  if (!value) return "";
+
+  // Support both:
+  // 1. https://backend.example.com
+  // 2. https://backend.example.com/api
+  try {
+    const parsedUrl = new URL(value);
+    const normalizedPath = parsedUrl.pathname.replace(/\/+$/, "");
+
+    if (!normalizedPath || normalizedPath === "/") {
+      parsedUrl.pathname = "/api";
+    } else if (!normalizedPath.endsWith("/api")) {
+      parsedUrl.pathname = `${normalizedPath}/api`;
+    }
+
+    return parsedUrl.toString().replace(/\/+$/, "");
+  } catch {
+    return value;
+  }
+};
+
 const isLocalHost = () => {
   if (typeof window === "undefined") {
     return import.meta.env.DEV;
@@ -26,8 +48,12 @@ const isLocalHost = () => {
 };
 
 const resolveApiBaseUrl = () => {
-  const localApiUrl = sanitizeApiUrl(import.meta.env.VITE_API_URL_LOCAL);
-  const publicApiUrl = sanitizeApiUrl(import.meta.env.VITE_API_URL);
+  const localApiUrl = ensureApiPath(
+    sanitizeApiUrl(import.meta.env.VITE_API_URL_LOCAL),
+  );
+  const publicApiUrl = ensureApiPath(
+    sanitizeApiUrl(import.meta.env.VITE_API_URL),
+  );
 
   if (isLocalHost()) {
     return localApiUrl || publicApiUrl || DEFAULT_LOCAL_API_URL;

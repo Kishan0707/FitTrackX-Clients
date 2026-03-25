@@ -45,7 +45,10 @@ const normalizeLog = (log = {}) => {
     log?.admin || log?.adminName || log?.adminId,
     "Unknown Admin",
   );
-  const action = toDisplayText(log?.action || log?.event, "unknown").toLowerCase();
+  const action = toDisplayText(
+    log?.action || log?.event,
+    "unknown",
+  ).toLowerCase();
   const targetType = toDisplayText(
     log?.targetType || log?.target?.type || log?.entityType,
     "unknown",
@@ -351,8 +354,8 @@ const AuditLogs = () => {
             </div>
           </div>
 
-          <div className="overflow-hidden border rounded-xl border-slate-700 bg-slate-800">
-            <div className="overflow-x-auto">
+          <div className="w-full overflow-hidden border rounded-xl border-slate-700 bg-slate-800">
+            <div className="overflow-x-scroll md:overflow-auto">
               <table className="min-w-full divide-y divide-slate-700">
                 <thead className="bg-slate-900">
                   <tr>

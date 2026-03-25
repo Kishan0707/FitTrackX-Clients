@@ -110,6 +110,9 @@ const AuditLogs = () => {
         if (filters.to) params.to = filters.to;
 
         const res = await API.get("/admin/audit-logs", { params });
+        console.log(res);
+        console.error(res);
+
         const parsed = extractAuditLogList(res.data);
         const normalizedLogs = (parsed.list || []).map((log) =>
           normalizeLog(log),

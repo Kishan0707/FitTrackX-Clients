@@ -3,6 +3,7 @@ import React from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
+import { toDisplayDateTime, toDisplayText } from "../../utils/display";
 
 const defaultFilters = {
   action: "all",
@@ -40,32 +41,30 @@ const extractAuditLogList = (responseData) => {
 };
 
 const normalizeLog = (log = {}) => {
-  const adminName =
-    log?.admin?.name ||
-    log?.admin?.email ||
-    log?.adminName ||
-    log?.adminId ||
-    "Unknown Admin";
-  const action = String(log?.action || log?.event || "unknown").toLowerCase();
-  const targetType = String(
-    log?.targetType || log?.target?.type || log?.entityType || "unknown",
+  const adminName = toDisplayText(
+    log?.admin || log?.adminName || log?.adminId,
+    "Unknown Admin",
+  );
+  const action = toDisplayText(log?.action || log?.event, "unknown").toLowerCase();
+  const targetType = toDisplayText(
+    log?.targetType || log?.target?.type || log?.entityType,
+    "unknown",
   ).toLowerCase();
-  const targetValue =
-    log?.target?.name ||
-    log?.target?.email ||
-    log?.target?.id ||
-    log?.targetId ||
-    log?.entityId ||
-    "N/A";
-  const description =
-    log?.description || log?.reason || log?.message || log?.details || "N/A";
-  const ip = log?.ip || log?.ipAddress || log?.meta?.ip || "N/A";
+  const targetValue = toDisplayText(
+    log?.target || log?.targetId || log?.entityId,
+    "N/A",
+  );
+  const description = toDisplayText(
+    log?.description || log?.reason || log?.message || log?.details,
+    "N/A",
+  );
+  const ip = toDisplayText(log?.ip || log?.ipAddress || log?.meta?.ip, "N/A");
   const time = log?.createdAt || log?.timestamp || log?.time || null;
 
   return {
-    id: log?._id || log?.id || `${time || "log"}-${targetValue}`,
+    id: toDisplayText(log?._id || log?.id, `${time || "log"}-${targetValue}`),
     adminName,
-    adminId: log?.admin?._id || log?.adminId || "",
+    adminId: toDisplayText(log?.admin?._id || log?.adminId, ""),
     action,
     targetType,
     targetValue,
@@ -83,6 +82,7 @@ const AuditLogs = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [endpointMissing, setEndpointMissing] = useState(false);
   const [filters, setFilters] = useState(defaultFilters);
   const [draftFilters, setDraftFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
@@ -110,9 +110,6 @@ const AuditLogs = () => {
         if (filters.to) params.to = filters.to;
 
         const res = await API.get("/admin/audit-logs", { params });
-        console.log(res);
-        console.error(res);
-
         const parsed = extractAuditLogList(res.data);
         const normalizedLogs = (parsed.list || []).map((log) =>
           normalizeLog(log),
@@ -122,11 +119,14 @@ const AuditLogs = () => {
         setTotal(parsed.total || normalizedLogs.length);
         setTotalPages(parsed.totalPages || 1);
         setError("");
+        setEndpointMissing(false);
 
         setActionOptions((prev) => {
           const merged = new Set([
             ...prev,
-            ...normalizedLogs.map((log) => log.action).filter(Boolean),
+            ...normalizedLogs
+              .map((log) => toDisplayText(log.action, "unknown"))
+              .filter(Boolean),
           ]);
           return Array.from(merged).sort();
         });
@@ -134,15 +134,24 @@ const AuditLogs = () => {
         setTargetTypeOptions((prev) => {
           const merged = new Set([
             ...prev,
-            ...normalizedLogs.map((log) => log.targetType).filter(Boolean),
+            ...normalizedLogs
+              .map((log) => toDisplayText(log.targetType, "unknown"))
+              .filter(Boolean),
           ]);
           return Array.from(merged).sort();
         });
       } catch (err) {
+        const isNotFound = err.response?.status === 404;
+        setEndpointMissing(isNotFound);
+        setLogs([]);
+        setTotal(0);
+        setTotalPages(1);
         setError(
-          err.response?.data?.message ||
-            err.message ||
-            "Failed to fetch audit logs",
+          isNotFound
+            ? "GET /api/admin/audit-logs returned 404. The backend route is missing or not deployed yet."
+            : err.response?.data?.message ||
+              err.message ||
+              "Failed to fetch audit logs",
         );
       } finally {
         setLoading(false);
@@ -193,7 +202,7 @@ const AuditLogs = () => {
       <DashboardLayout>
         <div className="max-w-2xl p-6 mx-auto mt-16 text-center border rounded-xl border-red-500/25 bg-red-500/10">
           <h2 className="mb-2 text-xl font-semibold text-red-300">
-            Unable to load audit logs
+            {endpointMissing ? "Audit Logs API Not Available" : "Unable to load audit logs"}
           </h2>
           <p className="mb-5 text-sm text-red-200/90">{error}</p>
           <button
@@ -250,8 +259,8 @@ const AuditLogs = () => {
               >
                 <option value="all">All Actions</option>
                 {actionOptions.map((actionValue) => (
-                  <option key={actionValue} value={actionValue}>
-                    {formatFilterLabel(actionValue)}
+                <option key={actionValue} value={actionValue}>
+                    {formatFilterLabel(toDisplayText(actionValue, "unknown"))}
                   </option>
                 ))}
               </select>
@@ -268,8 +277,10 @@ const AuditLogs = () => {
               >
                 <option value="all">All Target Types</option>
                 {targetTypeOptions.map((targetTypeValue) => (
-                  <option key={targetTypeValue} value={targetTypeValue}>
-                    {formatFilterLabel(targetTypeValue)}
+                <option key={targetTypeValue} value={targetTypeValue}>
+                    {formatFilterLabel(
+                      toDisplayText(targetTypeValue, "unknown"),
+                    )}
                   </option>
                 ))}
               </select>
@@ -384,31 +395,29 @@ const AuditLogs = () => {
                     logs.map((log) => (
                       <tr key={log.id} className="hover:bg-slate-700/35">
                         <td className="px-4 py-4 text-sm text-slate-200">
-                          {log.time
-                            ? new Date(log.time).toLocaleString()
-                            : "N/A"}
+                          {toDisplayDateTime(log.time)}
                         </td>
                         <td className="px-4 py-4 text-sm text-slate-200">
-                          {log.adminName}
+                          {toDisplayText(log.adminName, "Unknown Admin")}
                         </td>
                         <td className="px-4 py-4 text-sm text-slate-200">
                           <span className="rounded-full border border-blue-500/30 bg-blue-500/15 px-2.5 py-1 text-xs font-semibold text-blue-300">
-                            {log.action || "unknown"}
+                            {toDisplayText(log.action, "unknown")}
                           </span>
                         </td>
                         <td className="px-4 py-4 text-sm text-slate-200">
-                          {log.targetValue}
+                          {toDisplayText(log.targetValue)}
                           <p className="mt-1 text-xs text-slate-400">
-                            {log.targetType}
+                            {toDisplayText(log.targetType, "unknown")}
                           </p>
                         </td>
                         <td className="max-w-md px-4 py-4 text-sm text-slate-200">
                           <span className="line-clamp-2">
-                            {log.description}
+                            {toDisplayText(log.description)}
                           </span>
                         </td>
                         <td className="px-4 py-4 text-sm text-slate-200">
-                          {log.ip}
+                          {toDisplayText(log.ip)}
                         </td>
                       </tr>
                     ))

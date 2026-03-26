@@ -32,6 +32,7 @@ import DebugPage from "./pages/DebugPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Unauthorized from "./pages/Unauthorized";
+import UsersPage from "./components/UsersPage";
 function App() {
   return (
     <>
@@ -39,185 +40,190 @@ function App() {
         <AppErrorBoundary>
           <div className="App">
             <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoutes>
-                  <Dashboard />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/workouts"
-              element={
-                <ProtectedRoutes>
-                  <Workouts />
-                </ProtectedRoutes>
-              }
-            />
+              <Route path="/" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoutes>
+                    <Dashboard />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/workouts"
+                element={
+                  <ProtectedRoutes>
+                    <Workouts />
+                  </ProtectedRoutes>
+                }
+              />
 
-            <Route
-              path="/add-workout"
-              element={
-                <ProtectedRoutes>
-                  <AddWorkout />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/diet"
-              element={
-                <ProtectedRoutes>
-                  <Diet />
-                </ProtectedRoutes>
-              }
-            />
+              <Route
+                path="/add-workout"
+                element={
+                  <ProtectedRoutes>
+                    <AddWorkout />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/diet"
+                element={
+                  <ProtectedRoutes>
+                    <Diet />
+                  </ProtectedRoutes>
+                }
+              />
 
-            <Route
-              path="/add-meal"
-              element={
-                <ProtectedRoutes>
-                  <AddMeal />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/ai"
-              element={
-                <ProtectedRoutes>
-                  <AiTrainer />
-                </ProtectedRoutes>
-              }
-            />
+              <Route
+                path="/add-meal"
+                element={
+                  <ProtectedRoutes>
+                    <AddMeal />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/ai"
+                element={
+                  <ProtectedRoutes>
+                    <AiTrainer />
+                  </ProtectedRoutes>
+                }
+              />
 
-            <Route
-              path="/plans"
-              element={
-                <ProtectedRoutes>
-                  <Plans />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/progress"
-              element={
-                <ProtectedRoutes>
-                  <Progress />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
-                  <AdminDashboard />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/admin/users"
-              element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
-                  <AdminUsers />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/admin/workouts"
-              element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
-                  <AdminWorkouts />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/admin/diet"
-              element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
-                  <AdminDiet />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/admin/reports"
-              element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
-                  <Reports />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/admin/coaches"
-              element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
-                  <CoachManagement />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/admin/coaches/:id"
-              element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
-                  <CoachDetails />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/admin/audit-logs"
-              element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
-                  <AuditLogs />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoutes>
-                  <Settings />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/workout-analytics"
-              element={
-                <ProtectedRoutes>
-                  <WorkoutAnalytics />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/workout-history"
-              element={
-                <ProtectedRoutes>
-                  <WorkoutsHistory />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/test-features"
-              element={
-                <ProtectedRoutes>
-                  <TestFeatures />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/debug"
-              element={
-                <ProtectedRoutes>
-                  <DebugPage />
-                </ProtectedRoutes>
-              }
-            />
+              <Route
+                path="/plans"
+                element={
+                  <ProtectedRoutes>
+                    <Plans />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/progress"
+                element={
+                  <ProtectedRoutes>
+                    <Progress />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <AdminDashboard />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <AdminUsers />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/admin/workouts"
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <AdminWorkouts />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/admin/diet"
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <AdminDiet />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/admin/reports"
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <Reports />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/admin/coaches"
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <CoachManagement />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/admin/coaches/:id"
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <CoachDetails />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/admin/audit-logs"
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <AuditLogs />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoutes>
+                    <Settings />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/workout-analytics"
+                element={
+                  <ProtectedRoutes>
+                    <WorkoutAnalytics />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/workout-history"
+                element={
+                  <ProtectedRoutes>
+                    <WorkoutsHistory />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/test-features"
+                element={
+                  <ProtectedRoutes>
+                    <TestFeatures />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/debug"
+                element={
+                  <ProtectedRoutes>
+                    <DebugPage />
+                  </ProtectedRoutes>
+                }
+              />
 
-            <Route path="/coachDashboard" element={<CoachDashboard />} index />
-            <Route path="/coach/clients" element={<Clients />} />
+              <Route
+                path="/coachDashboard"
+                element={<CoachDashboard />}
+                index
+              />
+              <Route path="/coach/clients" element={<Clients />} />
+              <Route path="/test-users" element={<UsersPage />} />
             </Routes>
           </div>
         </AppErrorBoundary>

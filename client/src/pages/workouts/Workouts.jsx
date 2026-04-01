@@ -3,8 +3,8 @@ import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
 import WorkoutCard from "../../components/WorkoutCard";
 
-const Workouts = () => {
-  const [workouts, setWorkouts] = useState([]);
+const Workouts = ({ workouts, setWorkouts }) => {
+  // const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -50,7 +50,11 @@ const Workouts = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {workouts.map((workout) => (
-            <WorkoutCard key={workout._id} workout={workout} />
+            <WorkoutCard
+              key={workout._id}
+              workout={workout}
+              setWorkouts={setWorkouts}
+            />
           ))}
         </div>
       )}

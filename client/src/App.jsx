@@ -33,20 +33,23 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Unauthorized from "./pages/Unauthorized";
 import UsersPage from "./components/UsersPage";
+import Session from "./pages/coach/Session";
+import Workout from "./pages/coach/Workout";
+import Message from "./pages/coach/Message";
 function App() {
   return (
     <>
       <BrowserRouter>
         <AppErrorBoundary>
-          <div className="App">
+          <div className='App'>
             <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/unauthorized" element={<Unauthorized />} />
+              <Route path='/' element={<Login />} />
+              <Route path='/register' element={<Register />} />
+              <Route path='/forgot-password' element={<ForgotPassword />} />
+              <Route path='/reset-password' element={<ResetPassword />} />
+              <Route path='/unauthorized' element={<Unauthorized />} />
               <Route
-                path="/dashboard"
+                path='/dashboard'
                 element={
                   <ProtectedRoutes>
                     <Dashboard />
@@ -54,7 +57,7 @@ function App() {
                 }
               />
               <Route
-                path="/workouts"
+                path='/workouts'
                 element={
                   <ProtectedRoutes>
                     <Workouts />
@@ -63,7 +66,7 @@ function App() {
               />
 
               <Route
-                path="/add-workout"
+                path='/add-workout'
                 element={
                   <ProtectedRoutes>
                     <AddWorkout />
@@ -71,7 +74,7 @@ function App() {
                 }
               />
               <Route
-                path="/diet"
+                path='/diet'
                 element={
                   <ProtectedRoutes>
                     <Diet />
@@ -80,7 +83,7 @@ function App() {
               />
 
               <Route
-                path="/add-meal"
+                path='/add-meal'
                 element={
                   <ProtectedRoutes>
                     <AddMeal />
@@ -88,7 +91,7 @@ function App() {
                 }
               />
               <Route
-                path="/ai"
+                path='/ai'
                 element={
                   <ProtectedRoutes>
                     <AiTrainer />
@@ -97,7 +100,7 @@ function App() {
               />
 
               <Route
-                path="/plans"
+                path='/plans'
                 element={
                   <ProtectedRoutes>
                     <Plans />
@@ -105,7 +108,7 @@ function App() {
                 }
               />
               <Route
-                path="/progress"
+                path='/progress'
                 element={
                   <ProtectedRoutes>
                     <Progress />
@@ -113,7 +116,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin"
+                path='/admin'
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <AdminDashboard />
@@ -121,7 +124,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin/users"
+                path='/admin/users'
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <AdminUsers />
@@ -129,7 +132,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin/workouts"
+                path='/admin/workouts'
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <AdminWorkouts />
@@ -137,7 +140,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin/diet"
+                path='/admin/diet'
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <AdminDiet />
@@ -145,7 +148,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin/reports"
+                path='/admin/reports'
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <Reports />
@@ -153,7 +156,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin/coaches"
+                path='/admin/coaches'
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <CoachManagement />
@@ -161,7 +164,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin/coaches/:id"
+                path='/admin/coaches/:id'
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <CoachDetails />
@@ -169,7 +172,7 @@ function App() {
                 }
               />
               <Route
-                path="/admin/audit-logs"
+                path='/admin/audit-logs'
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <AuditLogs />
@@ -177,7 +180,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings"
+                path='/settings'
                 element={
                   <ProtectedRoutes>
                     <Settings />
@@ -185,7 +188,7 @@ function App() {
                 }
               />
               <Route
-                path="/workout-analytics"
+                path='/workout-analytics'
                 element={
                   <ProtectedRoutes>
                     <WorkoutAnalytics />
@@ -193,7 +196,7 @@ function App() {
                 }
               />
               <Route
-                path="/workout-history"
+                path='/workout-history'
                 element={
                   <ProtectedRoutes>
                     <WorkoutsHistory />
@@ -201,7 +204,7 @@ function App() {
                 }
               />
               <Route
-                path="/test-features"
+                path='/test-features'
                 element={
                   <ProtectedRoutes>
                     <TestFeatures />
@@ -209,7 +212,7 @@ function App() {
                 }
               />
               <Route
-                path="/debug"
+                path='/debug'
                 element={
                   <ProtectedRoutes>
                     <DebugPage />
@@ -218,12 +221,66 @@ function App() {
               />
 
               <Route
-                path="/coachDashboard"
-                element={<CoachDashboard />}
+                path='/coachDashboard'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <CoachDashboard />
+                  </ProtectedRoutes>
+                }
                 index
               />
-              <Route path="/coach/clients" element={<Clients />} />
-              <Route path="/test-users" element={<UsersPage />} />
+              <Route
+                path='/coach/clients'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <Clients />
+                  </ProtectedRoutes>
+                }
+              />
+
+              <Route
+                path='/coach/sessions'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <Session />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/workouts'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <Workout />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/diet'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <AddMeal />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/messages'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <Message />
+                  </ProtectedRoutes>
+                }
+              />
+
+              <Route
+                path='/coach/chat'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <Message />
+                  </ProtectedRoutes>
+                }
+              />
+
+              <Route path='/test-users' element={<UsersPage />} />
             </Routes>
           </div>
         </AppErrorBoundary>

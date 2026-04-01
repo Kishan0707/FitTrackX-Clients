@@ -6,13 +6,13 @@ const DashboardLayout = ({ children }) => {
   const [menuBtn, setMenuBtn] = useState(true);
 
   return (
-    <div className="flex bg-slate-950 text-white min-h-screen">
+    <div className='flex bg-slate-950 text-white min-h-screen'>
       <Sidebar setMenuBtn={setMenuBtn} menuBtn={menuBtn} />
 
-      <div className="flex-1 flex flex-col">
+      <div className='flex-1 flex flex-col'>
         <Navbar setMenuBtn={setMenuBtn} menuBtn={menuBtn} />
 
-        <main className="p-6 w-full">{children}</main>
+        <main className='p-6 w-full flex-1'>{children}</main>
       </div>
     </div>
   );

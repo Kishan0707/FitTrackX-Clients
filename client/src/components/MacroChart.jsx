@@ -40,17 +40,17 @@ const MacroChart = () => {
     fill: COLORS[index % COLORS.length],
   }));
   return (
-    <div className="bg-slate-900 p-6 rounded-xl mt-6 w-full">
-      <h2 className="text-xl font-bold mb-4">Macroeconomic Indicators</h2>
+    <div className='flex items-center justify-center flex-col bg-slate-900 p-6 rounded-xl mt-6 w-full'>
+      <h2 className='text-xl font-bold mb-4'>Macroeconomic Indicators</h2>
       <PieChart width={400} height={300}>
         <Pie
           data={dataWithColors}
-          cx="50%"
-          cy="50%"
+          cx='50%'
+          cy='50%'
           labelLine={true}
           outerRadius={80}
-          fill="#8884d8"
-          dataKey="value"
+          fill='#8884d8'
+          dataKey='value'
         />
         <Tooltip />
       </PieChart>

@@ -41,7 +41,7 @@ const Login = () => {
         if (res?.role === "admin") {
           navigate("/admin");
         } else if (res?.role === "coach") {
-          navigate("/coach");
+          navigate("/coachDashboard");
         } else {
           navigate("/dashboard");
         }

@@ -28,32 +28,32 @@ const GrocerySuggestion = () => {
     fetchFood();
   }, []);
   return (
-    <div className="bg-slate-900 p-6 mt-6 rounded-xl w-full ">
+    <div className='bg-slate-900 p-6 mt-6 rounded-xl w-full '>
       {success && (
-        <div className="bg-green-500 text-white p-2 rounded mb-4">
+        <div className='bg-green-500 text-white p-2 rounded mb-4'>
           {success}
         </div>
       )}
 
       {error && (
-        <div className="bg-red-500 text-white p-2 rounded mb-4">{error}</div>
+        <div className='bg-red-500 text-white p-2 rounded mb-4'>{error}</div>
       )}
-      <h2 className="text-2xl font-bold text-white my-5">Grocery Suggestion</h2>
-      <div className="flex flex-wrap gap-4 items-center justify-center">
-        {loading ? (
-          <p className="text-white">Loading...</p>
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : (
-          foods.map((food, index) => (
+      <h2 className='text-2xl text-center md:text-left font-bold text-white my-5'>
+        Grocery Suggestion
+      </h2>
+      <div className='flex flex-wrap gap-4 items-center justify-center'>
+        {loading ?
+          <p className='text-white'>Loading...</p>
+        : error ?
+          <p className='text-red-500'>{error}</p>
+        : foods.map((food, index) => (
             <div
               key={index}
-              className="bg-slate-800 p-4 rounded-lg shadow-md w-40 border border-slate-700 hover:border hover:border-blue-500"
-            >
+              className='bg-slate-800 p-4 rounded-lg shadow-md w-40 border border-slate-700 hover:border hover:border-blue-500'>
               {food}
             </div>
           ))
-        )}
+        }
       </div>
     </div>
   );

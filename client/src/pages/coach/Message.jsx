@@ -10,6 +10,7 @@ const Message = () => {
   const [clients, setClients] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [allMessages, setAllMessages] = useState([]);
   const [text, setText] = useState("");
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [typingUser, setTypingUser] = useState(null);
@@ -17,7 +18,9 @@ const Message = () => {
   const [showChat, setShowChat] = useState(false);
   const bottomRef = useRef();
   const typingTimeout = useRef();
+  const inputRef = useRef();
 
+  // Load clients + all messages for previews
   useEffect(() => {
     API.get("/coach/clients").then((res) => {
       const data = res.data.data;
@@ -31,6 +34,9 @@ const Message = () => {
         }
       }
     });
+    API.get("/messages/all")
+      .then((res) => setAllMessages(res.data.data || []))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -43,6 +49,7 @@ const Message = () => {
     socket.on("stopTyping", () => setTypingUser(null));
     socket.on("receiveMessage", (msg) => {
       const senderId = msg.sender?._id || msg.sender;
+      setAllMessages((prev) => [...prev, msg]);
       if (senderId === selectedUser?._id) {
         setMessages((prev) => [...prev, msg]);
       } else {
@@ -52,31 +59,56 @@ const Message = () => {
         }));
       }
     });
+    socket.on("messagesSeen", ({ userId }) => {
+      const update = (prev) =>
+        prev.map((msg) => {
+          const s = msg.sender?._id || msg.sender;
+          return s === userId ? { ...msg, seen: true } : msg;
+        });
+      setMessages(update);
+      setAllMessages(update);
+    });
     return () => {
       socket.off("connect", rejoin);
       socket.off("onlineUsers");
       socket.off("typing");
       socket.off("stopTyping");
       socket.off("receiveMessage");
+      socket.off("messagesSeen");
     };
   }, [user, selectedUser]);
 
   useEffect(() => {
     if (!selectedUser) return;
-    API.get(`/messages/${selectedUser._id}`).then((res) =>
-      setMessages(res.data.data || []),
-    );
+    API.get(`/messages/${selectedUser._id}`).then((res) => {
+      const msgs = res.data.data || [];
+      setMessages(msgs);
+      // merge into allMessages
+      setAllMessages((prev) => {
+        const others = prev.filter((m) => {
+          const s = m.sender?._id || m.sender;
+          const r = m.receiverId?._id || m.receiverId;
+          return s !== selectedUser._id && r !== selectedUser._id;
+        });
+        return [...others, ...msgs];
+      });
+    });
   }, [selectedUser]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [selectedUser]);
+
   const openChat = (client) => {
     setSelectedUser(client);
     setShowChat(true);
     localStorage.setItem("selectedChatUser", client._id);
     setUnread((prev) => ({ ...prev, [client._id]: 0 }));
+    API.patch(`/messages/${client._id}/seen`).catch(() => {});
   };
 
   const handleTyping = (e) => {
@@ -98,8 +130,19 @@ const Message = () => {
       receiverId: selectedUser._id,
       message: text,
     });
-    setMessages((prev) => [...prev, res.data.data]);
+    const newMsg = res.data.data;
+    setMessages((prev) => [...prev, newMsg]);
+    setAllMessages((prev) => [...prev, newMsg]);
   };
+
+  const lastMsgByClient = (clientId) =>
+    allMessages
+      .filter((m) => {
+        const s = m.sender?._id || m.sender;
+        const r = m.receiverId?._id || m.receiverId;
+        return s === clientId || r === clientId;
+      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
   const ClientList = (
     <div className='w-full md:w-1/3 lg:w-1/4 bg-slate-900 border-r border-slate-700 flex flex-col'>
@@ -107,33 +150,39 @@ const Message = () => {
         <h2 className='text-white font-semibold text-lg'>Clients</h2>
       </div>
       <div className='overflow-y-auto flex-1'>
-        {clients.map((c) => (
-          <div
-            key={c._id}
-            onClick={() => openChat(c)}
-            className={`flex items-center gap-3 p-3 cursor-pointer border-b border-slate-800 ${
-              selectedUser?._id === c._id ?
-                "bg-slate-700"
-              : "hover:bg-slate-800"
-            }`}>
-            <div className='w-9 h-9 rounded-full bg-slate-600 flex items-center justify-center shrink-0'>
-              <FaUser className='text-slate-300 text-sm' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <p className='text-white text-sm font-medium truncate'>
-                {c.name}
-              </p>
-              {onlineUsers.includes(c._id) && (
-                <span className='text-green-400 text-xs'>● Online</span>
+        {clients.map((c) => {
+          const lastMsg = lastMsgByClient(c._id);
+          return (
+            <div
+              key={c._id}
+              onClick={() => openChat(c)}
+              className={`flex items-center gap-3 p-3 cursor-pointer border-b border-slate-800 ${
+                selectedUser?._id === c._id ?
+                  "bg-slate-700"
+                : "hover:bg-slate-800"
+              }`}>
+              <div className='w-9 h-9 rounded-full bg-slate-600 flex items-center justify-center shrink-0'>
+                <FaUser className='text-slate-300 text-sm' />
+              </div>
+              <div className='flex-1 min-w-0'>
+                <p className='text-white text-sm font-medium truncate'>
+                  {c.name}
+                </p>
+                <p className='text-gray-400 text-xs truncate'>
+                  {lastMsg?.message || "No messages yet"}
+                </p>
+                {onlineUsers.includes(c._id) && (
+                  <span className='text-green-400 text-xs'>● Online</span>
+                )}
+              </div>
+              {unread[c._id] > 0 && (
+                <span className='bg-red-500 text-white text-xs px-2 py-0.5 rounded-full'>
+                  {unread[c._id]}
+                </span>
               )}
             </div>
-            {unread[c._id] > 0 && (
-              <span className='bg-red-500 text-white text-xs px-2 py-0.5 rounded-full'>
-                {unread[c._id]}
-              </span>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -148,7 +197,7 @@ const Message = () => {
               onClick={() => setShowChat(false)}>
               <FaArrowLeft />
             </button>
-            <div className='w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center'>
+            <div className='w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center shrink-0'>
               <FaUser className='text-slate-300 text-xs' />
             </div>
             <div>
@@ -165,17 +214,34 @@ const Message = () => {
           <div className='flex-1 overflow-y-auto p-4 space-y-2'>
             {messages.map((m, i) => {
               const senderId = m.sender?._id || m.sender;
+              const isMine = senderId === user._id;
               return (
                 <div
                   key={i}
-                  className={`flex ${senderId === user._id ? "justify-end" : "justify-start"}`}>
+                  className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
                   <div
                     className={`max-w-[70%] px-3 py-2 rounded-2xl text-white text-sm break-words ${
-                      senderId === user._id ?
+                      isMine ?
                         "bg-blue-500 rounded-br-sm"
                       : "bg-slate-700 rounded-bl-sm"
                     }`}>
-                    {m.message}
+                    <p>{m.message}</p>
+                    <div className='flex items-center justify-end gap-1 mt-1'>
+                      <span className='text-[10px] text-gray-200 opacity-70'>
+                        {m.createdAt ?
+                          new Date(m.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : ""}
+                      </span>
+                      {isMine && (
+                        <span
+                          className={`text-[10px] ${m.seen ? "text-green-400" : "text-gray-400"}`}>
+                          {m.seen ? "✓✓" : "✓"}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -188,6 +254,7 @@ const Message = () => {
 
           <div className='p-3 border-t border-slate-700 flex gap-2'>
             <input
+              ref={inputRef}
               value={text}
               onChange={handleTyping}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
@@ -196,7 +263,12 @@ const Message = () => {
             />
             <button
               onClick={sendMessage}
-              className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm'>
+              disabled={!text.trim()}
+              className={`px-4 py-2 rounded-full text-sm text-white ${
+                text.trim() ?
+                  "bg-blue-500 hover:bg-blue-600"
+                : "bg-gray-600 cursor-not-allowed"
+              }`}>
               Send
             </button>
           </div>
@@ -211,12 +283,10 @@ const Message = () => {
   return (
     <DashboardLayout>
       <div className='flex md:h-[82vh] h-full bg-slate-900 border border-slate-700 rounded overflow-hidden'>
-        {/* Mobile: show list or chat, not both */}
-        <div className='flex  w-full md:hidden'>
+        <div className='flex w-full md:hidden'>
           {!showChat ? ClientList : ChatWindow}
         </div>
-        {/* Desktop: show both side by side */}
-        <div className='hidden md:flex md:w-full'>
+        <div className='hidden md:flex w-full'>
           {ClientList}
           {ChatWindow}
         </div>

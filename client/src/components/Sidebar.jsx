@@ -124,7 +124,7 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
   }, [menuBtn]);
   return (
     <div
-      className={`h-auto overflow-y-auto flex flex-col bg-slate-900 border-r border-slate-700 p-5 transition-all duration-300 
+      className={`h-screen overflow-y-auto flex flex-col bg-slate-900 border-r border-slate-700 p-5 transition-all duration-300 
   ${
     menuBtn ?
       "w-20 md:w-20 -translate-x-full md:translate-x-0 fixed top-0 left-0 z-10 md:static"

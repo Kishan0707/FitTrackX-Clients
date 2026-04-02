@@ -36,6 +36,9 @@ import UsersPage from "./components/UsersPage";
 import Session from "./pages/coach/Session";
 import Workout from "./pages/coach/Workout";
 import Message from "./pages/coach/Message";
+import ClientDetail from "./pages/coach/ClientDetail";
+import Steps from "./pages/steps/Steps";
+import Step from "./pages/coach/Step";
 function App() {
   return (
     <>
@@ -270,12 +273,36 @@ function App() {
                   </ProtectedRoutes>
                 }
               />
+              <Route
+                path='/steps'
+                element={
+                  <ProtectedRoutes>
+                    <Steps />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/clients/:userId'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <ClientDetail />
+                  </ProtectedRoutes>
+                }
+              />
 
               <Route
                 path='/coach/chat'
                 element={
                   <ProtectedRoutes allowedRoles={["coach"]}>
                     <Message />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/steps'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <Step />
                   </ProtectedRoutes>
                 }
               />

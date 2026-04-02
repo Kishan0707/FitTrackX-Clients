@@ -237,7 +237,12 @@ const Session = () => {
                       Date: {formatDate(session.date)}
                     </p>
                   </div>
-                  <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded'>
+                  <button
+                    onClick={async () => {
+                      await API.delete(`/sessions/${session._id}`);
+                      fetchSessions();
+                    }}
+                    className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded'>
                     Delete
                   </button>
                 </div>

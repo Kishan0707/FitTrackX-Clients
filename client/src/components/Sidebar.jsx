@@ -13,6 +13,7 @@ import {
   FaChartPie,
   FaUserTie,
   FaComments,
+  FaWalking,
 } from "react-icons/fa";
 import { GrSchedule } from "react-icons/gr";
 import { MdManageAccounts } from "react-icons/md";
@@ -60,7 +61,6 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
       { name: "Dashboard", path: "/coachDashboard", icon: <FaChartLine /> },
 
       { name: "Clients", path: "/coach/clients", icon: <MdManageAccounts /> },
-
       { name: "Sessions", path: "/coach/sessions", icon: <GrSchedule /> },
 
       { name: "Workouts", path: "/coach/workouts", icon: <FaDumbbell /> },
@@ -68,6 +68,7 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
       { name: "Diet Plans", path: "/coach/diet", icon: <FaAppleAlt /> },
 
       { name: "Progress", path: "/coach/progress", icon: <FaChartBar /> },
+      { name: "Steps Tracker", path: "/coach/steps", icon: <FaWalking /> },
 
       { name: "Chat", path: "/coach/chat", icon: <FaComments /> },
 

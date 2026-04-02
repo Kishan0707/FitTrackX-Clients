@@ -22,6 +22,14 @@ const Dashboard = () => {
   const [progress, setProgress] = useState([]);
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [coachRequest, setCoachRequest] = useState(null);
+
+  const fetchCoachRequest = async () => {
+    try {
+      const res = await API.get("/coach/my-request");
+      setCoachRequest(res.data.data);
+    } catch {}
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,9 +63,8 @@ const Dashboard = () => {
 
     if (user) {
       fetchData();
-
-      // Real-time updates every 10 seconds for users
       if (user.role === "user") {
+        fetchCoachRequest();
         const interval = setInterval(fetchData, 10000);
         return () => clearInterval(interval);
       }
@@ -275,6 +282,26 @@ const Dashboard = () => {
         </>
       ) : (
         <>
+          {/* Coach Request Banner */}
+          {coachRequest?.status && (
+            <div className={`mb-6 p-4 rounded-xl border flex items-center gap-3 ${
+              coachRequest.status === "pending" ? "bg-yellow-500/10 border-yellow-500/40" :
+              coachRequest.status === "accepted" ? "bg-green-500/10 border-green-500/40" :
+              "bg-red-500/10 border-red-500/40"
+            }`}>
+              <div>
+                <p className="text-white font-medium">
+                  {coachRequest.status === "pending" && `⏳ Coach request pending — ${coachRequest.coachId?.name}`}
+                  {coachRequest.status === "accepted" && `✅ Coach assigned — ${coachRequest.coachId?.name}`}
+                  {coachRequest.status === "rejected" && `❌ Request rejected by ${coachRequest.coachId?.name}`}
+                </p>
+                {coachRequest.target && (
+                  <p className="text-slate-400 text-sm mt-1">🎯 Target: {coachRequest.target}</p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">My Dashboard</h1>

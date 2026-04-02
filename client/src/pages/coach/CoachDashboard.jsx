@@ -96,6 +96,21 @@ const CoachDashboard = () => {
             <FaFire className='text-2xl text-slate-600' />
           </div>
         </div>
+        <div className='p-6 shadow-md bg-slate-900 rounded-xl'>
+          <div className='flex items-start justify-between'>
+            <div>
+              <h3 className='mb-2 text-sm text-slate-400'>🏋️ Avg steps</h3>
+              <p className='text-3xl font-bold text-white'>
+                {/* {Math.round((stats.totalUsers || 0) * 0.08)} */}
+                {client.averageSteps || 0}
+              </p>
+              <p className='mt-2 text-sm text-purple-400'>
+                {/* {Math.round((stats.totalUsers || 0) * 0.65)} Users */}
+              </p>
+            </div>
+            <FaFire className='text-2xl text-slate-600' />
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );

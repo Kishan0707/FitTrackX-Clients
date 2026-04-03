@@ -45,7 +45,7 @@ const Diet = ({ setDiet, diet }) => {
           <p className="text-gray-400">Track your daily nutrition intake</p>
         </div>
         <Link
-          to="/coach/diet"
+          to="/add-meal"
           className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105"
         >
           + Add Meal

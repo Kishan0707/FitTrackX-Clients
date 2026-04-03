@@ -38,7 +38,10 @@ const Clients = () => {
   };
 
   useEffect(() => {
-    if (!selectedClient) { setClientData(null); return; }
+    if (!selectedClient) {
+      setClientData(null);
+      return;
+    }
     setLoadingClient(true);
     API.get(`/coach/client-progress/${selectedClient._id}`)
       .then((res) => setClientData(res.data.data))
@@ -116,9 +119,13 @@ const Clients = () => {
               {clients.map((c) => (
                 <div
                   key={c._id}
-                  onClick={() => setSelectedClient(selectedClient?._id === c._id ? null : c)}
+                  onClick={() =>
+                    setSelectedClient(selectedClient?._id === c._id ? null : c)
+                  }
                   className={`bg-slate-800 border rounded-xl p-4 cursor-pointer transition-all ${
-                    selectedClient?._id === c._id ? 'border-blue-500' : 'border-slate-700 hover:border-slate-500'
+                    selectedClient?._id === c._id ?
+                      "border-blue-500"
+                    : "border-slate-700 hover:border-slate-500"
                   }`}>
                   <div className='flex items-center gap-3'>
                     <div className='w-10 h-10 rounded-full bg-slate-600 flex items-center justify-center'>
@@ -130,8 +137,7 @@ const Clients = () => {
                     </div>
                     <button
                       onClick={() => navigate(`/coach/clients/${c._id}`)}
-                      className='flex items-center gap-1 text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg'
-                    >
+                      className='flex items-center gap-1 text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg'>
                       <FaEye /> View
                     </button>
                   </div>
@@ -140,28 +146,42 @@ const Clients = () => {
                       <div className='grid grid-cols-2 gap-2 text-xs'>
                         <div className='bg-slate-700 rounded p-2'>
                           <p className='text-slate-400'>Goal</p>
-                          <p className='text-white capitalize'>{clientData.client?.goal || 'N/A'}</p>
+                          <p className='text-white capitalize'>
+                            {clientData.client?.goal || "N/A"}
+                          </p>
                         </div>
                         <div className='bg-slate-700 rounded p-2'>
                           <p className='text-slate-400'>Weight</p>
-                          <p className='text-white'>{clientData.client?.weight ? `${clientData.client.weight} kg` : 'N/A'}</p>
+                          <p className='text-white'>
+                            {clientData.client?.weight ?
+                              `${clientData.client.weight} kg`
+                            : "N/A"}
+                          </p>
                         </div>
                       </div>
                       <div className='bg-slate-700 rounded p-2 text-xs'>
-                        <p className='text-slate-400 mb-1'>Recent Workouts Calories</p>
-                        {clientData.caloriesBurned?.length > 0
-                          ? clientData.caloriesBurned.slice(-3).map((w, i) => (
-                              <p key={i} className='text-white'>{new Date(w.date).toLocaleDateString()} — {w.calories} kcal</p>
-                            ))
-                          : <p className='text-slate-500'>No data</p>}
+                        <p className='text-slate-400 mb-1'>
+                          Recent Workouts Calories
+                        </p>
+                        {clientData.caloriesBurned?.length > 0 ?
+                          clientData.caloriesBurned.slice(-3).map((w, i) => (
+                            <p key={i} className='text-white'>
+                              {new Date(w.date).toLocaleDateString()} —{" "}
+                              {w.calories} kcal
+                            </p>
+                          ))
+                        : <p className='text-slate-500'>No data</p>}
                       </div>
                       <div className='bg-slate-700 rounded p-2 text-xs'>
                         <p className='text-slate-400 mb-1'>Recent Weight</p>
-                        {clientData.weightHistory?.length > 0
-                          ? clientData.weightHistory.slice(-3).map((w, i) => (
-                              <p key={i} className='text-white'>{new Date(w.date).toLocaleDateString()} — {w.weight} kg</p>
-                            ))
-                          : <p className='text-slate-500'>No data</p>}
+                        {clientData.weightHistory?.length > 0 ?
+                          clientData.weightHistory.slice(-3).map((w, i) => (
+                            <p key={i} className='text-white'>
+                              {new Date(w.date).toLocaleDateString()} —{" "}
+                              {w.weight} kg
+                            </p>
+                          ))
+                        : <p className='text-slate-500'>No data</p>}
                       </div>
                     </div>
                   )}

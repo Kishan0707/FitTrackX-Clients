@@ -1,203 +1,322 @@
 import { useState, useEffect } from "react";
-import React from "react";
 import DashboardLayout from "../../layout/DashboardLayout";
-import WeightChart from "../../components/WeightChart";
-import MonthlyComparision from "../../components/MonthlyComparision";
-import StatCard from "../../components/StatCard";
-import ProgressPhotoUpload from "../../components/ProgressPhotoUpload";
-import SocialShare from "../../components/SocialShare";
 import API from "../../services/api";
+import { FaWeight, FaFire, FaAppleAlt, FaDumbbell } from "react-icons/fa";
 import {
-  FaWeight,
-  FaFire,
-  FaAppleAlt,
-  FaChartLine,
-  FaPlus,
-  FaCamera,
-  FaRuler,
-} from "react-icons/fa";
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Legend,
+} from "recharts";
+
+const fmt = (date) =>
+  new Date(date).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+  });
+
+const StatBox = ({ icon, label, value, sub, color }) => (
+  <div className='bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-center gap-4'>
+    <div className={`text-2xl ${color}`}>{icon}</div>
+    <div>
+      <p className='text-slate-400 text-xs'>{label}</p>
+      <p className='text-white font-bold text-lg'>{value}</p>
+      {sub && (
+        <p
+          className={`text-xs ${
+            sub.startsWith("+") ? "text-green-400"
+            : sub.startsWith("-") ? "text-red-400"
+            : "text-slate-400"
+          }`}>
+          {sub}
+        </p>
+      )}
+    </div>
+  </div>
+);
 
 const Progress = () => {
   const [progress, setProgress] = useState(null);
+  const [monthly, setMonthly] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
 
   useEffect(() => {
-    const fetchProgress = async () => {
-      try {
-        const res = await API.get("/progress/graphs");
-        setProgress(res.data.data);
-        setError("");
-      } catch (err) {
-        console.error("Error fetching progress:", err);
-        setError("Failed to load progress data");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProgress();
+    Promise.all([
+      API.get("/progress/graphs"),
+      API.get("/progress/monthly-comparison"),
+    ])
+      .then(([pRes, mRes]) => {
+        setProgress(pRes.data.data);
+        setMonthly(mRes.data.data);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  if (loading) {
+  if (loading)
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
+        <div className='flex items-center justify-center h-64'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-red-500' />
         </div>
       </DashboardLayout>
     );
-  }
+
+  const weightHistory = progress?.weightHistory || [];
+  const caloriesBurned = progress?.caloriesBurned || [];
+  const proteinIntake = progress?.proteinIntake || [];
+
+  const currentWeight = weightHistory.at(-1)?.weight;
+  const firstWeight = weightHistory[0]?.weight;
+  const weightChange =
+    currentWeight && firstWeight ?
+      (currentWeight - firstWeight).toFixed(1)
+    : null;
+
+  const totalCalories = caloriesBurned.reduce((s, i) => s + i.calories, 0);
+  const avgProtein =
+    proteinIntake.length ?
+      (
+        proteinIntake.reduce((s, i) => s + i.protein, 0) / proteinIntake.length
+      ).toFixed(1)
+    : null;
+
+  const cm = monthly?.currentMonth;
+  const pm = monthly?.previousMonth;
+  const calPct =
+    pm?.caloriesBurned > 0 ?
+      (
+        ((cm?.caloriesBurned - pm?.caloriesBurned) / pm?.caloriesBurned) *
+        100
+      ).toFixed(1)
+    : null;
+  const workoutDiff = cm && pm ? cm.workouts - pm.workouts : null;
+
+  const weightChartData = weightHistory.map((w) => ({
+    date: fmt(w.date || w.createdAt),
+    weight: w.weight,
+  }));
+  const calChartData = caloriesBurned.map((c) => ({
+    date: fmt(c.date),
+    calories: c.calories,
+  }));
+  const proteinChartData = proteinIntake.map((p) => ({
+    date: fmt(p.date),
+    protein: p.protein,
+  }));
+
+  const tooltipStyle = {
+    backgroundColor: "#1e293b",
+    border: "none",
+    color: "#fff",
+  };
+  const axisStyle = { fill: "#94a3b8", fontSize: 11 };
 
   return (
     <DashboardLayout>
-      {/* Header */}
-      <div className="mb-8 flex justify-between items-start">
+      <div className='space-y-6'>
+        {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Progress Tracking
-          </h1>
-          <p className="text-slate-400">
-            Monitor your fitness journey with detailed analytics and insights
-          </p>
+          <h1 className='text-2xl font-bold text-white'>Progress Overview</h1>
+          <p className='text-slate-400 text-sm'>This month vs last month</p>
         </div>
-        <SocialShare
-          title="My Fitness Progress on FitTrack"
-          text="Check out my amazing fitness journey and progress!"
-        />
-      </div>
 
-      {/* Error Message */}
-      {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg mb-6">
-          {error}
-        </div>
-      )}
-
-      {/* Summary Stats */}
-      {progress && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            title="Current Weight"
-            value={
-              progress.weightHistory?.length > 0
-                ? `${progress.weightHistory[progress.weightHistory.length - 1].weight} kg`
-                : "N/A"
+        {/* Overview Stats */}
+        <div className='grid grid-cols-2 lg:grid-cols-4 gap-4'>
+          <StatBox
+            icon={<FaDumbbell />}
+            label='Workouts This Month'
+            value={cm?.workouts ?? "—"}
+            sub={
+              workoutDiff !== null ?
+                `${workoutDiff >= 0 ? "+" : ""}${workoutDiff} vs last month`
+              : null
             }
-            icon={<FaWeight />}
+            color='text-blue-400'
           />
-          <StatCard
-            title="Total Calories Burned"
-            value={
-              progress.caloriesBurned
-                ?.reduce((sum, item) => sum + item.calories, 0)
-                .toLocaleString() || 0
-            }
+          <StatBox
             icon={<FaFire />}
-          />
-          <StatCard
-            title="Avg Protein Intake"
-            value={
-              progress.proteinIntake?.length > 0
-                ? `${(progress.proteinIntake.reduce((sum, item) => sum + item.protein, 0) / progress.proteinIntake.length).toFixed(1)}g`
-                : "N/A"
+            label='Calories Burned'
+            value={cm?.caloriesBurned?.toLocaleString() ?? "—"}
+            sub={
+              calPct !== null ?
+                `${calPct >= 0 ? "+" : ""}${calPct}% vs last month`
+              : null
             }
+            color='text-orange-400'
+          />
+          <StatBox
+            icon={<FaWeight />}
+            label='Weight Change'
+            value={weightChange !== null ? `${weightChange} kg` : "—"}
+            sub={
+              weightChange !== null ?
+                weightChange < 0 ?
+                  "Lost"
+                : "Gained"
+              : null
+            }
+            color='text-green-400'
+          />
+          <StatBox
             icon={<FaAppleAlt />}
-          />
-          <StatCard
-            title="Weight Change"
-            value={
-              progress.weightHistory?.length > 1
-                ? `${(progress.weightHistory[progress.weightHistory.length - 1].weight - progress.weightHistory[0].weight).toFixed(1)} kg`
-                : "N/A"
+            label='Avg Protein'
+            value={avgProtein ? `${avgProtein}g` : "—"}
+            sub={
+              cm?.avgProtein ? `This month: ${cm.avgProtein.toFixed(1)}g` : null
             }
-            icon={<FaChartLine />}
+            color='text-purple-400'
           />
         </div>
-      )}
 
-      {/* Charts Section */}
-      {progress && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Weight Progress Chart */}
-          <div className="bg-slate-900 p-6 rounded-xl">
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              <FaWeight className="mr-2 text-red-500" />
-              Weight History
-            </h3>
-            <WeightChart data={progress.weightHistory} color="#ef4444" />
+        {/* This Month vs Last Month */}
+        {cm && pm && (
+          <div className='bg-slate-800 border border-slate-700 rounded-xl p-5'>
+            <h2 className='text-white font-semibold mb-4'>
+              This Month vs Last Month
+            </h2>
+            <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-sm'>
+              {[
+                {
+                  label: "🏋️ Workouts",
+                  cur: cm.workouts,
+                  prev: pm.workouts,
+                  unit: "",
+                },
+                {
+                  label: "🔥 Calories",
+                  cur: cm.caloriesBurned,
+                  prev: pm.caloriesBurned,
+                  unit: "",
+                },
+                {
+                  label: "⚖️ Weight Change",
+                  cur: cm.weightChange?.toFixed(1),
+                  prev: null,
+                  unit: "kg",
+                },
+                {
+                  label: "🥩 Avg Protein",
+                  cur: cm.avgProtein?.toFixed(1),
+                  prev: pm.avgProtein?.toFixed(1),
+                  unit: "g",
+                },
+              ].map((item) => {
+                const diff =
+                  item.prev !== null && item.cur !== null ?
+                    Number(item.cur) - Number(item.prev)
+                  : null;
+                return (
+                  <div key={item.label} className='bg-slate-700 rounded-lg p-3'>
+                    <p className='text-slate-400 text-xs mb-2'>{item.label}</p>
+                    <p className='text-white font-bold'>
+                      {item.cur ?? "—"}
+                      {item.unit}
+                    </p>
+                    {item.prev !== null && (
+                      <p className='text-slate-400 text-xs'>
+                        Last: {item.prev}
+                        {item.unit}
+                      </p>
+                    )}
+                    {diff !== null && (
+                      <p
+                        className={`text-xs font-medium mt-1 ${
+                          diff > 0 ? "text-green-400"
+                          : diff < 0 ? "text-red-400"
+                          : "text-slate-400"
+                        }`}>
+                        {diff > 0 ? "+" : ""}
+                        {diff}
+                        {item.unit}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
+        )}
 
-          {/* Calories Burned Chart */}
-          <div className="bg-slate-900 p-6 rounded-xl">
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              <FaFire className="mr-2 text-red-500" />
-              Calories Burned
-            </h3>
-            <WeightChart
-              data={progress.caloriesBurned}
-              xDataKey="date"
-              yDataKey="calories"
-              color="#10b981"
-            />
-          </div>
-
-          {/* Protein Intake Chart */}
-          <div className="bg-slate-900 p-6 rounded-xl">
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              <FaAppleAlt className="mr-2 text-red-500" />
-              Protein Intake
-            </h3>
-            <WeightChart
-              data={progress.proteinIntake}
-              xDataKey="date"
-              yDataKey="protein"
-              color="#3b82f6"
-            />
-          </div>
-
-          {/* Monthly Comparison */}
-          <div className="bg-slate-900 p-6 rounded-xl">
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              <FaChartLine className="mr-2 text-red-500" />
-              Monthly Comparison
-            </h3>
-            <MonthlyComparision />
-          </div>
+        {/* Weight Chart */}
+        <div className='bg-slate-800 border border-slate-700 rounded-xl p-5'>
+          <h2 className='text-white font-semibold mb-4 flex items-center gap-2'>
+            <FaWeight className='text-red-400' /> Weight History
+          </h2>
+          {weightChartData.length === 0 ?
+            <p className='text-slate-400 text-sm'>No data yet.</p>
+          : <ResponsiveContainer width='100%' height={220}>
+              <LineChart data={weightChartData}>
+                <CartesianGrid strokeDasharray='3 3' stroke='#334155' />
+                <XAxis dataKey='date' tick={axisStyle} />
+                <YAxis tick={axisStyle} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Line
+                  type='monotone'
+                  dataKey='weight'
+                  stroke='#ef4444'
+                  strokeWidth={2}
+                  dot={false}
+                  name='Weight (kg)'
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          }
         </div>
-      )}
 
-      {/* Quick Actions */}
-      <div className="bg-slate-900 p-6 rounded-xl mb-6">
-        <h3 className="text-xl font-semibold mb-4 flex items-center">
-          <FaPlus className="mr-2 text-red-500" />
-          Quick Actions
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
-            <FaWeight className="mr-2" />
-            Add Weight Measurement
-          </button>
-          <button
-            onClick={() => setShowPhotoUpload(!showPhotoUpload)}
-            className="bg-slate-700 hover:bg-slate-600 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-          >
-            <FaCamera className="mr-2" />
-            Upload Progress Photo
-          </button>
-          <button className="bg-slate-700 hover:bg-slate-600 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
-            <FaRuler className="mr-2" />
-            Body Measurements
-          </button>
+        {/* Calories Chart */}
+        <div className='bg-slate-800 border border-slate-700 rounded-xl p-5'>
+          <h2 className='text-white font-semibold mb-4 flex items-center gap-2'>
+            <FaFire className='text-orange-400' /> Calories Burned
+          </h2>
+          {calChartData.length === 0 ?
+            <p className='text-slate-400 text-sm'>No data yet.</p>
+          : <ResponsiveContainer width='100%' height={220}>
+              <BarChart data={calChartData}>
+                <CartesianGrid strokeDasharray='3 3' stroke='#334155' />
+                <XAxis dataKey='date' tick={axisStyle} />
+                <YAxis tick={axisStyle} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar
+                  dataKey='calories'
+                  fill='#f97316'
+                  radius={[4, 4, 0, 0]}
+                  name='Calories'
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          }
+        </div>
+
+        {/* Protein Chart */}
+        <div className='bg-slate-800 border border-slate-700 rounded-xl p-5'>
+          <h2 className='text-white font-semibold mb-4 flex items-center gap-2'>
+            <FaAppleAlt className='text-purple-400' /> Protein Intake
+          </h2>
+          {proteinChartData.length === 0 ?
+            <p className='text-slate-400 text-sm'>No data yet.</p>
+          : <ResponsiveContainer width='100%' height={220}>
+              <BarChart data={proteinChartData}>
+                <CartesianGrid strokeDasharray='3 3' stroke='#334155' />
+                <XAxis dataKey='date' tick={axisStyle} />
+                <YAxis tick={axisStyle} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar
+                  dataKey='protein'
+                  fill='#a855f7'
+                  radius={[4, 4, 0, 0]}
+                  name='Protein (g)'
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          }
         </div>
       </div>
-
-      {/* Progress Photo Upload */}
-      {showPhotoUpload && (
-        <ProgressPhotoUpload
-          onUploadSuccess={() => setShowPhotoUpload(false)}
-        />
-      )}
     </DashboardLayout>
   );
 };

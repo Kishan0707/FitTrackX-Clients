@@ -13,12 +13,18 @@ import AddMeal from "./pages/diet/AddMeal";
 import Diet from "./pages/diet/Diet";
 import AiTrainer from "./pages/ai/AiTrainer";
 import Plans from "./pages/plans/Plans";
+import CoachPlans from "./pages/coach/Plans";
+import CoachMembers from "./pages/coach/Members";
+import CoachNotifications from "./pages/coach/Notifications";
 import Progress from "./pages/progress/Progress";
+import CoachProgress from "./pages/coach/Progress";
+import CoachReport from "./pages/coach/Report";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/Users";
 import AdminWorkouts from "./pages/admin/Workouts";
 import CoachDashboard from "./pages/coach/CoachDashboard";
 import Clients from "./pages/coach/Clients";
+import DietPlans from "./pages/coach/DietPlans";
 import AdminDiet from "./pages/admin/AdminDiet";
 import Reports from "./pages/admin/Reports";
 import CoachManagement from "./pages/admin/CoachManagement";
@@ -261,7 +267,7 @@ function App() {
                 path='/coach/diet'
                 element={
                   <ProtectedRoutes allowedRoles={["coach"]}>
-                    <AddMeal />
+                    <DietPlans />
                   </ProtectedRoutes>
                 }
               />
@@ -299,10 +305,50 @@ function App() {
                 }
               />
               <Route
+                path='/coach/progress'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <CoachProgress />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/reports'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <CoachReport />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
                 path='/coach/steps'
                 element={
                   <ProtectedRoutes allowedRoles={["coach"]}>
                     <Step />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/plans'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <CoachPlans />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/members'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <CoachMembers />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/notifications'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <CoachNotifications />
                   </ProtectedRoutes>
                 }
               />

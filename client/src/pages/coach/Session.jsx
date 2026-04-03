@@ -1,257 +1,288 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
+import {
+  FaCalendarAlt,
+  FaTrash,
+  FaClock,
+  FaCheck,
+  FaTimes,
+} from "react-icons/fa";
 
-const formatDate = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  const options = {
+const fmt = (d) =>
+  new Date(d).toLocaleDateString("en-IN", {
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
-  };
-  return date.toLocaleDateString("en-IN", options);
+  });
+
+const isExpired = (s) =>
+  new Date(s.date) < new Date() &&
+  ["accepted", "scheduled", "pending"].includes(s.status);
+
+const getStatus = (s) => (isExpired(s) ? "expired" : s.status);
+
+const STATUS_STYLE = {
+  pending: {
+    bg: "bg-yellow-500/15 border-yellow-500/30",
+    badge: "bg-yellow-500/20 text-yellow-400",
+    label: "Pending",
+  },
+  accepted: {
+    bg: "bg-green-500/10 border-green-500/30",
+    badge: "bg-green-500/20 text-green-400",
+    label: "Accepted",
+  },
+  scheduled: {
+    bg: "bg-green-500/10 border-green-500/30",
+    badge: "bg-green-500/20 text-green-400",
+    label: "Scheduled",
+  },
+  rejected: {
+    bg: "bg-red-500/10 border-red-500/30",
+    badge: "bg-red-500/20 text-red-400",
+    label: "Rejected",
+  },
+  cancelled: {
+    bg: "bg-red-500/10 border-red-500/30",
+    badge: "bg-red-500/20 text-red-400",
+    label: "Cancelled",
+  },
+  completed: {
+    bg: "bg-blue-500/10 border-blue-500/30",
+    badge: "bg-blue-500/20 text-blue-400",
+    label: "Completed",
+  },
+  expired: {
+    bg: "bg-slate-700/50 border-slate-600/30",
+    badge: "bg-slate-600/40 text-slate-400",
+    label: "Expired",
+  },
 };
 
+const getStyle = (status) =>
+  STATUS_STYLE[status] || {
+    bg: "bg-slate-800 border-slate-700",
+    badge: "bg-slate-600 text-slate-300",
+    label: status,
+  };
+
+const TABS = ["all", "pending", "accepted", "rejected", "expired"];
+
 const Session = () => {
-  const [sessions, setSessions] = React.useState([]);
-  const [clients, setClients] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState("");
-  const [success, setSuccess] = React.useState("");
-  const [formData, setFormData] = React.useState({
+  const [sessions, setSessions] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState("all");
+  const [form, setForm] = useState({
     title: "",
     clientId: "",
     date: "",
     time: "",
   });
-  //   POST   /api/sessions              # Create session
-  // GET    /api/sessions/my-sessions  # Get all coach sessions
-  // DELETE /api/sessions/:id          # Delete session
+  const [error, setError] = useState("");
+
+  const fetchAll = async () => {
+    const [sRes, cRes] = await Promise.all([
+      API.get("/sessions/my-sessions").catch(() => ({ data: { data: [] } })),
+      API.get("/coach/clients").catch(() => ({ data: { data: [] } })),
+    ]);
+    setSessions(Array.isArray(sRes.data.data) ? sRes.data.data : []);
+    setClients(Array.isArray(cRes.data.data) ? cRes.data.data : []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchAll();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validation
-    if (!formData.title.trim()) {
-      setError("Title is required");
-      return;
-    }
-    if (!formData.clientId.trim()) {
-      setError("Please select a client");
-      return;
-    }
-    if (!formData.date) {
-      setError("Date is required");
-      return;
-    }
-    if (!formData.time) {
-      setError("Time is required");
-      return;
-    }
-
-    try {
-      // Combine date + time into ISO format
-      const combinedDate = new Date(`${formData.date}T${formData.time}`);
-
-      console.log("Submitting session:", {
-        title: formData.title,
-        clientId: formData.clientId,
-        date: combinedDate.toISOString(),
-      });
-
-      const res = await API.post("/sessions", {
-        title: formData.title,
-        clientId: formData.clientId,
-        date: combinedDate.toLocaleString(),
-      });
-
-      setSuccess("Session created successfully");
-      setFormData({
-        title: "",
-        clientId: "",
-        date: "",
-        time: "",
-      });
-      setTimeout(() => fetchSessions(), 1000);
-    } catch (err) {
-      console.error("Create session error:", err.response?.data || err.message);
-      setError(
-        "Failed to create session: " +
-          (err.response?.data?.message || err.message),
-      );
-    }
+    if (!form.title || !form.clientId || !form.date || !form.time)
+      return setError("All fields are required");
+    setError("");
+    const date = new Date(`${form.date}T${form.time}`).toISOString();
+    await API.post("/sessions", {
+      title: form.title,
+      clientId: form.clientId,
+      date,
+    });
+    setForm({ title: "", clientId: "", date: "", time: "" });
+    fetchAll();
   };
-  const fetchSessions = async () => {
-    try {
-      const res = await API.get("/sessions/my-sessions");
-      console.log("sessions response:", res.data);
-      setSessions(Array.isArray(res.data.data) ? res.data.data : []);
-      setSuccess("Sessions fetched successfully");
-      setTimeout(() => setSuccess(""), 3000);
-      setError("");
-    } catch (err) {
-      console.error("Fetch sessions error:", err);
-      setError("Failed to fetch sessions: " + err.message);
-      setTimeout(() => setError(""), 3000);
-      setSuccess("");
-      setSessions([]);
-    } finally {
-      setLoading(false);
-    }
+
+  const deleteSession = async (id) => {
+    await API.delete(`/sessions/${id}`);
+    fetchAll();
   };
-  const fetchClients = async () => {
-    try {
-      const res = await API.get("/coach/clients");
-      console.log("clients response:", res.data);
-      setClients(Array.isArray(res.data.data) ? res.data.data : []);
-      setSuccess("Clients fetched successfully");
-      setTimeout(() => setSuccess(""), 3000);
-      setError("");
-    } catch (err) {
-      console.error("Fetch clients error:", err.response?.data || err.message);
-      setError(
-        "Failed to fetch clients: " +
-          (err.response?.data?.message || err.message),
-      );
-      setTimeout(() => setError(""), 3000);
-      setSuccess("");
-      setClients([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    fetchSessions();
-    fetchClients();
-  }, []);
+
+  const filtered = sessions.filter((s) =>
+    tab === "all" ? true : getStatus(s) === tab,
+  );
+
+  const tabCount = (t) =>
+    t === "all" ?
+      sessions.length
+    : sessions.filter((s) => getStatus(s) === t).length;
+
+  if (loading)
+    return (
+      <DashboardLayout>
+        <div className='flex items-center justify-center h-64'>
+          <div className='animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500' />
+        </div>
+      </DashboardLayout>
+    );
 
   return (
     <DashboardLayout>
-      <div className='bg-slate-900 p-5'>
-        <div className='p-5 bg-slate-800 border border-slate-700'>
-          <h1 className='text-2xl font-bold mb-4'>Sessions</h1>
-          {error && (
-            <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4'>
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4'>
-              {success}
-            </div>
-          )}
+      <div className='space-y-6'>
+        {/* Header */}
+        <h1 className='text-2xl font-bold text-white'>Sessions</h1>
+
+        {/* Create Form */}
+        <div className='bg-slate-800 border border-slate-700 rounded-xl p-5'>
+          <h2 className='text-white font-semibold mb-4'>
+            Schedule New Session
+          </h2>
+          {error && <p className='text-red-400 text-sm mb-3'>{error}</p>}
           <form
             onSubmit={handleSubmit}
-            className='grid  gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full'>
-            <div className='mb-4 w-full'>
-              <label
-                className='block  text-gray-300 text-sm font-bold mb-2'
-                htmlFor='title'>
-                Title
-              </label>
-              <input
-                className='bg-slate-700 px-4 py-2 rounded w-full  text-gray-300 placeholder:text-gray-500 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                id='title'
-                type='text'
-                placeholder='Enter session title'
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-              />
-            </div>
-            <div className='mb-4'>
-              <label
-                className='block  text-gray-300 text-sm font-bold mb-2'
-                htmlFor='clientId'>
-                Client Id
-              </label>
-              <select
-                value={formData.clientId}
-                id='clientId'
-                onChange={(e) =>
-                  setFormData({ ...formData, clientId: e.target.value })
-                }
-                className='bg-slate-700 px-4 py-2 rounded w-full text-gray-300 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500'>
-                <option value=''>Select Client</option>
-                {clients.map((client) => (
-                  <option key={client._id} value={client._id}>
-                    {client.name} ({client.email})
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className='mb-4'>
-              <label
-                className='block text-gray-300 text-sm font-bold mb-2'
-                htmlFor='date'>
-                Date
-              </label>
-              <input
-                className='bg-slate-700 px-4 py-2 rounded w-full  text-gray-300 placeholder:text-gray-500 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                id='date'
-                type='date'
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-              />
-            </div>
-            <div className='mb-4'>
-              <label
-                className='block text-gray-300 text-sm font-bold mb-2'
-                htmlFor='time'>
-                Time
-              </label>
-              <input
-                className='bg-slate-700 px-4 py-2 rounded w-full  text-gray-300 placeholder:text-gray-500 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                id='time'
-                type='time'
-                value={formData.time}
-                onChange={(e) =>
-                  setFormData({ ...formData, time: e.target.value })
-                }
-              />
-            </div>
+            className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3'>
+            <input
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              placeholder='Session title'
+              className='bg-slate-700 text-white rounded-lg px-3 py-2 text-sm outline-none border border-slate-600 focus:border-blue-500'
+            />
+            <select
+              value={form.clientId}
+              onChange={(e) => setForm({ ...form, clientId: e.target.value })}
+              className='bg-slate-700 text-white rounded-lg px-3 py-2 text-sm outline-none border border-slate-600 focus:border-blue-500'>
+              <option value=''>Select client</option>
+              {clients.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type='date'
+              value={form.date}
+              onChange={(e) => setForm({ ...form, date: e.target.value })}
+              className='bg-slate-700 text-white rounded-lg px-3 py-2 text-sm outline-none border border-slate-600 focus:border-blue-500'
+            />
+            <input
+              type='time'
+              value={form.time}
+              onChange={(e) => setForm({ ...form, time: e.target.value })}
+              className='bg-slate-700 text-white rounded-lg px-3 py-2 text-sm outline-none border border-slate-600 focus:border-blue-500'
+            />
             <button
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300'
-              type='submit'>
-              Create Session
+              type='submit'
+              className='bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium'>
+              + Schedule
             </button>
           </form>
-          <div className='grid md:grid-cols-1 lg:grid-cols-3 gap-5 mt-10  p-5 rounded'>
-            {Array.isArray(sessions) && sessions.length > 0 ?
-              sessions.map((session) => (
-                <div
-                  key={session._id}
-                  className='bg-slate-900/80 backdrop-blur-2xl border border-slate-700 p-5 rounded flex justify-between items-center shadow-md'>
-                  <div>
-                    <h3 className='text-lg font-bold'>{session.title}</h3>
-                    <p className='text-gray-400'>
-                      Client: {session.clientId?.name || session.clientId}
-                    </p>
-                    <p className='text-gray-400'>
-                      Date: {formatDate(session.date)}
-                    </p>
-                  </div>
-                  <button
-                    onClick={async () => {
-                      await API.delete(`/sessions/${session._id}`);
-                      fetchSessions();
-                    }}
-                    className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded'>
-                    Delete
-                  </button>
-                </div>
-              ))
-            : <div className='text-gray-400'>No sessions found</div>}
-          </div>
         </div>
+
+        {/* Tabs */}
+        <div className='flex gap-2 flex-wrap border-b border-slate-700 pb-0'>
+          {TABS.map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 capitalize transition-colors ${
+                tab === t ?
+                  "border-blue-500 text-blue-400"
+                : "border-transparent text-slate-400 hover:text-white"
+              }`}>
+              {t}
+              <span
+                className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
+                  tab === t ?
+                    "bg-blue-500/20 text-blue-400"
+                  : "bg-slate-700 text-slate-400"
+                }`}>
+                {tabCount(t)}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Sessions Grid */}
+        {filtered.length === 0 ?
+          <div className='flex flex-col items-center justify-center py-16 text-slate-500'>
+            <FaCalendarAlt className='text-4xl mb-3 opacity-30' />
+            <p className='text-sm'>
+              No {tab === "all" ? "" : tab} sessions found
+            </p>
+          </div>
+        : <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            {filtered.map((s) => {
+              const status = getStatus(s);
+              const style = getStyle(status);
+              const expired = status === "expired";
+              return (
+                <div
+                  key={s._id}
+                  className={`border rounded-xl p-4 space-y-3 transition-all ${style.bg} ${expired ? "opacity-60" : ""}`}>
+                  {/* Title + badge */}
+                  <div className='flex items-start justify-between gap-2'>
+                    <h3
+                      className={`font-semibold text-white ${expired ? "line-through decoration-slate-400" : ""}`}>
+                      {s.title}
+                    </h3>
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${style.badge}`}>
+                      {style.label}
+                    </span>
+                  </div>
+
+                  {/* Client */}
+                  <p
+                    className={`text-sm ${expired ? "text-slate-500 line-through decoration-slate-500" : "text-slate-300"}`}>
+                    👤 {s.clientId?.name || "—"}
+                  </p>
+
+                  {/* Date */}
+                  <div
+                    className={`flex items-center gap-2 text-sm ${expired ? "text-slate-500" : "text-slate-400"}`}>
+                    <FaClock className='text-xs shrink-0' />
+                    <span
+                      className={
+                        expired ? "line-through decoration-slate-500" : ""
+                      }>
+                      {fmt(s.date)}
+                    </span>
+                  </div>
+
+                  {/* Expired label */}
+                  {expired && (
+                    <p className='text-xs text-slate-500 italic'>
+                      This session has passed
+                    </p>
+                  )}
+
+                  {/* Delete */}
+                  <div className='flex justify-end pt-1'>
+                    <button
+                      onClick={() => deleteSession(s._id)}
+                      className='flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors'>
+                      <FaTrash className='text-[10px]' /> Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        }
       </div>
     </DashboardLayout>
   );
 };
+
 export default Session;

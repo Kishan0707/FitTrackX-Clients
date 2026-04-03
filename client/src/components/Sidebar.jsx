@@ -6,12 +6,14 @@ import {
   FaChartBar,
   FaRobot,
   FaCrown,
+  FaBell,
   FaCog,
   FaFileAlt,
   FaClipboardList,
   FaHistory,
   FaChartPie,
   FaUserTie,
+  FaUsers,
   FaComments,
   FaWalking,
 } from "react-icons/fa";
@@ -76,9 +78,11 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
 
       { name: "AI Trainer", path: "/ai", icon: <FaRobot /> },
 
-      { name: "Plans", path: "/plans", icon: <FaCrown /> },
+      { name: "Plans", path: "/coach/plans", icon: <FaCrown /> },
+      { name: "Members", path: "/coach/members", icon: <FaUsers /> },
+      { name: "Notifications", path: "/coach/notifications", icon: <FaBell /> },
 
-      { name: "Profile", path: "/coach/profile", icon: <FaUserTie /> },
+      { name: "Profile", path: "/settings", icon: <FaUserTie /> },
     ];
   } else {
     menu = [
@@ -124,13 +128,13 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
   }, [menuBtn]);
   return (
     <div
-      className={`h-screen overflow-y-auto flex flex-col bg-slate-900 border-r border-slate-700 p-5 transition-all duration-300 
+      className={`h-screen md:h-auto  overflow-y-auto flex flex-col bg-slate-900 border-r border-slate-700 p-5 transition-all duration-300 
   ${
     menuBtn ?
-      "w-20 md:w-20 -translate-x-full md:translate-x-0 fixed top-0 left-0 z-10 md:static"
+      "w-20 md:w-20 -translate-x-full md:translate-x-0 fixed top-0 left-0 z-10 md:static md:overflow-hidden"
     : "md:w-64 translate-x-0 absolute z-99 md:static overflow-hidden"
   }`}>
-      <div className='flex items-center justify-between mt-5 mb-10'>
+      <div className='flex items-center justify-between mb-6 '>
         <h1
           className={`text-xl font-bold text-red-500 transition-opacity duration-300 ${
             menuBtn ? " pointer-events-none" : "opacity-100"

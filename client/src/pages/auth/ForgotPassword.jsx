@@ -4,9 +4,14 @@ import API from "../../services/api";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setErrorMessage("");
+
     try {
       const res = await API.post("/email/password-reset", { email });
       setSuccessMessage(res.data.message);
@@ -14,7 +19,11 @@ function ForgotPassword() {
       setTimeout(() => setSuccessMessage(""), 5000);
       alert(res.data.message);
     } catch (err) {
-      alert(err.response?.data?.message || "Error");
+      setErrorMessage(err.response?.data?.message || "Error");
+      setSuccessMessage("");
+      setTimeout(() => setErrorMessage(""), 5000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,8 +50,11 @@ function ForgotPassword() {
           required
         />
 
-        <button className='w-full bg-blue-500 text-white p-2 rounded'>
-          Send Reset Link
+        <button
+          type='submit'
+          className='w-full bg-blue-500 text-white p-2 rounded'
+          disabled={loading}>
+          {loading ? "Sending..." : "Send Reset Link"}
         </button>
       </form>
     </div>

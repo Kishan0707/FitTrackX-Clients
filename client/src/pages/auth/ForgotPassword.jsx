@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../../services/api";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -7,18 +7,11 @@ function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
     try {
-      const res = await axios.post(`${BASE_URL}/api/email/password-reset`, {
-        email,
-      });
-
+      const res = await API.post("/email/password-reset", { email });
       setSuccessMessage(res.data.message);
-
       setEmail("");
       setTimeout(() => setSuccessMessage(""), 5000);
-
       alert(res.data.message);
     } catch (err) {
       alert(err.response?.data?.message || "Error");

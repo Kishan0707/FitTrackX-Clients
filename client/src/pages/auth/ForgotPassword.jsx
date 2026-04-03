@@ -11,7 +11,7 @@ function ForgotPassword() {
     try {
       const res = await axios.post(
         "http://localhost:5000/api/email/password-reset" ||
-          `${import.meta.env.VITE_API_URL}/api/email/password-reset`,
+          `${import.meta.env.VITE_API_BACKEND_URL}/api/email/password-reset`,
         { email },
       );
 

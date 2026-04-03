@@ -7,13 +7,13 @@ function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const BASE_URL =
+      import.meta.env.VITE_API_BACKEND_URL || "http://localhost:5000";
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/email/password-reset" ||
-          `${import.meta.env.VITE_API_BACKEND_URL}/api/email/password-reset`,
-        { email },
-      );
+      const res = await axios.post(`${BASE_URL}/api/email/password-reset`, {
+        email,
+      });
 
       setSuccessMessage(res.data.message);
 

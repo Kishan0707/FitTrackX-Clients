@@ -1,65 +1,54 @@
-import API from "../services/api";
 import { useState } from "react";
+import API from "../services/api";
+
+const getWorkoutColor = (type) => {
+  const colors = {
+    cardio: "from-red-500 to-red-600",
+    strength: "from-blue-500 to-blue-600",
+    flexibility: "from-green-500 to-green-600",
+    balance: "from-yellow-500 to-yellow-600",
+    gym: "from-purple-500 to-purple-600",
+    home: "from-orange-500 to-orange-600",
+    run: "from-pink-500 to-pink-600",
+    boxing: "from-indigo-500 to-indigo-600",
+  };
+
+  return colors[type] || "from-slate-500 to-slate-600";
+};
+
+const getWorkoutCode = (type) => {
+  const labels = {
+    cardio: "CRD",
+    strength: "STR",
+    flexibility: "FLX",
+    balance: "BAL",
+    gym: "GYM",
+    home: "HME",
+    run: "RUN",
+    boxing: "BOX",
+  };
+
+  return labels[type] || "WRK";
+};
 
 const WorkoutCard = ({ workout, setWorkouts }) => {
   const [deleting, setDeleting] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  const getWorkoutColor = (type) => {
-    const colors = {
-      cardio: "from-red-500 to-red-600",
-      strength: "from-blue-500 to-blue-600",
-      flexibility: "from-green-500 to-green-600",
-      balance: "from-yellow-500 to-yellow-600",
-      gym: "from-purple-500 to-purple-600",
-      home: "from-orange-500 to-orange-600",
-      run: "from-pink-500 to-pink-600",
-      boxing: "from-indigo-500 to-indigo-600",
-    };
-    return colors[type] || "from-slate-500 to-slate-600";
-  };
-
-  const getWorkoutIcon = (type) => {
-    const icons = {
-      cardio: "🏃",
-      strength: "💪",
-      flexibility: "🧘",
-      balance: "⚖️",
-      gym: "🏋️",
-      home: "🏠",
-      run: "🚶",
-      boxing: "👊",
-    };
-    return icons[type] || "💪";
-  };
+  const canDelete = typeof setWorkouts === "function";
 
   const deleteWorkout = async () => {
     try {
       setDeleting(true);
-      console.log("Deleting workout with ID:", workout._id);
-      const res = await API.delete(`/workouts/${workout._id}`);
-      console.log("Delete response:", res);
+      await API.delete(`/workouts/${workout._id}`);
 
-      // Update the parent state to remove this workout
-      setWorkouts((prevWorkouts) =>
-        prevWorkouts.filter((w) => w._id !== workout._id),
-      );
-      setSuccess("Workout deleted successfully");
-      setTimeout(() => setSuccess(""), 3000);
-      setError("");
+      if (canDelete) {
+        setWorkouts((prevWorkouts) =>
+          prevWorkouts.filter((item) => item._id !== workout._id),
+        );
+      }
     } catch (error) {
       console.error("Failed to delete workout:", error);
-      console.error("Error response:", error.response?.data);
-      setError(
-        `Failed to delete workout: ${error.response?.data?.message || error.message}`,
-      );
-      setTimeout(() => setError(""), 3000);
-      setSuccess("");
-      setDeleting(false);
     } finally {
-      setLoading(false);
+      setDeleting(false);
     }
   };
 
@@ -73,166 +62,150 @@ const WorkoutCard = ({ workout, setWorkouts }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700/50 rounded-2xl overflow-hidden hover:border-slate-600 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-900/50 transform hover:-translate-y-1">
-      {/* Header with Gradient */}
-
-      <div className={`bg-gradient-to-r ${getWorkoutColor(workout.type)} p-6`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-4xl">{getWorkoutIcon(workout.type)}</span>
-            <div>
-              <h2 className="text-2xl font-bold text-white capitalize">
+    <div className='transform overflow-hidden rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900 to-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-slate-600 hover:shadow-2xl hover:shadow-slate-900/50'>
+      <div
+        className={`bg-linear-to-r ${getWorkoutColor(workout.type)} p-4 sm:p-6`}>
+        <div className='flex items-center justify-between gap-3'>
+          <div className='flex min-w-0 items-center gap-3'>
+            <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-xs font-black tracking-[0.2em] text-white backdrop-blur'>
+              {getWorkoutCode(workout.type)}
+            </div>
+            <div className='min-w-0'>
+              <h2 className='truncate text-xl font-bold capitalize text-white sm:text-2xl'>
                 {workout.type}
               </h2>
-              <p className="text-white/80 text-sm">Workout</p>
+              <p className='text-sm text-white/80'>Workout</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-6 space-y-6">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {/* Duration */}
-          <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4">
-            <p className="text-blue-400 text-xs font-bold uppercase mb-1">
+      <div className='space-y-6 p-4 sm:p-6'>
+        <div className='grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3'>
+          <div className='rounded-lg border border-blue-500/30 bg-blue-900/30 p-4'>
+            <p className='mb-1 text-xs font-bold uppercase text-blue-400'>
               Duration
             </p>
-            <p className="text-white text-2xl font-bold">{workout.duration}</p>
-            <p className="text-blue-300 text-xs">minutes</p>
+            <p className='text-2xl font-bold text-white'>{workout.duration}</p>
+            <p className='text-xs text-blue-300'>minutes</p>
           </div>
 
-          {/* Calories */}
-          <div className="bg-orange-900/30 border border-orange-500/30 rounded-lg p-4">
-            <p className="text-orange-400 text-xs font-bold uppercase mb-1">
+          <div className='rounded-lg border border-orange-500/30 bg-orange-900/30 p-4'>
+            <p className='mb-1 text-xs font-bold uppercase text-orange-400'>
               Calories
             </p>
-            <p className="text-white text-2xl font-bold">
+            <p className='text-2xl font-bold text-white'>
               {workout.caloriesBurned}
             </p>
-            <p className="text-orange-300 text-xs">burned</p>
+            <p className='text-xs text-orange-300'>burned</p>
           </div>
 
-          {/* Date */}
-          <div className="bg-purple-900/30 border border-purple-500/30 rounded-lg p-4">
-            <p className="text-purple-400 text-xs font-bold uppercase mb-1">
+          <div className='rounded-lg border border-purple-500/30 bg-purple-900/30 p-4'>
+            <p className='mb-1 text-xs font-bold uppercase text-purple-400'>
               Date
             </p>
-            <p className="text-white text-sm font-bold">
+            <p className='text-sm font-bold text-white'>
               {formatDate(workout.createdAt)}
             </p>
           </div>
         </div>
 
-        {/* Exercises Section */}
-        <div className="border-t border-slate-700 pt-6">
-          <h3 className="text-white font-bold mb-4 flex items-center gap-2 text-lg">
-            <span>📋</span>
+        <div className='border-t border-slate-700 pt-6'>
+          <h3 className='mb-4 text-base font-bold text-white sm:text-lg'>
             Exercises ({workout.exercises?.length || 0})
           </h3>
 
-          {workout.exercises && workout.exercises.length > 0 ? (
-            <div className="space-y-3">
+          {workout.exercises && workout.exercises.length > 0 ?
+            <div className='space-y-3'>
               {workout.exercises.map((exercise, index) => (
                 <div
                   key={index}
-                  className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-4 hover:border-slate-600 transition-all duration-300"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  className='rounded-lg border border-slate-700/50 bg-slate-800/50 p-4 transition-all duration-300 hover:border-slate-600'>
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='mb-2 flex flex-wrap items-center gap-3'>
+                        <span className='rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1 text-xs font-bold text-white'>
                           #{index + 1}
                         </span>
-                        <p className="text-white font-bold text-lg">
+                        <p className='text-base font-bold text-white sm:text-lg'>
                           {exercise.name}
                         </p>
                       </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-                        <div className="bg-slate-900/50 rounded p-2">
-                          <p className="text-slate-400 text-xs">Sets</p>
-                          <p className="text-white font-bold">
+                      <div className='mt-3 grid grid-cols-2 gap-3 md:grid-cols-4'>
+                        <div className='rounded bg-slate-900/50 p-2'>
+                          <p className='text-xs text-slate-400'>Sets</p>
+                          <p className='font-bold text-white'>
                             {exercise.sets}
                           </p>
                         </div>
-                        <div className="bg-slate-900/50 rounded p-2">
-                          <p className="text-slate-400 text-xs">Reps</p>
-                          <p className="text-white font-bold">
+                        <div className='rounded bg-slate-900/50 p-2'>
+                          <p className='text-xs text-slate-400'>Reps</p>
+                          <p className='font-bold text-white'>
                             {exercise.reps}
                           </p>
                         </div>
-                        {exercise.weight && (
-                          <div className="bg-slate-900/50 rounded p-2">
-                            <p className="text-slate-400 text-xs">Weight</p>
-                            <p className="text-white font-bold">
+                        {exercise.weight ?
+                          <div className='rounded bg-slate-900/50 p-2'>
+                            <p className='text-xs text-slate-400'>Weight</p>
+                            <p className='font-bold text-white'>
                               {exercise.weight} kg
                             </p>
                           </div>
-                        )}
-                        {exercise.duration && (
-                          <div className="bg-slate-900/50 rounded p-2">
-                            <p className="text-slate-400 text-xs">Duration</p>
-                            <p className="text-white font-bold">
+                        : null}
+                        {exercise.duration ?
+                          <div className='rounded bg-slate-900/50 p-2'>
+                            <p className='text-xs text-slate-400'>Duration</p>
+                            <p className='font-bold text-white'>
                               {exercise.duration} min
                             </p>
                           </div>
-                        )}
+                        : null}
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
-              <p className="text-slate-400 text-sm">
+          : <div className='rounded-lg border border-slate-700 bg-slate-800/50 p-6 text-center'>
+              <p className='text-sm text-slate-400'>
                 No exercises recorded for this workout
               </p>
             </div>
-          )}
+          }
         </div>
       </div>
 
-      {/* Delete Button */}
-      <div className="border-t border-slate-700 p-6">
-        <button
-          onClick={deleteWorkout}
-          disabled={deleting}
-          className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
-        >
-          {deleting ? (
-            <>
-              <svg
-                className="animate-spin h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              Deleting...
-            </>
-          ) : (
-            <>
-              <span>🗑️</span>
-              Delete Workout
-            </>
-          )}
-        </button>
-      </div>
+      {canDelete ?
+        <div className='border-t border-slate-700 p-4 sm:p-6'>
+          <button
+            onClick={deleteWorkout}
+            disabled={deleting}
+            className='flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-3 font-bold text-white transition-all duration-300 hover:scale-105 hover:from-red-600 hover:to-red-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:scale-100'>
+            {deleting ?
+              <>
+                <svg
+                  className='h-5 w-5 animate-spin'
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'>
+                  <circle
+                    className='opacity-25'
+                    cx='12'
+                    cy='12'
+                    r='10'
+                    stroke='currentColor'
+                    strokeWidth='4'></circle>
+                  <path
+                    className='opacity-75'
+                    fill='currentColor'
+                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
+                </svg>
+                Deleting...
+              </>
+            : "Delete Workout"}
+          </button>
+        </div>
+      : null}
     </div>
   );
 };

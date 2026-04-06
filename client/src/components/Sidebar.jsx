@@ -16,36 +16,52 @@ import {
   FaUsers,
   FaComments,
   FaWalking,
+  FaChevronDown,
 } from "react-icons/fa";
 import { GrSchedule } from "react-icons/gr";
 import { MdManageAccounts } from "react-icons/md";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { RiMenu2Fill } from "react-icons/ri";
 
-const Sidebar = ({ menuBtn, setMenuBtn }) => {
-  const { user } = useContext(AuthContext);
-  let menu = [];
-  if (!user) return null;
-  if (user.role === "admin") {
-    menu = [
-      { name: "Dashboard", path: "/admin", icon: <FaChartLine /> },
+const adminMenuSections = [
+  {
+    title: "Overview",
+    items: [{ name: "Dashboard", path: "/admin", icon: <FaChartLine /> }],
+  },
+  {
+    title: "Management",
+    items: [
       {
         name: "User Management",
         path: "/admin/users",
         icon: <MdManageAccounts />,
       },
       {
-        name: "Workouts Management",
-        path: "/admin/workouts",
-        icon: <FaDumbbell />,
-      },
-      { name: "Diet Management", path: "/admin/diet", icon: <FaAppleAlt /> },
-      {
         name: "Coach Management",
         path: "/admin/coaches",
         icon: <FaUserTie />,
       },
+    ],
+  },
+  {
+    title: "Content",
+    items: [
+      {
+        name: "Workouts Management",
+        path: "/admin/workouts",
+        icon: <FaDumbbell />,
+      },
+      {
+        name: "Diet Management",
+        path: "/admin/diet",
+        icon: <FaAppleAlt />,
+      },
+    ],
+  },
+  {
+    title: "Insights",
+    items: [
       {
         name: "Reports",
         path: "/admin/reports",
@@ -56,37 +72,79 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
         path: "/admin/audit-logs",
         icon: <FaClipboardList />,
       },
-      { name: "Settings", path: "/settings", icon: <FaCog /> },
-    ];
-  } else if (user.role === "coach") {
-    menu = [
+    ],
+  },
+  {
+    title: "Account",
+    items: [{ name: "Settings", path: "/settings", icon: <FaCog /> }],
+  },
+];
+
+const coachMenuSections = [
+  {
+    title: "Overview",
+    items: [
       { name: "Dashboard", path: "/coachDashboard", icon: <FaChartLine /> },
-
+    ],
+  },
+  {
+    title: "Clients",
+    items: [
       { name: "Clients", path: "/coach/clients", icon: <MdManageAccounts /> },
-      { name: "Sessions", path: "/coach/sessions", icon: <GrSchedule /> },
-
-      { name: "Workouts", path: "/coach/workouts", icon: <FaDumbbell /> },
-
-      { name: "Diet Plans", path: "/coach/diet", icon: <FaAppleAlt /> },
-
-      { name: "Progress", path: "/coach/progress", icon: <FaChartBar /> },
-      { name: "Steps Tracker", path: "/coach/steps", icon: <FaWalking /> },
-
-      { name: "Chat", path: "/coach/chat", icon: <FaComments /> },
-
-      { name: "Reports", path: "/coach/reports", icon: <FaFileAlt /> },
-
-      { name: "AI Trainer", path: "/ai", icon: <FaRobot /> },
-
-      { name: "Plans", path: "/coach/plans", icon: <FaCrown /> },
       { name: "Members", path: "/coach/members", icon: <FaUsers /> },
-      { name: "Notifications", path: "/coach/notifications", icon: <FaBell /> },
+    ],
+  },
+  {
+    title: "Training",
+    items: [
+      { name: "Workouts", path: "/coach/workouts", icon: <FaDumbbell /> },
+      { name: "Diet Plans", path: "/coach/diet", icon: <FaAppleAlt /> },
+      { name: "Sessions", path: "/coach/sessions", icon: <GrSchedule /> },
+    ],
+  },
+  {
+    title: "Tracking",
+    items: [
+      { name: "Progress", path: "/coach/progress", icon: <FaChartBar /> },
+      { name: "Steps", path: "/coach/steps", icon: <FaWalking /> },
+    ],
+  },
+  {
+    title: "Communication",
+    items: [
+      { name: "Chat", path: "/coach/chat", icon: <FaComments /> },
+      {
+        name: "Notifications",
+        path: "/coach/notifications",
+        icon: <FaBell />,
+      },
+    ],
+  },
+  {
+    title: "Tools",
+    items: [
+      { name: "AI Trainer", path: "/coach/ai", icon: <FaRobot /> },
+      { name: "Reports", path: "/coach/reports", icon: <FaFileAlt /> },
+    ],
+  },
+  {
+    title: "Business",
+    items: [{ name: "Plans", path: "/coach/plans", icon: <FaCrown /> }],
+  },
+  {
+    title: "Account",
+    items: [{ name: "Profile", path: "/settings", icon: <FaUserTie /> }],
+  },
+];
 
-      { name: "Profile", path: "/settings", icon: <FaUserTie /> },
-    ];
-  } else {
-    menu = [
-      { name: "Dashboard", path: "/dashboard", icon: <FaChartLine /> },
+const userMenuSections = [
+  {
+    title: "Overview",
+    items: [{ name: "Dashboard", path: "/dashboard", icon: <FaChartLine /> }],
+  },
+  {
+    title: "Workouts",
+    items: [
       { name: "Add Workouts", path: "/add-workout", icon: <FaDumbbell /> },
       {
         name: "Workout Analytics",
@@ -98,79 +156,249 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
         path: "/workout-history",
         icon: <FaHistory />,
       },
-      { name: "Add-Diet", path: "/add-meal", icon: <FaAppleAlt /> },
+    ],
+  },
+  {
+    title: "Nutrition",
+    items: [{ name: "Add-Diet", path: "/add-meal", icon: <FaAppleAlt /> }],
+  },
+  {
+    title: "Tracking",
+    items: [
       { name: "Progress", path: "/progress", icon: <FaChartBar /> },
-      { name: "AI Trainer", path: "/ai", icon: <FaRobot /> },
-      { name: "Plans", path: "/plans", icon: <FaCrown /> },
-      { name: "Settings", path: "/settings", icon: <FaCog /> },
-    ];
-  }
-  // const menu = [
-  //   { name: "Dashboard", path: "/dashboard", icon: <FaChartLine /> },
-  //   { name: "Workouts", path: "/workouts", icon: <FaDumbbell /> },
-  //   { name: "Add Workouts", path: "/add-workout", icon: <FaDumbbell /> },
-  //   { name: "Diet", path: "/diet", icon: <FaAppleAlt /> },
-  //   { name: "Add-Diet", path: "/add-meal", icon: <FaAppleAlt /> },
-  //   { name: "Progress", path: "/progress", icon: <FaChartBar /> },
-  //   { name: "AI Trainer", path: "/ai", icon: <FaRobot /> },
-  //   { name: "Plans", path: "/plans", icon: <FaCrown /> },
-  // ];
-  useEffect(() => {
-    if (!menuBtn) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
+      { name: "Steps", path: "/steps", icon: <FaWalking /> },
+    ],
+  },
+  {
+    title: "Tools",
+    items: [{ name: "AI Trainer", path: "/ai", icon: <FaRobot /> }],
+  },
+  {
+    title: "Membership",
+    items: [{ name: "Plans", path: "/plans", icon: <FaCrown /> }],
+  },
+  {
+    title: "Account",
+    items: [{ name: "Settings", path: "/settings", icon: <FaCog /> }],
+  },
+];
+
+const getInitialOpenSections = (sections) =>
+  sections.reduce((acc, section) => {
+    if (section.title) {
+      acc[section.title] = true;
     }
 
+    return acc;
+  }, {});
+
+const getWorkspaceLabel = (role) => {
+  if (role === "admin") return "Admin Console";
+  if (role === "coach") return "Coach Workspace";
+  return "Member Workspace";
+};
+
+const Sidebar = ({ menuBtn, setMenuBtn }) => {
+  const { user } = useContext(AuthContext);
+  const userRole = user?.role;
+  const isSidebarOpen = !menuBtn;
+  const [openSections, setOpenSections] = useState({});
+  const workspaceLabel = getWorkspaceLabel(userRole);
+  let menuSections = [];
+  if (userRole === "admin") {
+    menuSections = adminMenuSections;
+  } else if (userRole === "coach") {
+    menuSections = coachMenuSections;
+  } else {
+    menuSections = userMenuSections;
+  }
+  useEffect(() => {
+    const syncBodyOverflow = () => {
+      const shouldLockBody = isSidebarOpen && window.innerWidth < 768;
+      document.body.style.overflow = shouldLockBody ? "hidden" : "auto";
+    };
+
+    syncBodyOverflow();
+    window.addEventListener("resize", syncBodyOverflow);
+
     return () => {
+      window.removeEventListener("resize", syncBodyOverflow);
       document.body.style.overflow = "auto";
     };
-  }, [menuBtn]);
+  }, [isSidebarOpen]);
+
+  useEffect(() => {
+    setOpenSections((prev) => {
+      const defaultState = getInitialOpenSections(menuSections);
+      const nextState = {};
+
+      Object.keys(defaultState).forEach((title) => {
+        nextState[title] = prev[title] ?? true;
+      });
+
+      return nextState;
+    });
+  }, [userRole]);
+
+  if (!user) return null;
+
   return (
     <div
-      className={`h-screen md:h-auto  overflow-y-auto flex flex-col bg-slate-900 border-r border-slate-700 p-5 transition-all duration-300 
+      className={`md:h-auto h-screen flex flex-col border-r border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 transition-all duration-300 overscroll-contain
   ${
     menuBtn ?
-      "w-20 md:w-20 -translate-x-full md:translate-x-0 fixed top-0 left-0 z-10 md:static md:overflow-hidden"
-    : "md:w-64 translate-x-0 absolute z-99 md:static overflow-hidden"
+      "w-20 -translate-x-full fixed inset-y-0 left-0 z-40 overflow-hidden md:w-20 md:translate-x-0 md:static md:overflow-hidden"
+    : "w-72 translate-x-0 fixed inset-y-0 left-0 z-50 overflow-y-auto md:w-64 md:static md:overflow-y-auto"
   }`}>
-      <div className='flex items-center justify-between mb-6 '>
-        <h1
-          className={`text-xl font-bold text-red-500 transition-opacity duration-300 ${
-            menuBtn ? " pointer-events-none" : "opacity-100"
-          }`}>
-          {menuBtn ? "FitX" : "FitTrackX"}
-        </h1>
+      <div
+        className={`mb-6 rounded-3xl border border-slate-800/80 bg-slate-950/70 shadow-[0_20px_45px_rgba(2,6,23,0.45)] backdrop-blur ${
+          menuBtn ? "p-2" : "p-4"
+        }`}>
+        <div className='flex items-start justify-between gap-3'>
+          <div
+            className={`flex min-w-0 flex-1 ${
+              menuBtn ? "items-center justify-center" : "items-start gap-3"
+            }`}>
+            <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 via-rose-500 to-orange-400 text-sm font-black tracking-[0.18em] text-white shadow-lg shadow-red-950/50'>
+              FX
+            </div>
+            {!menuBtn ?
+              <div className='min-w-0'>
+                <p className='text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400'>
+                  Workspace
+                </p>
+                <h1 className='truncate text-lg font-semibold text-white'>
+                  FitTrackX
+                </h1>
+                {/*  */}
+              </div>
+            : null}
+          </div>
+        </div>
+        {/*  */}
+        {!menuBtn ?
+          <div className='mt-3 w-full flex items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 px-14 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-red-200'>
+            {workspaceLabel}
+          </div>
+        : null}
         <button
-          className='md:hidden flex p-2 rounded hover:bg-slate-800 transition block text-white'
+          className='mt-3 md:hidden flex w-full items-center justify-center rounded-2xl border border-slate-800 bg-slate-900/60 p-2 text-white transition hover:bg-slate-800 '
           onClick={() => setMenuBtn((prev) => !prev)}
           aria-label='Toggle sidebar'>
           <RiMenu2Fill size={20} />
         </button>
       </div>
 
-      <nav className='flex flex-col gap-2 md:text-sm text-xs'>
-        {menu.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            end
-            title={item.name}
-            className={({ isActive }) =>
-              `group flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ${
-                isActive ?
-                  "bg-red-500 lg shadow-red-500/30 shadow-lg  text-white"
-                : "text-slate-200 hover:bg-slate-800"
-              }`
-            }>
-            <span className='text-lg'>{item.icon}</span>
-            <span
-              className={`truncate transition-opacity duration-300 ${
-                menuBtn ? "opacity-0 w-0" : "opacity-100 w-full"
-              }`}>
-              {item.name}
-            </span>
-          </NavLink>
+      <nav className='flex flex-col  gap-3 md:text-sm text-xs'>
+        {menuSections.map((section, sectionIndex) => (
+          <div
+            key={section.title || `section-${sectionIndex}`}
+            className={`flex flex-col gap-2 ${
+              !menuBtn && section.title ?
+                "rounded-2xl border border-slate-800/80 bg-slate-950/60 p-2 shadow-[0_12px_30px_rgba(2,6,23,0.28)]"
+              : ""
+            }`}>
+            {(() => {
+              const isSectionOpen =
+                section.title ? (openSections[section.title] ?? true) : true;
+
+              return (
+                <>
+                  {menuBtn && sectionIndex > 0 ?
+                    <div className='mx-2 border-t border-slate-800/80' />
+                  : null}
+
+                  {!menuBtn && section.title ?
+                    <button
+                      type='button'
+                      aria-expanded={isSectionOpen}
+                      onClick={() =>
+                        setOpenSections((prev) => ({
+                          ...prev,
+                          [section.title]: !isSectionOpen,
+                        }))
+                      }
+                      className='flex items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-900/70 px-3 py-2 text-left transition-colors hover:border-slate-700 hover:bg-slate-800/80'>
+                      <div className='flex  min-w-0 flex-1 items-center justify-center gap-2'>
+                        <span className='truncate text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400'>
+                          {section.title}
+                        </span>
+                        <span className='rounded-full border border-slate-700 bg-slate-950 px-2 py-0.5 text-[9px] font-semibold text-slate-500'>
+                          {section.items.length}
+                        </span>
+                      </div>
+                      <span className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-950 text-slate-400'>
+                        <FaChevronDown
+                          className={`text-[10px] transition-transform duration-200 ${
+                            isSectionOpen ? "rotate-0" : "-rotate-90"
+                          }`}
+                        />
+                      </span>
+                    </button>
+                  : null}
+
+                  <div
+                    className={`grid transition-[grid-template-rows,opacity] duration-300 ${
+                      menuBtn || isSectionOpen ?
+                        "grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-70"
+                    }`}>
+                    <div className='overflow-hidden'>
+                      <div
+                        className={`flex flex-col ${
+                          menuBtn ? "gap-2" : "gap-1 pt-1"
+                        }`}>
+                        {section.items.map((item) => (
+                          <NavLink
+                            key={item.path}
+                            to={item.path}
+                            end
+                            title={item.name}
+                            onClick={() => {
+                              if (window.innerWidth < 768) {
+                                setMenuBtn(true);
+                              }
+                            }}
+                            className={({ isActive }) =>
+                              `group flex items-center rounded-2xl border p-3 py-1 transition-all duration-200 ${
+                                menuBtn ? "justify-center gap-0 p-3" : "gap-3"
+                              } ${
+                                isActive ?
+                                  "border-red-500/20 bg-gradient-to-r from-red-500/20 via-red-500/10 to-transparent text-white shadow-lg shadow-red-950/30"
+                                : "border-transparent text-slate-300 hover:border-slate-800 hover:bg-slate-800/70 hover:text-white"
+                              }`
+                            }>
+                            {({ isActive }) => (
+                              <>
+                                <span
+                                  className={`flex h-10 w-10 leading-10 shrink-0 duration-200 items-center justify-center rounded-xl border text-lg transition-colors ${
+                                    isActive ?
+                                      "border-red-400/20 bg-red-500/15 text-white"
+                                    : "border-slate-800 bg-slate-900/90 text-slate-400 group-hover:border-slate-700 group-hover:text-slate-200"
+                                  }`}>
+                                  {item.icon}
+                                </span>
+                                {!menuBtn ?
+                                  <span className='flex min-w-0 flex-1 items-center justify-between gap-3 truncate transition-opacity duration-300 opacity-100'>
+                                    <span className='truncate text-sm font-medium'>
+                                      {item.name}
+                                    </span>
+                                    {isActive ?
+                                      <span className='h-2 w-2 rounded-full bg-red-300 shadow-[0_0_0_4px_rgba(248,113,113,0.12)]' />
+                                    : null}
+                                  </span>
+                                : null}
+                              </>
+                            )}
+                          </NavLink>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
         ))}
       </nav>
     </div>

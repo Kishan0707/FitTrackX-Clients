@@ -56,7 +56,12 @@ const Navbar = ({ setMenuBtn, menuBtn }) => {
       window.removeEventListener("notifications-updated", handleRefresh);
     };
   }, [location.pathname, user?.role]);
-
+  const hour = new Date().getHours();
+  console.log(hour);
+  const greeting =
+    hour < 12 ? "Good Morning ☀️"
+    : hour < 18 ? "Good Afternoon 🌤️"
+    : "Good Evening 🌙";
   return (
     <div className='bg-slate-900 flex justify-between items-center md:p-4 px-4 py-2 border-b border-slate-700'>
       <div className='flex items-center justify-center gap-3'>
@@ -67,7 +72,7 @@ const Navbar = ({ setMenuBtn, menuBtn }) => {
           <RiMenu2Fill size={20} />
         </button>
         <h2 className='text-sm sm:text-base text-white'>
-          Welcome, {user?.name}
+          {greeting} {user?.name}
         </h2>
       </div>
       <div className='flex items-center justify-center gap-3'>

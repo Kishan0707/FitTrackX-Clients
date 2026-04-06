@@ -72,42 +72,52 @@ const MealCard = ({ meal }) => {
 
   return (
     <div
-      className={`bg-gradient-to-br ${color.bg} backdrop-blur-lg border ${color.border} rounded-xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:border-opacity-100`}
-    >
+      className={`bg-gradient-to-br ${color.bg} backdrop-blur-lg border ${color.border} rounded-xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:border-opacity-100`}>
       {/* Header */}
-      <div className="p-5 border-b border-slate-700/50">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="text-xl font-bold text-white">{meal.mealName}</h2>
+      <div className='p-5 border-b border-slate-700/50'>
+        <div className='flex justify-between items-center mb-3'>
+          <h2 className='text-xl font-bold text-white'>{meal.mealName}</h2>
           <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold ${color.badge} border border-opacity-50`}
-          >
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${color.badge} border border-opacity-50`}>
             {meal.foods.length} item{meal.foods.length > 1 ? "s" : ""}
           </span>
         </div>
 
         {/* Meal Macro Summary */}
-        <div className="grid grid-cols-4 gap-2">
-          <div className="bg-slate-800/50 p-2 rounded-lg border border-slate-700/50">
-            <div className="text-xs text-gray-400 font-semibold">Calories</div>
-            <div className={`text-lg font-bold ${getMacroColor("calories")}`}>
+        <div className='grid grid-cols-4 gap-2'>
+          <div className='bg-slate-800/50 p-2 rounded-lg border border-slate-700/50'>
+            <div className='md:text-xs text-sm text-gray-400 font-semibold truncate'>
+              Calories
+            </div>
+            <div
+              className={`md:text-lg text-sm font-bold truncate ${getMacroColor("calories")}`}>
               {Math.round(mealTotals.calories)}
             </div>
           </div>
-          <div className="bg-slate-800/50 p-2 rounded-lg border border-slate-700/50">
-            <div className="text-xs text-gray-400 font-semibold">Protein</div>
-            <div className={`text-lg font-bold ${getMacroColor("protein")}`}>
+          <div className='bg-slate-800/50 p-2 rounded-lg border border-slate-700/50'>
+            <div className='md:text-xs text-sm text-gray-400 font-semibold truncate'>
+              Protein
+            </div>
+            <div
+              className={`md:text-lg text-sm font-bold truncate ${getMacroColor("protein")}`}>
               {Math.round(mealTotals.protein)}g
             </div>
           </div>
-          <div className="bg-slate-800/50 p-2 rounded-lg border border-slate-700/50">
-            <div className="text-xs text-gray-400 font-semibold">Carbs</div>
-            <div className={`text-lg font-bold ${getMacroColor("carbs")}`}>
+          <div className='bg-slate-800/50 p-2 rounded-lg border border-slate-700/50'>
+            <div className='md:text-xs text-sm text-gray-400 font-semibold truncate'>
+              Carbs
+            </div>
+            <div
+              className={`md:text-lg text-sm font-bold truncate ${getMacroColor("carbs")}`}>
               {Math.round(mealTotals.carbs)}g
             </div>
           </div>
-          <div className="bg-slate-800/50 p-2 rounded-lg border border-slate-700/50">
-            <div className="text-xs text-gray-400 font-semibold">Fat</div>
-            <div className={`text-lg font-bold ${getMacroColor("fat")}`}>
+          <div className='bg-slate-800/50 p-2 rounded-lg border border-slate-700/50'>
+            <div className='md:text-xs text-sm text-gray-400 font-semibold truncate'>
+              Fat
+            </div>
+            <div
+              className={`md:text-lg text-sm font-bold truncate ${getMacroColor("fat")}`}>
               {Math.round(mealTotals.fat)}g
             </div>
           </div>
@@ -115,41 +125,42 @@ const MealCard = ({ meal }) => {
       </div>
 
       {/* Foods List */}
-      <div className="p-5 space-y-3">
-        {meal.foods.length > 0 ? (
+      <div className='p-5 space-y-3'>
+        {meal.foods.length > 0 ?
           meal.foods.map((item, index) => (
             <div
               key={index}
-              className="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 hover:border-slate-600/50 transition-colors"
-            >
-              <div className="flex justify-between items-start mb-2">
+              className='bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 hover:border-slate-600/50 transition-colors'>
+              <div className='flex justify-between items-start mb-2'>
                 <div>
-                  <h3 className="font-semibold text-white text-sm">
+                  <h3 className='font-semibold text-white text-sm truncate'>
                     {item.foodName}
                   </h3>
-                  <p className="text-xs text-gray-400">Qty: {item.quantity}g</p>
+                  <p className='text-xs text-gray-400 truncate'>
+                    Qty: {item.quantity}g
+                  </p>
                 </div>
-                <span className="text-orange-300 font-bold text-sm">
+                <span className='text-orange-300 font-bold text-sm truncate'>
                   {item.calories} cal
                 </span>
               </div>
 
               {/* Macro Breakdown */}
-              <div className="grid grid-cols-3 gap-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Protein:</span>
+              <div className='grid grid-cols-3 gap-2 text-xs'>
+                <div className='flex justify-between'>
+                  <span className='text-gray-400'>Protein:</span>
                   <span className={`font-semibold ${getMacroColor("protein")}`}>
                     {item.protein}g
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Carbs:</span>
+                <div className='flex justify-between'>
+                  <span className='text-gray-400'>Carbs:</span>
                   <span className={`font-semibold ${getMacroColor("carbs")}`}>
                     {item.carbs}g
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Fat:</span>
+                <div className='flex justify-between'>
+                  <span className='text-gray-400'>Fat:</span>
                   <span className={`font-semibold ${getMacroColor("fat")}`}>
                     {item.fat}g
                   </span>
@@ -158,19 +169,19 @@ const MealCard = ({ meal }) => {
 
               {/* Additional Info */}
               {(item.sugar > 0 || item.sodium > 0) && (
-                <div className="grid grid-cols-2 gap-2 text-xs mt-2 pt-2 border-t border-slate-700/50">
+                <div className='grid grid-cols-2 gap-2 text-xs mt-2 pt-2 border-t border-slate-700/50'>
                   {item.sugar > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Sugar:</span>
-                      <span className="text-gray-300 font-semibold">
+                    <div className='flex justify-between'>
+                      <span className='text-gray-500'>Sugar:</span>
+                      <span className='text-gray-300 font-semibold'>
                         {item.sugar}g
                       </span>
                     </div>
                   )}
                   {item.sodium > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Sodium:</span>
-                      <span className="text-gray-300 font-semibold">
+                    <div className='flex justify-between'>
+                      <span className='text-gray-500'>Sodium:</span>
+                      <span className='text-gray-300 font-semibold'>
                         {item.sodium}mg
                       </span>
                     </div>
@@ -179,11 +190,10 @@ const MealCard = ({ meal }) => {
               )}
             </div>
           ))
-        ) : (
-          <p className="text-gray-400 text-sm text-center py-4">
+        : <p className='text-gray-400 text-sm text-center py-4'>
             No foods added
           </p>
-        )}
+        }
       </div>
     </div>
   );

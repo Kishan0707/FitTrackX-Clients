@@ -1,6 +1,6 @@
 import { Route } from "react-router-dom";
 import { Routes } from "react-router-dom";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Navigate } from "react-router-dom";
 import "./App.css";
 import Login from "./pages/auth/Login";
 import AppErrorBoundary from "./components/AppErrorBoundary";
@@ -275,7 +275,7 @@ function App() {
                 path='/coach/messages'
                 element={
                   <ProtectedRoutes allowedRoles={["coach"]}>
-                    <Message />
+                    <Navigate to='/coach/chat' replace />
                   </ProtectedRoutes>
                 }
               />
@@ -301,6 +301,14 @@ function App() {
                 element={
                   <ProtectedRoutes allowedRoles={["coach"]}>
                     <Message />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/coach/ai'
+                element={
+                  <ProtectedRoutes allowedRoles={["coach"]}>
+                    <AiTrainer />
                   </ProtectedRoutes>
                 }
               />

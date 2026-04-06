@@ -209,12 +209,6 @@ const CoachReport = () => {
               value={data?.steps.metGoal || 0}
               color='text-orange-400'
             />
-            <StatBox
-              icon={<FaWalking />}
-              label='Steps Met Goal'
-              value={data?.steps.metGoal || 0}
-              color='text-orange-400'
-            />
           </div>
 
           {/* Clients Section */}
@@ -308,7 +302,7 @@ const CoachReport = () => {
               <h2 className='text-white font-semibold mb-2 flex items-center gap-2'>
                 <FaDumbbell className='text-green-400' /> Workouts by Type
                 <span className='ml-auto text-slate-400 text-xs font-normal'>
-                  {data?.workouts.totalCalories.toLocaleString()} kcal total
+                  {(data?.workouts.totalCalories || 0).toLocaleString()} kcal total
                 </span>
               </h2>
               {data?.workouts.byType.length === 0 ?

@@ -244,7 +244,7 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
 
   return (
     <div
-      className={`md:h-auto h-screen flex flex-col border-r border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 transition-all duration-300 overscroll-contain
+      className={`md:h-auto h-auto flex flex-col border-r border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 transition-all duration-300 overscroll-contain
   ${
     menuBtn ?
       "w-20 -translate-x-full fixed inset-y-0 left-0 z-40 overflow-hidden md:w-20 md:translate-x-0 md:static md:overflow-hidden"

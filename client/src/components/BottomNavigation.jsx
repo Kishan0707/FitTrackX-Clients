@@ -5,22 +5,26 @@ import {
   FaAppleAlt,
   FaRobot,
   FaEllipsisH,
-  FaPlus,
   FaComments,
 } from "react-icons/fa";
 import { useContext, useState } from "react";
 import { haptic } from "../utils/haptic";
 import { getFabAction } from "../utils/fabLogic";
 import { AuthContext } from "../context/authContext";
-import ProgressRing from "./ProgressRing";
 
-const items = [
-  { name: "Body", path: "/dashboard", icon: <FaUser /> },
-  { name: "Intake", path: "/add-meal", icon: <FaAppleAlt /> },
-  { name: "Chat", path: "/coach/chat", icon: <FaComments />, badge: 3 },
-  { name: "AI", path: "/ai", icon: <FaRobot /> },
+// 🔹 Menus (same as before)
+const adminMenu = [
+  { name: "Dashboard", path: "/dashboard", icon: <FaUser /> },
+  { name: "Add-Diet", path: "/add-meal", icon: <FaAppleAlt /> },
+  { name: "Chat", path: "/chat", icon: <FaComments /> },
   { name: "More", action: "more", icon: <FaEllipsisH /> },
+  { name: "AI", path: "/ai", icon: <FaRobot /> },
 ];
+
+// 🔥 AI ko bottom nav se hide karo
+
+const coachMenu = [...adminMenu];
+const userMenu = [...adminMenu];
 
 const BottomNavigation = () => {
   const { user } = useContext(AuthContext);
@@ -28,17 +32,57 @@ const BottomNavigation = () => {
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
 
+  const userRole = user?.role;
+
+  // 🔥 FAB dynamic
   const fab = getFabAction(user?.goal, location.pathname);
+
+  // 🔹 role-based menu
+  const menuSection =
+    userRole === "admin" ? adminMenu
+    : userRole === "coach" ? coachMenu
+    : userMenu;
+
+  // 🔥 INSERT FAB IN CENTER (index 2)
+  const menuWithFab = [...menuSection];
+  menuWithFab.splice(2, 0, {
+    name: "FAB",
+    isFab: true,
+  });
 
   return (
     <>
-      {/* Bottom Nav */}
+      {/* Bottom Nav */}{" "}
       <div className='fixed bottom-0 left-0 right-0 z-50 md:hidden'>
+        {" "}
         <div className='relative backdrop-blur-xl bg-white/5 border-t border-white/10'>
           <div className='flex justify-around items-center py-2'>
-            {items.map((item) => {
-              const isActive = location.pathname === item.path;
+            {menuWithFab.map((item, index) => {
+              const isActive =
+                item.path ? location.pathname.startsWith(item.path) : false;
 
+              // 🔥 FAB CENTER ITEM
+              if (item.isFab && fab) {
+                return (
+                  <div
+                    key='fab'
+                    className='flex flex-col items-center relative'>
+                    <div className='-translate-y-6'>
+                      <motion.button
+                        whileTap={{ scale: 0.85 }}
+                        onClick={() => {
+                          haptic("heavy");
+                          navigate(fab?.path);
+                        }}
+                        className='h-14 w-14 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white flex items-center justify-center shadow-2xl border-4 border-slate-900'>
+                        {fab?.icon || "+"}
+                      </motion.button>
+                    </div>
+                  </div>
+                );
+              }
+
+              // 🔹 Normal items
               return (
                 <div
                   key={item.name}
@@ -65,16 +109,8 @@ const BottomNavigation = () => {
                         className={`text-lg ${
                           isActive ? "text-orange-500" : "text-slate-400"
                         }`}>
-                        {item.name === "Body" ?
-                          <ProgressRing progress={70} />
-                        : item.icon}
+                        {item.icon}
                       </motion.div>
-
-                      {item.badge && (
-                        <span className='absolute top-0 right-2 text-[8px] bg-red-500 px-1 rounded-full'>
-                          {item.badge}
-                        </span>
-                      )}
 
                       <span className='text-[10px]'>{item.name}</span>
                     </NavLink>
@@ -89,20 +125,7 @@ const BottomNavigation = () => {
           </div>
         </div>
       </div>
-
-      {/* FAB */}
-      <motion.button
-        whileTap={{ scale: 0.8 }}
-        onClick={() => {
-          haptic("heavy");
-          navigate(fab.path);
-        }}
-        className='fixed bottom-16 left-1/2 -translate-x-1/2 z-50 
-        bg-gradient-to-r from-orange-500 to-red-500 p-4 rounded-full shadow-xl'>
-        {fab.icon}
-      </motion.button>
-
-      {/* More Sheet */}
+      {/* 🔹 MORE SHEET */}
       <AnimatePresence>
         {showMore && (
           <motion.div

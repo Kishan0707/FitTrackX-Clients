@@ -231,25 +231,24 @@ const Settings = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-3 sm:p-6 bg-slate-900 min-h-screen">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-white mb-8">Settings</h1>
+      <div className='p-3 sm:p-6 bg-slate-900 min-h-screen'>
+        <div className='max-w-4xl mx-auto'>
+          <h1 className='text-3xl font-bold text-white mb-8'>Settings</h1>
 
           {/* Message Alert */}
           {message && (
             <div
               className={`mb-4 p-4 rounded-lg ${
-                messageType === "success"
-                  ? "bg-green-500/20 border border-green-500 text-green-400"
-                  : "bg-red-500/20 border border-red-500 text-red-400"
-              }`}
-            >
+                messageType === "success" ?
+                  "bg-green-500/20 border border-green-500 text-green-400"
+                : "bg-red-500/20 border border-red-500 text-red-400"
+              }`}>
               {message}
             </div>
           )}
 
           {/* Tabs */}
-          <div className="flex flex-wrap gap-2 mb-6 border-b border-slate-700">
+          <div className='flex overflow-x-auto w-full gap-2 mb-6 border-b border-slate-700'>
             {[
               { id: "profile", label: "Profile", icon: FaUser },
               { id: "preferences", label: "Preferences", icon: FaCog },
@@ -263,11 +262,10 @@ const Settings = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-4 py-3 font-medium transition ${
-                    activeTab === tab.id
-                      ? "text-red-500 border-b-2 border-red-500"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
+                    activeTab === tab.id ?
+                      "text-red-500 border-b-2 border-red-500"
+                    : "text-slate-400 hover:text-white"
+                  }`}>
                   <Icon size={18} />
                   {tab.label}
                 </button>
@@ -276,35 +274,33 @@ const Settings = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+          <div className='bg-slate-800/50 border border-slate-700 rounded-xl p-6'>
             {/* Profile Tab */}
             {activeTab === "profile" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-white">
+              <div className='space-y-6'>
+                <h2 className='text-2xl font-bold text-white'>
                   Profile Settings
                 </h2>
 
                 {/* Profile Picture */}
-                <div className="flex items-center gap-6">
-                  <div className="w-24 h-24 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden">
-                    {profile.profilePicture ? (
+                <div className='flex items-center gap-6'>
+                  <div className='w-24 h-24 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden'>
+                    {profile.profilePicture ?
                       <img
                         src={profile.profilePicture}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
+                        alt='Profile'
+                        className='w-full h-full object-cover'
                       />
-                    ) : (
-                      <FaUser size={40} className="text-slate-400" />
-                    )}
+                    : <FaUser size={40} className='text-slate-400' />}
                   </div>
-                  <label className="cursor-pointer">
+                  <label className='cursor-pointer'>
                     <input
-                      type="file"
-                      accept="image/*"
+                      type='file'
+                      accept='image/*'
                       onChange={handleProfilePictureUpload}
-                      className="hidden"
+                      className='hidden'
                     />
-                    <div className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                    <div className='bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition'>
                       <FaCamera size={16} />
                       Upload Picture
                     </div>
@@ -312,51 +308,51 @@ const Settings = () => {
                 </div>
 
                 {/* Form Fields */}
-                <div className="space-y-4">
+                <div className='space-y-4'>
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Name
                     </label>
                     <input
-                      type="text"
+                      type='text'
                       value={profile.name}
                       onChange={(e) =>
                         setProfile({ ...profile, name: e.target.value })
                       }
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Email
                     </label>
                     <input
-                      type="email"
+                      type='email'
                       value={profile.email}
                       onChange={(e) =>
                         setProfile({ ...profile, email: e.target.value })
                       }
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Phone
                     </label>
                     <input
-                      type="tel"
+                      type='tel'
                       value={profile.phone}
                       onChange={(e) =>
                         setProfile({ ...profile, phone: e.target.value })
                       }
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Bio
                     </label>
                     <textarea
@@ -364,16 +360,15 @@ const Settings = () => {
                       onChange={(e) =>
                         setProfile({ ...profile, bio: e.target.value })
                       }
-                      rows="4"
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
+                      rows='4'
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'
                     />
                   </div>
 
                   <button
                     onClick={handleProfileUpdate}
                     disabled={loading}
-                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50"
-                  >
+                    className='bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50'>
                     <FaSave size={16} />
                     Save Changes
                   </button>
@@ -383,12 +378,12 @@ const Settings = () => {
 
             {/* Preferences Tab */}
             {activeTab === "preferences" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-white">Preferences</h2>
+              <div className='space-y-6'>
+                <h2 className='text-2xl font-bold text-white'>Preferences</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Theme
                     </label>
                     <select
@@ -399,15 +394,14 @@ const Settings = () => {
                           theme: e.target.value,
                         })
                       }
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
-                    >
-                      <option value="dark">Dark</option>
-                      <option value="light">Light</option>
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'>
+                      <option value='dark'>Dark</option>
+                      <option value='light'>Light</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Language
                     </label>
                     <select
@@ -419,18 +413,17 @@ const Settings = () => {
                         });
                         localStorage.setItem("language", e.target.value);
                       }}
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
-                    >
-                      <option value="en">🇺🇸 English</option>
-                      <option value="es">🇪🇸 Español</option>
-                      <option value="fr">🇫🇷 Français</option>
-                      <option value="de">🇩🇪 Deutsch</option>
-                      <option value="hi">🇮🇳 Hindi</option>
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'>
+                      <option value='en'>🇺🇸 English</option>
+                      <option value='es'>🇪🇸 Español</option>
+                      <option value='fr'>🇫🇷 Français</option>
+                      <option value='de'>🇩🇪 Deutsch</option>
+                      <option value='hi'>🇮🇳 Hindi</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Units
                     </label>
                     <select
@@ -441,15 +434,14 @@ const Settings = () => {
                           units: e.target.value,
                         })
                       }
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
-                    >
-                      <option value="metric">Metric (kg, cm)</option>
-                      <option value="imperial">Imperial (lbs, inches)</option>
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'>
+                      <option value='metric'>Metric (kg, cm)</option>
+                      <option value='imperial'>Imperial (lbs, inches)</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Timezone
                     </label>
                     <select
@@ -460,14 +452,13 @@ const Settings = () => {
                           timezone: e.target.value,
                         })
                       }
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
-                    >
-                      <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
-                      <option value="America/New_York">
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'>
+                      <option value='Asia/Kolkata'>Asia/Kolkata (IST)</option>
+                      <option value='America/New_York'>
                         America/New_York (EST)
                       </option>
-                      <option value="Europe/London">Europe/London (GMT)</option>
-                      <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+                      <option value='Europe/London'>Europe/London (GMT)</option>
+                      <option value='Asia/Dubai'>Asia/Dubai (GST)</option>
                     </select>
                   </div>
                 </div>
@@ -475,8 +466,7 @@ const Settings = () => {
                 <button
                   onClick={handlePreferencesUpdate}
                   disabled={loading}
-                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50"
-                >
+                  className='bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50'>
                   <FaSave size={16} />
                   Save Preferences
                 </button>
@@ -485,14 +475,14 @@ const Settings = () => {
 
             {/* Privacy Tab */}
             {activeTab === "privacy" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-white">
+              <div className='space-y-6'>
+                <h2 className='text-2xl font-bold text-white'>
                   Privacy Settings
                 </h2>
 
-                <div className="space-y-4">
+                <div className='space-y-4'>
                   <div>
-                    <label className="block text-slate-300 text-sm mb-2">
+                    <label className='block text-slate-300 text-sm mb-2'>
                       Profile Visibility
                     </label>
                     <select
@@ -503,19 +493,18 @@ const Settings = () => {
                           profileVisibility: e.target.value,
                         })
                       }
-                      className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
-                    >
-                      <option value="private">Private</option>
-                      <option value="public">Public</option>
+                      className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'>
+                      <option value='private'>Private</option>
+                      <option value='public'>Public</option>
                     </select>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
-                    <label className="text-slate-300">
+                  <div className='flex items-center justify-between p-4 bg-slate-700/50 rounded-lg'>
+                    <label className='text-slate-300'>
                       Show Workout History
                     </label>
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       checked={privacy.showWorkoutHistory}
                       onChange={(e) =>
                         setPrivacy({
@@ -523,14 +512,14 @@ const Settings = () => {
                           showWorkoutHistory: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 cursor-pointer"
+                      className='w-5 h-5 cursor-pointer'
                     />
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
-                    <label className="text-slate-300">Show Diet Plans</label>
+                  <div className='flex items-center justify-between p-4 bg-slate-700/50 rounded-lg'>
+                    <label className='text-slate-300'>Show Diet Plans</label>
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       checked={privacy.showDietPlans}
                       onChange={(e) =>
                         setPrivacy({
@@ -538,7 +527,7 @@ const Settings = () => {
                           showDietPlans: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 cursor-pointer"
+                      className='w-5 h-5 cursor-pointer'
                     />
                   </div>
                 </div>
@@ -546,8 +535,7 @@ const Settings = () => {
                 <button
                   onClick={handlePrivacyUpdate}
                   disabled={loading}
-                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50"
-                >
+                  className='bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50'>
                   <FaSave size={16} />
                   Save Privacy Settings
                 </button>
@@ -556,18 +544,18 @@ const Settings = () => {
 
             {/* Notifications Tab */}
             {activeTab === "notifications" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-white">
+              <div className='space-y-6'>
+                <h2 className='text-2xl font-bold text-white'>
                   Notification Settings
                 </h2>
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
-                    <label className="text-slate-300">
+                <div className='space-y-4'>
+                  <div className='flex items-center justify-between p-4 bg-slate-700/50 rounded-lg'>
+                    <label className='text-slate-300'>
                       Email Notifications
                     </label>
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       checked={notifications.emailNotifications}
                       onChange={(e) =>
                         setNotifications({
@@ -575,14 +563,14 @@ const Settings = () => {
                           emailNotifications: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 cursor-pointer"
+                      className='w-5 h-5 cursor-pointer'
                     />
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
-                    <label className="text-slate-300">Workout Reminders</label>
+                  <div className='flex items-center justify-between p-4 bg-slate-700/50 rounded-lg'>
+                    <label className='text-slate-300'>Workout Reminders</label>
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       checked={notifications.workoutReminders}
                       onChange={(e) =>
                         setNotifications({
@@ -590,14 +578,14 @@ const Settings = () => {
                           workoutReminders: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 cursor-pointer"
+                      className='w-5 h-5 cursor-pointer'
                     />
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
-                    <label className="text-slate-300">Diet Reminders</label>
+                  <div className='flex items-center justify-between p-4 bg-slate-700/50 rounded-lg'>
+                    <label className='text-slate-300'>Diet Reminders</label>
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       checked={notifications.dietReminders}
                       onChange={(e) =>
                         setNotifications({
@@ -605,14 +593,14 @@ const Settings = () => {
                           dietReminders: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 cursor-pointer"
+                      className='w-5 h-5 cursor-pointer'
                     />
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
-                    <label className="text-slate-300">Push Notifications</label>
+                  <div className='flex items-center justify-between p-4 bg-slate-700/50 rounded-lg'>
+                    <label className='text-slate-300'>Push Notifications</label>
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       checked={notifications.pushNotifications}
                       onChange={(e) =>
                         setNotifications({
@@ -620,7 +608,7 @@ const Settings = () => {
                           pushNotifications: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 cursor-pointer"
+                      className='w-5 h-5 cursor-pointer'
                     />
                   </div>
                 </div>
@@ -628,8 +616,7 @@ const Settings = () => {
                 <button
                   onClick={handleNotificationsUpdate}
                   disabled={loading}
-                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50"
-                >
+                  className='bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50'>
                   <FaSave size={16} />
                   Save Notification Settings
                 </button>
@@ -638,23 +625,23 @@ const Settings = () => {
 
             {/* Account Tab */}
             {activeTab === "account" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-white">
+              <div className='space-y-6'>
+                <h2 className='text-2xl font-bold text-white'>
                   Account Settings
                 </h2>
 
                 {/* Change Password */}
-                <div className="bg-slate-700/50 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-white mb-4">
+                <div className='bg-slate-700/50 p-6 rounded-lg'>
+                  <h3 className='text-lg font-semibold text-white mb-4'>
                     Change Password
                   </h3>
-                  <div className="space-y-4">
+                  <div className='space-y-4'>
                     <div>
-                      <label className="block text-slate-300 text-sm mb-2">
+                      <label className='block text-slate-300 text-sm mb-2'>
                         Old Password
                       </label>
                       <input
-                        type="password"
+                        type='password'
                         value={passwords.oldPassword}
                         onChange={(e) =>
                           setPasswords({
@@ -662,16 +649,16 @@ const Settings = () => {
                             oldPassword: e.target.value,
                           })
                         }
-                        className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
+                        className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'
                       />
                     </div>
 
                     <div>
-                      <label className="block text-slate-300 text-sm mb-2">
+                      <label className='block text-slate-300 text-sm mb-2'>
                         New Password
                       </label>
                       <input
-                        type="password"
+                        type='password'
                         value={passwords.newPassword}
                         onChange={(e) =>
                           setPasswords({
@@ -679,16 +666,16 @@ const Settings = () => {
                             newPassword: e.target.value,
                           })
                         }
-                        className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
+                        className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'
                       />
                     </div>
 
                     <div>
-                      <label className="block text-slate-300 text-sm mb-2">
+                      <label className='block text-slate-300 text-sm mb-2'>
                         Confirm Password
                       </label>
                       <input
-                        type="password"
+                        type='password'
                         value={passwords.confirmPassword}
                         onChange={(e) =>
                           setPasswords({
@@ -696,15 +683,14 @@ const Settings = () => {
                             confirmPassword: e.target.value,
                           })
                         }
-                        className="w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500"
+                        className='w-full bg-slate-700 border border-slate-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-500'
                       />
                     </div>
 
                     <button
                       onClick={handlePasswordChange}
                       disabled={loading}
-                      className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50"
-                    >
+                      className='bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50'>
                       <FaSave size={16} />
                       Change Password
                     </button>
@@ -712,18 +698,17 @@ const Settings = () => {
                 </div>
 
                 {/* Delete Account */}
-                <div className="bg-red-500/10 border border-red-500/30 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-red-400 mb-2">
+                <div className='bg-red-500/10 border border-red-500/30 p-6 rounded-lg'>
+                  <h3 className='text-lg font-semibold text-red-400 mb-2'>
                     Danger Zone
                   </h3>
-                  <p className="text-slate-300 text-sm mb-4">
+                  <p className='text-slate-300 text-sm mb-4'>
                     Deleting your account is permanent and cannot be undone.
                   </p>
                   <button
                     onClick={handleDeleteAccount}
                     disabled={loading}
-                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50"
-                  >
+                    className='bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition disabled:opacity-50'>
                     <FaTrash size={16} />
                     Delete Account
                   </button>

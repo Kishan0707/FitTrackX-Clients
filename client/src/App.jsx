@@ -42,6 +42,7 @@ import UsersPage from "./components/UsersPage";
 import Session from "./pages/coach/Session";
 import Workout from "./pages/coach/Workout";
 import Message from "./pages/coach/Message";
+import UserMessage from "./pages/chat/Message";
 import ClientDetail from "./pages/coach/ClientDetail";
 import Steps from "./pages/steps/Steps";
 import Step from "./pages/coach/Step";
@@ -357,6 +358,14 @@ function App() {
                 element={
                   <ProtectedRoutes allowedRoles={["coach"]}>
                     <CoachNotifications />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/chat'
+                element={
+                  <ProtectedRoutes>
+                    <UserMessage />
                   </ProtectedRoutes>
                 }
               />

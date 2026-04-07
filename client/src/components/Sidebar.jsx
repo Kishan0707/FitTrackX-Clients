@@ -24,7 +24,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { RiMenu2Fill } from "react-icons/ri";
 
-const adminMenuSections = [
+export const adminMenuSections = [
   {
     title: "Overview",
     items: [{ name: "Dashboard", path: "/admin", icon: <FaChartLine /> }],
@@ -80,7 +80,7 @@ const adminMenuSections = [
   },
 ];
 
-const coachMenuSections = [
+export const coachMenuSections = [
   {
     title: "Overview",
     items: [
@@ -137,7 +137,7 @@ const coachMenuSections = [
   },
 ];
 
-const userMenuSections = [
+export const userMenuSections = [
   {
     title: "Overview",
     items: [{ name: "Dashboard", path: "/dashboard", icon: <FaChartLine /> }],
@@ -255,11 +255,11 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
 
   return (
     <div
-      className={`md:h-auto h-auto flex flex-col border-r border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 transition-all duration-300 overscroll-contain
+      className={`pb-18 md:h-auto h-auto flex flex-col border-r border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 transition-all duration-300 overscroll-contain
   ${
     menuBtn ?
       "w-20 -translate-x-full fixed inset-y-0 left-0 z-40 overflow-hidden md:w-20 md:translate-x-0 md:static "
-    : "w-72 translate-x-0 fixed inset-y-0 left-0 z-50 overflow-y-auto md:w-64 md:static"
+    : "w-72 translate-x-0 fixed inset-y-0 left-0 z-90 overflow-y-auto md:w-64 md:static"
   }`}>
       <div
         className={`mb-6 rounded-3xl border border-slate-800/80 bg-slate-950/70 shadow-[0_20px_45px_rgba(2,6,23,0.45)] backdrop-blur ${

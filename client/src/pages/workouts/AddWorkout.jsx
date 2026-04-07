@@ -149,25 +149,27 @@ const AddWorkout = () => {
           </div>
         )}
 
-        <div className='p-6 max-w-4xl mx-auto'>
+        <div className='md:p-6 max-w-4xl mx-auto'>
           {/* Form Container */}
           <div className='bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700/50 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden'>
             {/* Header */}
-            <div className='bg-gradient-to-r from-purple-600 to-pink-600 p-8 text-center'>
-              <h1 className='text-4xl font-bold text-white mb-2 flex items-center justify-center gap-3'>
-                <span className='md:text-5xl text-4xl'>💪</span>
+            <div className='bg-gradient-to-r from-purple-600 to-pink-600 md:p-8 p-4 text-center'>
+              <h1 className='md:text-4xl text-2xl  font-bold text-white mb-2 flex items-center justify-center gap-3'>
+                <span className='md:text-5xl text-4xl md:flex hidden items-center justify-center gap-3'>
+                  💪
+                </span>
                 Create Workout
               </h1>
-              <p className='text-purple-100 text-sm'>
+              <p className='text-purple-100 md:text-sm text-xs text-center'>
                 Assign a complete workout to your client
               </p>
             </div>
 
             {/* Form Content */}
-            <form onSubmit={handleSubmit} className='p-8'>
+            <form onSubmit={handleSubmit} className='md:p-8 p-4 space-y-6'>
               {/* Client Selection */}
               <div className='mb-8'>
-                <label className='block text-white font-bold mb-3 text-lg'>
+                <label className='block text-white font-bold mb-3 md:md:text-lg text-sm text-sm'>
                   <span className='inline-block bg-purple-500 text-white rounded-full w-8 h-8 text-center leading-8 mr-2 text-sm'>
                     1
                   </span>
@@ -177,7 +179,7 @@ const AddWorkout = () => {
                   name='userId'
                   value={formData.userId}
                   onChange={handleChange}
-                  className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-xl p-4 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
+                  className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-xl md:md:p-4 p-2 p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
                   required>
                   <option value=''>Choose a client...</option>
                   {clients.map((client) => (
@@ -190,13 +192,13 @@ const AddWorkout = () => {
 
               {/* Workout Details */}
               <div className='mb-8'>
-                <label className='block text-white font-bold mb-4 text-lg'>
+                <label className='block text-white font-bold mb-4 md:md:text-lg text-sm text-sm'>
                   <span className='inline-block bg-purple-500 text-white rounded-full w-8 h-8 text-center leading-8 mr-2 text-sm'>
                     2
                   </span>
                   Workout Details
                 </label>
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                <div className='grid grid-cols-1 md:grid-cols-3 gamd:p-4 p-2'>
                   <div>
                     <label className='text-purple-300 text-sm font-semibold mb-2 block'>
                       Workout Type
@@ -205,7 +207,7 @@ const AddWorkout = () => {
                       name='type'
                       value={formData.type}
                       onChange={handleChange}
-                      className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-xl p-4 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
+                      className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-xl md:md:p-4 p-2 p-2 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
                       required>
                       <option value=''>Select type...</option>
                       <option value='cardio'>🏃 Cardio</option>
@@ -228,7 +230,7 @@ const AddWorkout = () => {
                       value={formData.caloriesBurned || ""}
                       onChange={handleChange}
                       placeholder='e.g., 250'
-                      className='w-full bg-slate-800 border-2 border-orange-500/30 hover:border-orange-500 focus:border-orange-500 rounded-xl p-4 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50'
+                      className='w-full bg-slate-800 border-2 border-orange-500/30 hover:border-orange-500 focus:border-orange-500 rounded-xl md:p-4 p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50'
                       required
                     />
                   </div>
@@ -242,7 +244,7 @@ const AddWorkout = () => {
                       value={formData.duration || ""}
                       onChange={handleChange}
                       placeholder='e.g., 30'
-                      className='w-full bg-slate-800 border-2 border-blue-500/30 hover:border-blue-500 focus:border-blue-500 rounded-xl p-4 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50'
+                      className='w-full bg-slate-800 border-2 border-blue-500/30 hover:border-blue-500 focus:border-blue-500 rounded-xl md:p-4 p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50'
                       required
                     />
                   </div>
@@ -251,13 +253,13 @@ const AddWorkout = () => {
 
               {/* Exercises Section */}
               <div className='mb-8'>
-                <label className='block text-white font-bold mb-4 text-lg'>
+                <label className='block text-white font-bold mb-4 md:text-lg text-sm'>
                   <span className='inline-block bg-purple-500 text-white rounded-full w-8 h-8 text-center leading-8 mr-2 text-sm'>
                     3
                   </span>
                   Add Exercises
                 </label>
-                <div className='bg-slate-800/50 border-2 border-slate-700 rounded-xl p-6 space-y-4'>
+                <div className='bg-slate-800/50 border-2 border-slate-700 rounded-xl md:p-6 p-3 space-y-4'>
                   <div>
                     <label className='text-slate-300 text-sm font-semibold mb-2 block'>
                       Exercise Name
@@ -266,7 +268,7 @@ const AddWorkout = () => {
                       name='name'
                       value={exercise.name}
                       onChange={handleExerciseChange}
-                      className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-xl p-4 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'>
+                      className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-xl md:p-4 p-2 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'>
                       <option value=''>Choose exercise...</option>
                       {exerciseOptions.map((ex) => (
                         <option key={ex} value={ex}>
@@ -278,7 +280,7 @@ const AddWorkout = () => {
 
                   <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
                     <div>
-                      <label className='text-slate-300 text-xs font-semibold mb-2 block'>
+                      <label className='text-slate-300 text-xs font-semibold mb-2 block truncate'>
                         Sets
                       </label>
                       <input
@@ -287,11 +289,11 @@ const AddWorkout = () => {
                         value={exercise.sets || ""}
                         onChange={handleExerciseChange}
                         placeholder='3'
-                        className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-lg p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
+                        className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-lg p-1 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
                       />
                     </div>
                     <div>
-                      <label className='text-slate-300 text-xs font-semibold mb-2 block'>
+                      <label className='text-slate-300 text-xs font-semibold mb-2 block truncate'>
                         Reps
                       </label>
                       <input
@@ -300,11 +302,11 @@ const AddWorkout = () => {
                         value={exercise.reps || ""}
                         onChange={handleExerciseChange}
                         placeholder='10'
-                        className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-lg p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
+                        className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-lg p-1 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
                       />
                     </div>
                     <div>
-                      <label className='text-slate-300 text-xs font-semibold mb-2 block'>
+                      <label className='text-slate-300 text-xs font-semibold mb-2 block truncate'>
                         Weight (kg)
                       </label>
                       <input
@@ -313,11 +315,11 @@ const AddWorkout = () => {
                         value={exercise.weight || ""}
                         onChange={handleExerciseChange}
                         placeholder='Optional'
-                        className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-lg p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
+                        className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-lg p-1 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
                       />
                     </div>
                     <div>
-                      <label className='text-slate-300 text-xs font-semibold mb-2 block'>
+                      <label className='text-slate-300 text-xs font-semibold mb-2 block truncate'>
                         Duration (min)
                       </label>
                       <input
@@ -326,7 +328,7 @@ const AddWorkout = () => {
                         value={exercise.duration || ""}
                         onChange={handleExerciseChange}
                         placeholder='Optional'
-                        className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-lg p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
+                        className='w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-500 focus:border-purple-500 rounded-lg p-1 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50'
                       />
                     </div>
                   </div>
@@ -334,7 +336,7 @@ const AddWorkout = () => {
                   <button
                     type='button'
                     onClick={addExercise}
-                    className='w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105'>
+                    className='w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold md:py-3 md:px-4 px-2 py-1.5 rounded-lg transition-all duration-300 transform hover:scale-105'>
                     + Add Exercise
                   </button>
                 </div>
@@ -342,7 +344,7 @@ const AddWorkout = () => {
                 {/* Exercise List */}
                 {formData.exercises.length > 0 && (
                   <div className='mt-6'>
-                    <h4 className='text-white font-bold mb-4 text-lg flex items-center gap-2'>
+                    <h4 className='text-white font-bold mb-4 md:text-lg text-sm flex items-center gap-2'>
                       <span className='text-xl'>📋</span>
                       Added Exercises ({formData.exercises.length})
                     </h4>
@@ -350,7 +352,7 @@ const AddWorkout = () => {
                       {formData.exercises.map((ex, index) => (
                         <div
                           key={index}
-                          className='bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-2 border-purple-500/30 p-4 rounded-lg flex justify-between items-center hover:border-purple-500 transition-all duration-300'>
+                          className='bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-2 border-purple-500/30 md:p-4 p-2 rounded-lg flex justify-between items-center hover:border-purple-500 transition-all duration-300'>
                           <div className='flex-1'>
                             <p className='text-white font-semibold flex items-center gap-2'>
                               <span className='bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded'>
@@ -380,17 +382,22 @@ const AddWorkout = () => {
               {/* Submit Button */}
               <button
                 type='submit'
-                className='w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 text-lg'>
+                className='w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold md:py-4 md:px-6 py-2 px-3 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 md:text-lg text-sm'>
                 <span>🚀</span>
                 Create Workout
               </button>
             </form>
 
             {/* Info Box */}
-            <div className='bg-purple-900/30 border border-purple-500/30 p-6 m-8 rounded-xl backdrop-blur-lg'>
-              <p className='text-purple-200 text-sm flex items-start gap-3'>
-                <span className='text-xl'>💡</span>
-                <span>
+            <div className='bg-purple-900/30 border border-purple-500/30 md:p-6 p-3 md:m-8 m-4 rounded-xl backdrop-blur-lg'>
+              <p className='text-purple-200 text-sm flex md:flex-row flex-col items-start gap-3'>
+                <span className='text-xl md:flex hidden items-center justify-center gap-3'>
+                  💡
+                </span>
+                <span className='shadow text-shadow-amber-300 font-bold text-amber-300 md:hidden block px-2 py-1 rounded bg-amber-500/20 border border-amber-500/50'>
+                  Note!
+                </span>
+                <span className='leading-5 wrap-break-word'>
                   Add multiple exercises to create a complete workout routine.
                   Your client will see all exercises and can track their
                   progress.

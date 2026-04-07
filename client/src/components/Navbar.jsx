@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import API from "../services/api";
 import { RiMenu2Fill } from "react-icons/ri";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaUber, FaUser } from "react-icons/fa";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { useTheme } from "../context/themeContext";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -98,7 +98,7 @@ const Navbar = ({ setMenuBtn, menuBtn }) => {
         {/* Dark Mode Toggle */}
         <button
           onClick={toggleTheme}
-          className='md:p-3 p-1 bg-slate-800 rounded-lg hover:bg-slate-700 transition border-2 border-slate-600'
+          className='md:p-3 p-1 md:flex hidden bg-slate-800 rounded-lg hover:bg-slate-700 transition border-2 border-slate-600'
           title='Toggle Dark/Light Mode'>
           {theme === "dark" ?
             <MdLightMode size={24} className='text-yellow-400' />
@@ -106,9 +106,13 @@ const Navbar = ({ setMenuBtn, menuBtn }) => {
         </button>
 
         <button
-          className='bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition text-white font-medium'
+          className='md:flex hidden bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition text-white font-medium'
           onClick={logout}>
           Logout
+        </button>
+
+        <button className='bg-slate-950 p-2  rounded-full hover:bg-red-600 transition text-white font-medium'>
+          <FaUser size={20} />
         </button>
       </div>
     </div>

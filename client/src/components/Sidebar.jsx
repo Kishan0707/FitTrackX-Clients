@@ -163,6 +163,17 @@ const userMenuSections = [
     items: [{ name: "Add-Diet", path: "/add-meal", icon: <FaAppleAlt /> }],
   },
   {
+    title: "Communication",
+    items: [
+      { name: "Chat", path: "/coach/chat", icon: <FaComments /> },
+      {
+        name: "Notifications",
+        path: "/coach/notifications",
+        icon: <FaBell />,
+      },
+    ],
+  },
+  {
     title: "Tracking",
     items: [
       { name: "Progress", path: "/progress", icon: <FaChartBar /> },
@@ -247,8 +258,8 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
       className={`md:h-auto h-auto flex flex-col border-r border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 transition-all duration-300 overscroll-contain
   ${
     menuBtn ?
-      "w-20 -translate-x-full fixed inset-y-0 left-0 z-40 overflow-hidden md:w-20 md:translate-x-0 md:static md:overflow-hidden"
-    : "w-72 translate-x-0 fixed inset-y-0 left-0 z-50 overflow-y-auto md:w-64 md:static md:overflow-y-auto"
+      "w-20 -translate-x-full fixed inset-y-0 left-0 z-40 overflow-hidden md:w-20 md:translate-x-0 md:static "
+    : "w-72 translate-x-0 fixed inset-y-0 left-0 z-50 overflow-y-auto md:w-64 md:static"
   }`}>
       <div
         className={`mb-6 rounded-3xl border border-slate-800/80 bg-slate-950/70 shadow-[0_20px_45px_rgba(2,6,23,0.45)] backdrop-blur ${

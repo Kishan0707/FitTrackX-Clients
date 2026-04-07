@@ -133,8 +133,8 @@ const UserDashboardContent = ({
         );
         setPlan(res.data.data.plan || null);
         setCoachData(coachName || null);
-        setGoal(finalGoal || null);
-        console.log("Goal", goal);
+        setGoal(user?.goal || null);
+        console.log("Goal", user);
         console.log("Goal from subscription:", res.data);
         const endDate = res.data.data.endDate;
         isExpired = new Date(endDate) < new Date();
@@ -365,7 +365,11 @@ const UserDashboardContent = ({
             <div className='flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3'>
               <span className='text-sm text-slate-400'>Workout goal</span>
               <span className='text-sm font-semibold text-white'>
-                {formatTitle(user?.goal)}
+                {coachRequest?.target ?
+                  formatTitle(coachRequest.target)
+                : user?.goal ?
+                  formatTitle(user.goal)
+                : "No Target Set"}
               </span>
             </div>
             <div className='flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3'>

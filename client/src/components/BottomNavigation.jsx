@@ -18,7 +18,6 @@ const adminMenu = [
   { name: "Add-Diet", path: "/add-meal", icon: <FaAppleAlt /> },
   { name: "Chat", path: "/chat", icon: <FaComments /> },
   { name: "More", action: "more", icon: <FaEllipsisH /> },
-  { name: "AI", path: "/ai", icon: <FaRobot /> },
 ];
 
 // 🔥 AI ko bottom nav se hide karo
@@ -55,8 +54,8 @@ const BottomNavigation = () => {
       {/* Bottom Nav */}{" "}
       <div className='fixed bottom-0 left-0 right-0 z-50 md:hidden'>
         {" "}
-        <div className='relative backdrop-blur-xl bg-white/5 border-t border-white/10'>
-          <div className='flex justify-around items-center py-2'>
+        <div className='relative backdrop-blur-xl bg-white/5 border-t border-white/10 rounded-tl-full rounded-tr-full pr-4 '>
+          <div className='grid grid-cols-5 place-content-center translate-x-3 pt-2'>
             {menuWithFab.map((item, index) => {
               const isActive =
                 item.path ? location.pathname.startsWith(item.path) : false;
@@ -67,14 +66,14 @@ const BottomNavigation = () => {
                   <div
                     key='fab'
                     className='flex flex-col items-center relative'>
-                    <div className='-translate-y-6'>
+                    <div className='-translate-y-12'>
                       <motion.button
                         whileTap={{ scale: 0.85 }}
                         onClick={() => {
                           haptic("heavy");
                           navigate(fab?.path);
                         }}
-                        className='h-14 w-14 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white flex items-center justify-center shadow-2xl border-4 border-slate-900'>
+                        className='h-24 w-24 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white flex items-center justify-center shadow-2xl border-4 border-slate-900'>
                         {fab?.icon || "+"}
                       </motion.button>
                     </div>
@@ -85,6 +84,7 @@ const BottomNavigation = () => {
               // 🔹 Normal items
               return (
                 <div
+                  className='flex items-center justify-center text-lg'
                   key={item.name}
                   onClick={() => {
                     if (item.action === "more") {
@@ -96,7 +96,7 @@ const BottomNavigation = () => {
                     <NavLink
                       to={item.path}
                       onClick={() => haptic("light")}
-                      className='flex flex-col items-center relative'>
+                      className='flex flex-col items-center justify-center relative'>
                       {isActive && (
                         <motion.div
                           layoutId='glow'

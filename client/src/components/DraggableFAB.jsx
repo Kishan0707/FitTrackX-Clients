@@ -51,7 +51,7 @@ const DraggableFAB = ({ fab, navigate }) => {
             navigate(fab.path);
           }
         }}
-        className='bg-gradient-to-r from-orange-500 to-red-500 p-4 rounded-full shadow-xl border border-orange-400/20 backdrop-blur hover:border-white transition-all duration-300'>
+        className='bg-gradient-to-r from-orange-500 to-red-500 p-6 rounded-full shadow-xl border border-orange-400/20 backdrop-blur hover:border-white transition-all duration-300'>
         {fab.icon}
       </motion.button>
     </motion.div>

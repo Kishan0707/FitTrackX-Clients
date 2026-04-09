@@ -256,6 +256,7 @@ function App() {
                   </ProtectedRoutes>
                 }
               />
+
               <Route
                 path='/coach/workouts'
                 element={

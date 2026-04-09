@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import API from "../../services/api";
-import socket from "../../socket/socket";
+import socket, { connectSocket } from "../../socket/socket";
 import ChatList from "./ChatList";
 import ChatWindow from "./ChatWindow";
 
 const ChatLayout = ({ users, isCoach }) => {
   const { user } = useContext(AuthContext);
 
-  const [selectedUser, setSelectedUser] = useState(isCoach ? null : users?.[0]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
 
@@ -16,21 +16,37 @@ const ChatLayout = ({ users, isCoach }) => {
 
   // ✅ LOAD CHAT (COMMON)
   useEffect(() => {
-    if (!selectedUser) return;
-
-    API.get(`/messages/${selectedUser._id}`).then((res) => {
+    const fetchMessages = async () => {
+      if (!selectedUser) return;
+      const res = await API.get(`/messages/${selectedUser._id}`);
       setMessages(res.data.data || []);
-    });
+    };
+
+    fetchMessages();
   }, [selectedUser]);
 
   // ✅ SOCKET RECEIVE (FIXED)
   useEffect(() => {
-    socket.on("receiveMessage", (msg) => {
+    connectSocket(user._id);
+    const handleReceive = (msg) => {
       setMessages((prev) => [...prev, msg]);
-    });
+    };
 
-    return () => socket.off("receiveMessage");
-  }, []);
+    socket.on("receiveMessage", handleReceive);
+
+    return () => {
+      socket.off("receiveMessage", handleReceive);
+    };
+  }, [user._id]);
+
+  useEffect(() => {
+    if (!users?.length) return;
+    if (isCoach) {
+      setSelectedUser((prev) => prev || users[0]);
+    } else {
+      setSelectedUser(users[0]);
+    }
+  }, [users, isCoach]);
 
   // ✅ AUTO SCROLL
   useEffect(() => {

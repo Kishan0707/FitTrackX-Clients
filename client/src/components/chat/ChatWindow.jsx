@@ -8,6 +8,14 @@ const ChatWindow = ({
   handleSend,
   user,
 }) => {
+  if (!selectedUser) {
+    return (
+      <div className='flex flex-1 items-center justify-center text-sm text-slate-400'>
+        No chat selected. Select a user to begin messaging.
+      </div>
+    );
+  }
+
   return (
     <div className='flex flex-1 flex-col '>
       {messages.map((msg) => {
@@ -15,10 +23,8 @@ const ChatWindow = ({
         return (
           <div
             key={msg._id}
-            className={`flex${
-              isMine ?
-                "bg-blue-500 text-white justify-end"
-              : "bg-slate-700 text-white justify-start"
+            className={`flex ${
+              isMine ? "bg-blue-500 text-white justify-end" : "bg-slate-700 text-white justify-start"
             }`}>
             {msg.message}
           </div>

@@ -145,7 +145,7 @@ export const userMenuSections = [
   {
     title: "Workouts",
     items: [
-      { name: "Add Workouts", path: "/add-workout", icon: <FaDumbbell /> },
+      { name: "Add Workouts", path: "/workouts", icon: <FaDumbbell /> },
       {
         name: "Workout Analytics",
         path: "/workout-analytics",

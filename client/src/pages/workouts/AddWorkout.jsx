@@ -9,6 +9,7 @@ const AddWorkout = () => {
   const [formData, setFormData] = useState({
     userId: "",
     type: "",
+    title: "",
     caloriesBurned: "",
     duration: "",
     exercises: [],
@@ -85,7 +86,7 @@ const AddWorkout = () => {
 
     try {
       console.log("Submitting workout with data:", formData);
-      const response = await API.post("/workouts", formData);
+      const response = await API.post("/coach/assign-workout", formData);
       console.log("Create response:", response.data);
       setSuccess(response.data.message);
 
@@ -110,6 +111,7 @@ const AddWorkout = () => {
       setFormData({
         userId: "",
         type: "",
+        title: "",
         caloriesBurned: "",
         duration: "",
         exercises: [],
@@ -219,6 +221,34 @@ const AddWorkout = () => {
                       <option value='run'>🚶 Run</option>
                       <option value='boxing'>👊 Boxing</option>
                     </select>
+                  </div>
+                  <div className=''>
+                    <label className='text-orange-300 text-sm font-semibold mb-2 block'>
+                      <title>Title</title>
+                    </label>
+                    <input
+                      type='text'
+                      name='title'
+                      value={formData.title}
+                      onChange={handleChange}
+                      placeholder='Title (required)'
+                      className='w-full bg-slate-800 border-2 border-orange-500/30 hover:border-orange-500 focus:border-orange-500 rounded-xl md:p-4 p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50'
+                      required
+                    />
+                  </div>
+                  <div className=''>
+                    <label className='text-orange-300 text-sm font-semibold mb-2 block'>
+                      <title>Title</title>
+                    </label>
+                    <input
+                      type='text'
+                      name='title'
+                      value={formData.title}
+                      onChange={handleChange}
+                      placeholder='Title (required)'
+                      className='w-full bg-slate-800 border-2 border-orange-500/30 hover:border-orange-500 focus:border-orange-500 rounded-xl md:p-4 p-2 text-white placeholder-gray-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50'
+                      required
+                    />
                   </div>
                   <div>
                     <label className='text-orange-300 text-sm font-semibold mb-2 block'>

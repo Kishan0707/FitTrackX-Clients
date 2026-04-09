@@ -6,7 +6,9 @@ import {
   FaDumbbell,
   FaEdit,
   FaFire,
+  FaLayerGroup,
   FaPlus,
+  FaRegSave,
   FaTrash,
   FaTimes,
   FaUsers,
@@ -56,6 +58,12 @@ const Workout = () => {
   const [editingWorkoutId, setEditingWorkoutId] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [templates, setTemplates] = useState([]);
+  const [templateName, setTemplateName] = useState("");
+  const [templateDescription, setTemplateDescription] = useState("");
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [assigningTemplateId, setAssigningTemplateId] = useState("");
+  const [deletingTemplateId, setDeletingTemplateId] = useState("");
   const [selectedClientFilter, setSelectedClientFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [formData, setFormData] = useState(initialFormData);
@@ -70,6 +78,122 @@ const Workout = () => {
 
     setSuccess(message);
     setTimeout(() => setSuccess(""), 3000);
+  };
+
+  const loadTemplates = async () => {
+    try {
+      const res = await API.get("/coach/workout-templates");
+      setTemplates(res.data?.data || []);
+    } catch (err) {
+      console.error("Failed to load workout templates:", err);
+    }
+  };
+
+  const handleSaveTemplate = async () => {
+    if (!templateName.trim()) {
+      showMessage("Template name is required.", "error");
+      return;
+    }
+    if (!formData.type) {
+      showMessage("Workout type is required to save a template.", "error");
+      return;
+    }
+    if ((formData.exercises || []).length === 0) {
+      showMessage(
+        "Add at least one exercise before saving a template.",
+        "error",
+      );
+      return;
+    }
+
+    setSavingTemplate(true);
+    try {
+      await API.post("/coach/workout-templates", {
+        name: templateName.trim(),
+        description: templateDescription.trim(),
+        type: formData.type,
+        duration: Number(formData.duration) || 0,
+        caloriesBurned: Number(formData.caloriesBurned) || 0,
+        exercises: formData.exercises,
+      });
+      showMessage("Template saved successfully.");
+      setTemplateName("");
+      setTemplateDescription("");
+      await loadTemplates();
+    } catch (err) {
+      console.error("Failed to save template:", err);
+      showMessage(
+        err.response?.data?.message || "Unable to save template.",
+        "error",
+      );
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
+  const applyTemplate = (template) => {
+    setFormData((prev) => ({
+      ...prev,
+      title: template.name,
+      type: template.type,
+      duration: String(template.duration || ""),
+      caloriesBurned: String(template.caloriesBurned || ""),
+      exercises: template.exercises || [],
+    }));
+    setExercise(initialExercise);
+    setTemplateName(template.name);
+    setTemplateDescription(template.description || "");
+    setEditingWorkoutId("");
+  };
+
+  const assignTemplate = async (template) => {
+    if (!clients.length) {
+      showMessage("Add a client before assigning templates.", "error");
+      return;
+    }
+
+    const targetUserId = formData.userId || clients[0]._id;
+
+    setAssigningTemplateId(template._id);
+    try {
+      await API.post("/coach/assign-workout", {
+        userId: targetUserId,
+        type: template.type,
+        title: template.name,
+        duration: template.duration,
+        caloriesBurned: template.caloriesBurned,
+        exercises: template.exercises,
+      });
+      showMessage("Template assigned successfully.");
+      await fetchData();
+    } catch (err) {
+      console.error("Template assignment failed:", err);
+      showMessage(
+        err.response?.data?.message || "Failed to assign template.",
+        "error",
+      );
+    } finally {
+      setAssigningTemplateId("");
+    }
+  };
+
+  const handleDeleteTemplate = async (templateId) => {
+    setDeletingTemplateId(templateId);
+    try {
+      await API.delete(`/coach/workout-templates/${templateId}`);
+      setTemplates((prev) =>
+        prev.filter((template) => template._id !== templateId),
+      );
+      showMessage("Template deleted.");
+    } catch (err) {
+      console.error("Failed to delete template:", err);
+      showMessage(
+        err.response?.data?.message || "Failed to delete template.",
+        "error",
+      );
+    } finally {
+      setDeletingTemplateId("");
+    }
   };
 
   const resetForm = (nextClients = clients) => {
@@ -87,7 +211,7 @@ const Workout = () => {
     try {
       const [clientsRes, workoutsRes] = await Promise.all([
         API.get("/coach/clients"),
-        API.get("/workouts?limit=100"),
+        API.get("/coach/workouts"),
       ]);
 
       const clientsData = clientsRes.data?.data || [];
@@ -106,6 +230,7 @@ const Workout = () => {
             : initialFormData.userId),
         }));
       }
+      await loadTemplates();
     } catch (err) {
       console.error(err);
       showMessage("Failed to load workouts.", "error");
@@ -178,10 +303,10 @@ const Workout = () => {
       };
 
       if (editingWorkoutId) {
-        await API.put(`/workouts/${editingWorkoutId}`, payload);
+        await API.put(`/coach/workout/${editingWorkoutId}`, payload);
         showMessage("Workout updated successfully.");
       } else {
-        await API.post("/workouts", payload);
+        await API.post("/coach/assign-workout", payload);
         showMessage("Workout assigned successfully.");
       }
 
@@ -204,7 +329,7 @@ const Workout = () => {
   const deleteWorkout = async (workoutId) => {
     try {
       setDeletingId(workoutId);
-      await API.delete(`/workouts/${workoutId}`);
+      await API.delete(`/coach/workout/${workoutId}`);
       setWorkouts((prev) =>
         prev.filter((workout) => workout._id !== workoutId),
       );
@@ -543,6 +668,45 @@ const Workout = () => {
               </div>
             </form>
           }
+          <div className='mt-6 rounded-xl border border-slate-700 bg-slate-950/50 p-5'>
+            <div className='flex items-center gap-3'>
+              <FaLayerGroup className='text-cyan-400' />
+              <div>
+                <p className='text-sm font-semibold text-white'>
+                  Template builder
+                </p>
+                <p className='text-xs text-slate-400'>
+                  Save your favorite workout structures for reuse.
+                </p>
+              </div>
+            </div>
+            <div className='mt-4 grid gap-3 md:grid-cols-3'>
+              <input
+                value={templateName}
+                onChange={(event) => setTemplateName(event.target.value)}
+                placeholder='Template name'
+                className='rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white outline-none focus:border-cyan-500'
+              />
+              <input
+                value={templateDescription}
+                onChange={(event) => setTemplateDescription(event.target.value)}
+                placeholder='Short description'
+                className='rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white outline-none focus:border-cyan-500'
+              />
+              <button
+                type='button'
+                disabled={savingTemplate}
+                onClick={handleSaveTemplate}
+                className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold uppercase tracking-[0.2em] transition ${
+                  savingTemplate ?
+                    "cursor-not-allowed bg-slate-700 text-slate-400"
+                  : "bg-cyan-500 text-slate-950 hover:bg-cyan-400"
+                }`}>
+                <FaRegSave />
+                {savingTemplate ? "Saving..." : "Save template"}
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className='rounded-xl border border-slate-700 bg-slate-900 p-6'>
@@ -690,6 +854,84 @@ const Workout = () => {
           <p className='mt-5 text-xs text-slate-500'>
             Filtered total duration: {totalDuration} minutes
           </p>
+        </div>
+        <div className='mt-6 rounded-xl border border-slate-700 bg-slate-950/60 p-6'>
+          <div className='mb-4 flex items-center justify-between'>
+            <div>
+              <h3 className='text-lg font-semibold text-white'>
+                Workout Templates
+              </h3>
+              <p className='text-sm text-slate-400'>
+                Save structure once and reuse for other clients.
+              </p>
+            </div>
+            <span className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+              {templates.length} saved
+            </span>
+          </div>
+          {templates.length === 0 ?
+            <div className='rounded-2xl border border-dashed border-white/10 bg-slate-900/40 p-6 text-center text-slate-400'>
+              No templates yet. Use the builder above to save one.
+            </div>
+          : <div className='grid gap-4 lg:grid-cols-2'>
+              {templates.map((template) => (
+                <div
+                  key={template._id}
+                  className='flex flex-col rounded-2xl border border-slate-700 bg-slate-950/60 p-5'>
+                  <div className='flex items-start justify-between gap-3'>
+                    <div>
+                      <p className='text-xs uppercase tracking-[0.3em] text-slate-500'>
+                        {template.type}
+                      </p>
+                      <h4 className='text-lg font-semibold text-white'>
+                        {template.name}
+                      </h4>
+                      <p className='text-sm text-slate-400 mt-1'>
+                        {template.description || "No description provided"}
+                      </p>
+                    </div>
+                    <span className='text-xs font-semibold text-slate-300'>
+                      {template.exercises?.length || 0} exercises
+                    </span>
+                  </div>
+                  <div className='mt-4 flex flex-wrap gap-2'>
+                    <button
+                      type='button'
+                      onClick={() => applyTemplate(template)}
+                      className='flex-1 rounded-full border border-cyan-500/30 px-3 py-2 text-sm font-semibold tracking-[0.3em] text-cyan-400 transition hover:border-cyan-500'>
+                      Use template
+                    </button>
+                    <button
+                      type='button'
+                      disabled={assigningTemplateId === template._id}
+                      onClick={() => assignTemplate(template)}
+                      className={`flex-1 rounded-full px-3 py-2 text-sm font-semibold uppercase tracking-[0.2em] transition ${
+                        assigningTemplateId === template._id ?
+                          "cursor-not-allowed bg-slate-700 text-slate-400"
+                        : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                      }`}>
+                      {assigningTemplateId === template._id ?
+                        "Assigning…"
+                      : "Assign"}
+                    </button>
+                  </div>
+                  <button
+                    type='button'
+                    disabled={deletingTemplateId === template._id}
+                    onClick={() => handleDeleteTemplate(template._id)}
+                    className={`mt-4 rounded-full border border-red-500/30 px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-red-300 transition ${
+                      deletingTemplateId === template._id ?
+                        "cursor-not-allowed text-red-500"
+                      : "hover:border-red-500 hover:text-red-200"
+                    }`}>
+                    {deletingTemplateId === template._id ?
+                      "Deleting…"
+                    : "Delete"}
+                  </button>
+                </div>
+              ))}
+            </div>
+          }
         </div>
       </div>
     </DashboardLayout>

@@ -106,6 +106,7 @@ const UserDashboardContent = ({
   user,
   workouts,
 }) => {
+  const onboardingData = user?.onboardingData || null;
   console.log("User data in dashboard:", user.goal);
   console.log("Progress data:", progressData);
   const navigate = useNavigate();
@@ -277,6 +278,53 @@ const UserDashboardContent = ({
             Goal: {formatTitle(goal) || "Not set"}
           </span>
         </div>
+
+        {onboardingData ?
+          <div className='mt-4 grid gap-4 md:grid-cols-3'>
+            <div className='rounded-2xl border border-slate-800/70 bg-slate-900/60 p-4'>
+              <p className='text-xs uppercase tracking-[0.3em] text-slate-400'>
+                BMI
+              </p>
+              <p className='mt-2 text-2xl font-bold text-white'>
+                {onboardingData.bmi ? onboardingData.bmi.toFixed(1) : "--"}
+              </p>
+              <p className='text-[11px] uppercase tracking-[0.3em] text-slate-400'>
+                {onboardingData.bodyType || "Not set"}
+              </p>
+              <p className='mt-2 text-sm text-slate-400'>
+                {onboardingData.metabolism || "Lifestyle not available"}
+              </p>
+            </div>
+            <div className='rounded-2xl border border-slate-800/70 bg-slate-900/60 p-4'>
+              <p className='text-xs uppercase tracking-[0.3em] text-slate-400'>
+                Coach suggestion
+              </p>
+              <p className='mt-2 text-lg font-semibold text-white'>
+                {onboardingData.coachSuggestion || "Auto coach"}
+              </p>
+              <p className='mt-2 text-sm text-slate-400'>
+                {onboardingData.lifestyle || "Lifestyle not recorded"}
+              </p>
+            </div>
+            <div className='rounded-2xl border border-slate-800/70 bg-slate-900/60 p-4'>
+              <p className='text-xs uppercase tracking-[0.3em] text-slate-400'>
+                Projection
+              </p>
+              <div className='mt-2 space-y-2'>
+                {(onboardingData.projection || []).map((point) => (
+                  <div
+                    key={point.label}
+                    className='flex items-center justify-between text-sm text-slate-300'>
+                    <span>{point.label}</span>
+                    <span className='font-semibold text-white'>
+                      {point.weight?.toFixed(1) ?? "--"} kg
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        : null}
       </div>
 
       <div className='grid gap-4 xl:grid-cols-[1.6fr,1fr]'>

@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 
 const ProtectedRoutes = ({ children, allowedRoles = [] }) => {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, onboardingComplete } = useContext(AuthContext);
   const location = useLocation();
 
   if (loading) {
@@ -34,6 +34,12 @@ const ProtectedRoutes = ({ children, allowedRoles = [] }) => {
         />
       );
     }
+  }
+
+  const currentPath = location.pathname.toLowerCase();
+  const isOnboardingRoute = currentPath === "/onboarding";
+  if (user && !onboardingComplete && !isOnboardingRoute) {
+    return <Navigate to="/onboarding" replace />;
   }
 
   return children;

@@ -46,6 +46,7 @@ import UserMessage from "./pages/chat/Message";
 import ClientDetail from "./pages/coach/ClientDetail";
 import Steps from "./pages/steps/Steps";
 import Step from "./pages/coach/Step";
+import Onboarding from "./pages/onboarding";
 function App() {
   return (
     <>
@@ -367,6 +368,14 @@ function App() {
                 element={
                   <ProtectedRoutes>
                     <UserMessage />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/onboarding'
+                element={
+                  <ProtectedRoutes>
+                    <Onboarding />
                   </ProtectedRoutes>
                 }
               />

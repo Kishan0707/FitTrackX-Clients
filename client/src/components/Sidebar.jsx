@@ -165,7 +165,7 @@ export const userMenuSections = [
   {
     title: "Communication",
     items: [
-      { name: "Chat", path: "/coach/chat", icon: <FaComments /> },
+      { name: "Chat", path: "/chat", icon: <FaComments /> },
       {
         name: "Notifications",
         path: "/coach/notifications",

@@ -90,7 +90,7 @@ const Register = ({ togglePanel }) => {
   };
 
   return (
-    <div className='flex items-center justify-end w-1/2 h-full p-5 gap-15 md:translate-x-10'>
+    <div className='flex items-center justify-end w-1/2 h-full md:p-5  gap-15 md:translate-x-10'>
       {error && (
         <div className='bg-red-500 text-white p-2 rounded mb-2 absolute right-10 top-10'>
           {error}
@@ -137,8 +137,8 @@ const Register = ({ togglePanel }) => {
               "Sending..."
             : "OTP"}
           </button>
-          <span className='text-xs text-slate-300'>{otpStatus}</span>
         </div>
+        <span className='text-xs text-slate-300'>{otpStatus}</span>
         {otpError && <p className='text-xs text-rose-300 w-3/5'>{otpError}</p>}
 
         <input

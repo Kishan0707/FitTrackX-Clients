@@ -266,7 +266,7 @@ const HealthTips = () => {
         </div>
 
         {selectedTip && (
-          <div className='fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-6'>
+          <div className='fixed inset-0 z-90 flex items-center justify-center bg-black/70 p-6'>
             <div className='max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-slate-800 bg-slate-950 p-6 shadow-[0_35px_80px_rgba(0,0,0,0.75)]'>
               <div className='flex items-start justify-between gap-3'>
                 <div>
@@ -283,63 +283,61 @@ const HealthTips = () => {
                   Close
                 </button>
               </div>
-              <p className='mt-4 text-sm text-slate-300'>
-                <div className='mt-4 space-y-4 text-sm text-slate-300'>
-                  {/* Causes */}
-                  <div>
-                    <h4 className='text-white font-semibold mb-1'>📌 Causes</h4>
-                    <ul className='list-disc pl-5 space-y-1'>
-                      {selectedTip.causes.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Solutions */}
-                  <div>
-                    <h4 className='text-white font-semibold mb-1'>
-                      ✅ Solutions
-                    </h4>
-                    <ul className='list-disc pl-5 space-y-1'>
-                      {selectedTip.solution.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Diet */}
-                  <div>
-                    <h4 className='text-white font-semibold mb-1'>🥗 Diet</h4>
-                    <ul className='list-disc pl-5 space-y-1'>
-                      {selectedTip.diet.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Lifestyle */}
-                  <div>
-                    <h4 className='text-white font-semibold mb-1'>
-                      💤 Lifestyle
-                    </h4>
-                    <ul className='list-disc pl-5 space-y-1'>
-                      {selectedTip.lifestyle.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Avoid */}
-                  <div>
-                    <h4 className='text-white font-semibold mb-1'>🚫 Avoid</h4>
-                    <ul className='list-disc pl-5 space-y-1'>
-                      {selectedTip.avoid.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
+              <div className='mt-4 space-y-4 text-sm text-slate-300'>
+                {/* Causes */}
+                <div>
+                  <h4 className='text-white font-semibold mb-1'>📌 Causes</h4>
+                  <ul className='list-disc pl-5 space-y-1'>
+                    {selectedTip.causes.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
                 </div>
-              </p>
+
+                {/* Solutions */}
+                <div>
+                  <h4 className='text-white font-semibold mb-1'>
+                    ✅ Solutions
+                  </h4>
+                  <ul className='list-disc pl-5 space-y-1'>
+                    {selectedTip.solution.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Diet */}
+                <div>
+                  <h4 className='text-white font-semibold mb-1'>🥗 Diet</h4>
+                  <ul className='list-disc pl-5 space-y-1'>
+                    {selectedTip.diet.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Lifestyle */}
+                <div>
+                  <h4 className='text-white font-semibold mb-1'>
+                    💤 Lifestyle
+                  </h4>
+                  <ul className='list-disc pl-5 space-y-1'>
+                    {selectedTip.lifestyle.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Avoid */}
+                <div>
+                  <h4 className='text-white font-semibold mb-1'>🚫 Avoid</h4>
+                  <ul className='list-disc pl-5 space-y-1'>
+                    {selectedTip.avoid.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
               <div className='mt-5 flex flex-wrap gap-2 text-xs uppercase tracking-[0.3em] text-slate-400'>
                 {selectedTip.tags.map((tag) => (
                   <span

@@ -38,7 +38,8 @@ const ProtectedRoutes = ({ children, allowedRoles = [] }) => {
 
   const currentPath = location.pathname.toLowerCase();
   const isOnboardingRoute = currentPath === "/onboarding";
-  if (user && !onboardingComplete && !isOnboardingRoute) {
+  const requiresOnboarding = user?.role === "user";
+  if (requiresOnboarding && user && !onboardingComplete && !isOnboardingRoute) {
     return <Navigate to="/onboarding" replace />;
   }
 

@@ -24,6 +24,12 @@ const StatCard = ({ icon, label, value, sub, color }) => (
   </div>
 );
 
+const healthTips = [
+  { title: "Hydration", detail: "Drink 30ml per kg of body weight spaced across the day." },
+  { title: "Protein", detail: "Keep 25–30g of protein per meal to preserve lean mass." },
+  { title: "Move Often", detail: "Stand/stretch every hour when coaching virtually or between sessions." },
+];
+
 const CoachDashboard = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({});
@@ -31,19 +37,21 @@ const CoachDashboard = () => {
   const [sessions, setSessions] = useState([]);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
 
   const fetchAll = async () => {
     try {
-      const [statsRes, pendingRes, sessionsRes, clientsRes] = await Promise.all(
-        [
-          API.get("/coach/dashboard"),
-          API.get("/coach/pending-requests"),
-          API.get("/sessions/my-sessions").catch(() => ({
-            data: { data: [] },
-          })),
-          API.get("/coach/clients"),
-        ],
-      );
+    const [statsRes, pendingRes, sessionsRes, clientsRes] = await Promise.all(
+      [
+        API.get("/coach/dashboard"),
+        API.get("/coach/pending-requests"),
+        API.get("/sessions/my-sessions").catch(() => ({
+          data: { data: [] },
+        })),
+        API.get("/coach/clients"),
+      ],
+    );
       setStats(statsRes.data.data || {});
       setPending(pendingRes.data.data || []);
       setSessions(sessionsRes.data.data || []);
@@ -56,7 +64,20 @@ const CoachDashboard = () => {
   };
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      setLoadingProducts(true);
+      try {
+        const res = await API.get("/products");
+        setProducts(res.data.data || []);
+      } catch (error) {
+        console.error("Failed to load products:", error);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
     fetchAll();
+    fetchProducts();
   }, []);
 
   const respond = async (clientId, action) => {
@@ -212,6 +233,69 @@ const CoachDashboard = () => {
                 ))}
               </div>
             }
+          </div>
+        </div>
+
+        {/* Products + tips */}
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+          <div className='rounded-xl border border-slate-700 bg-slate-800 p-5 space-y-3'>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-white font-semibold'>Products</h2>
+              <button
+                onClick={() => navigate("/products")}
+                className='text-xs uppercase tracking-[0.3em] text-blue-400 hover:underline flex items-center gap-1'>
+                Manage <FaArrowRight className='text-[10px]' />
+              </button>
+            </div>
+            {loadingProducts ? (
+              <p className='text-sm text-slate-400'>Loading...</p>
+            ) : products.length === 0 ? (
+              <p className='text-sm text-slate-400'>No products live yet.</p>
+            ) : (
+              <div className='grid gap-2 sm:grid-cols-2'>
+                {products.slice(0, 4).map((product) => (
+                  <div
+                    key={product._id}
+                    className='rounded-2xl border border-slate-900 bg-slate-950/40 p-3 text-sm text-slate-200'>
+                    <div className='flex items-center justify-between text-xs text-slate-500'>
+                      <span>{product.coach?.name || "Coach"}</span>
+                      <span>GST {product.gstRate ?? 18}%</span>
+                    </div>
+                    <h3 className='text-white text-lg font-semibold mt-1'>
+                      {product.name}
+                    </h3>
+                    <p className='text-xs text-slate-400'>
+                      ₹{product.finalPrice?.toFixed(2)} incl. GST
+                    </p>
+                    <p className='text-xs text-slate-500 mt-1 line-clamp-2'>
+                      {product.instructions || "Add coach instructions for buyers."}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className='rounded-xl border border-slate-700 bg-slate-800 p-5 space-y-3'>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-white font-semibold'>Health Tips</h2>
+              <button
+                onClick={() => navigate("/health-tips")}
+                className='text-xs uppercase tracking-[0.3em] text-blue-400 hover:underline flex items-center gap-1'>
+                View <FaArrowRight className='text-[10px]' />
+              </button>
+            </div>
+            <div className='grid gap-2 sm:grid-cols-2'>
+              {healthTips.map((tip) => (
+                <div
+                  key={tip.title}
+                  className='rounded-2xl border border-slate-900 bg-slate-950/40 p-3 text-sm text-slate-200'>
+                  <p className='text-xs uppercase tracking-[0.3em] text-slate-500'>
+                    {tip.title}
+                  </p>
+                  <p className='mt-1 text-sm text-slate-300'>{tip.detail}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

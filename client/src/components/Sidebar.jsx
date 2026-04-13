@@ -17,6 +17,8 @@ import {
   FaComments,
   FaWalking,
   FaChevronDown,
+  FaShoppingBag,
+  FaHeartbeat,
 } from "react-icons/fa";
 import { GrSchedule } from "react-icons/gr";
 import { MdManageAccounts } from "react-icons/md";
@@ -56,6 +58,11 @@ export const adminMenuSections = [
         name: "Diet Management",
         path: "/admin/diet",
         icon: <FaAppleAlt />,
+      },
+      {
+        name: "Product Requests",
+        path: "/admin/products",
+        icon: <FaShoppingBag />,
       },
     ],
   },
@@ -125,6 +132,7 @@ export const coachMenuSections = [
     items: [
       { name: "AI Trainer", path: "/coach/ai", icon: <FaRobot /> },
       { name: "Reports", path: "/coach/reports", icon: <FaFileAlt /> },
+      { name: "Products", path: "/products", icon: <FaShoppingBag /> },
     ],
   },
   {
@@ -182,7 +190,16 @@ export const userMenuSections = [
   },
   {
     title: "Tools",
-    items: [{ name: "AI Trainer", path: "/ai", icon: <FaRobot /> }],
+    items: [
+      { name: "AI Trainer", path: "/ai", icon: <FaRobot /> },
+      { name: "Products", path: "/products", icon: <FaShoppingBag /> },
+    ],
+  },
+  {
+    title: "Wellness",
+    items: [
+      { name: "Health Tips", path: "/health-tips", icon: <FaHeartbeat /> },
+    ],
   },
   {
     title: "Membership",

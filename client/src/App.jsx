@@ -20,6 +20,7 @@ import Progress from "./pages/progress/Progress";
 import CoachProgress from "./pages/coach/Progress";
 import CoachReport from "./pages/coach/Report";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProducts from "./pages/admin/AdminProducts";
 import AdminUsers from "./pages/admin/Users";
 import AdminWorkouts from "./pages/admin/Workouts";
 import CoachDashboard from "./pages/coach/CoachDashboard";
@@ -47,6 +48,8 @@ import ClientDetail from "./pages/coach/ClientDetail";
 import Steps from "./pages/steps/Steps";
 import Step from "./pages/coach/Step";
 import Onboarding from "./pages/onboarding";
+import Products from "./pages/products/Products";
+import HealthTips from "./pages/health/HealthTips";
 function App() {
   return (
     <>
@@ -155,6 +158,14 @@ function App() {
                 element={
                   <ProtectedRoutes allowedRoles={["admin"]}>
                     <AdminDiet />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/admin/products'
+                element={
+                  <ProtectedRoutes allowedRoles={["admin"]}>
+                    <AdminProducts />
                   </ProtectedRoutes>
                 }
               />
@@ -376,6 +387,22 @@ function App() {
                 element={
                   <ProtectedRoutes>
                     <Onboarding />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/products'
+                element={
+                  <ProtectedRoutes>
+                    <Products />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/health-tips'
+                element={
+                  <ProtectedRoutes>
+                    <HealthTips />
                   </ProtectedRoutes>
                 }
               />

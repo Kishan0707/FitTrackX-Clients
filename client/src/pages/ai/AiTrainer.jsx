@@ -301,8 +301,17 @@ const AiTrainer = () => {
                           return (
                             <div
                               key={exIndex}
-                              onClick={() => setSelectedExercise(exercise)}
-                              className={`bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-white/10 transition-colors duration-200 ${exercise.isCompleted ? "bg-green-500/20" : "bg-red-500 hover:bg-white/10"}`}>
+                              onClick={() =>
+                                setSelectedExercise({
+                                  ...exercise,
+                                  workoutId: day._id,
+                                })
+                              }
+                              className={`bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-white/10 transition-colors duration-200 ${
+                                exercise.isCompleted ? "bg-green-500/20" : (
+                                  " hover:bg-white/10"
+                                )
+                              }`}>
                               <div className='flex justify-between items-center'>
                                 <span className='text-gray-200 font-medium'>
                                   {exercise.name || exercise}

@@ -47,12 +47,14 @@ const AiTrainer = () => {
       setLoading(false);
     }
   };
-  const handleComplete = (exercise) => {
+  const handleComplete = async (exercise) => {
     try {
-      API.post("/workouts/complete-exercise", {
+      await API.post("/workouts/complete-exercise", {
         workoutId: selectedExercise.workoutId,
         exerciseName: selectedExercise.name,
       });
+      console.log(selectedExercise.workoutId);
+      console.log(selectedExercise.name);
       const updated = {
         ...completed,
         [exercise.name]: true,
@@ -301,12 +303,7 @@ const AiTrainer = () => {
                           return (
                             <div
                               key={exIndex}
-                              onClick={() =>
-                                setSelectedExercise({
-                                  ...exercise,
-                                  workoutId: day._id,
-                                })
-                              }
+                              onClick={() => setSelectedExercise(exWithWorkout)}
                               className={`bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-white/10 transition-colors duration-200 ${
                                 exercise.isCompleted ? "bg-green-500/20" : (
                                   " hover:bg-white/10"

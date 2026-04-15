@@ -12,9 +12,14 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") || "dark", // ✅ default dark
-  );
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (!savedTheme) {
+      localStorage.setItem("theme", "dark");
+      return "dark";
+    }
+    return savedTheme;
+  }); // Force dark default on first load
 
   useEffect(() => {
     localStorage.setItem("theme", theme);

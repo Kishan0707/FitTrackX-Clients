@@ -19,6 +19,9 @@ import {
   FaChevronDown,
   FaShoppingBag,
   FaHeartbeat,
+  FaShoppingBasket,
+  FaStore,
+  FaMoneyBill,
 } from "react-icons/fa";
 import { GrSchedule } from "react-icons/gr";
 import { MdManageAccounts } from "react-icons/md";
@@ -151,6 +154,13 @@ export const userMenuSections = [
     items: [{ name: "Dashboard", path: "/dashboard", icon: <FaChartLine /> }],
   },
   {
+    title: "Marketplace",
+    items: [
+      { name: "My Orders", path: "/orders", icon: <FaClipboardList /> },
+      { name: "Cart", path: "/cart", icon: <FaShoppingBasket /> },
+    ],
+  },
+  {
     title: "Workouts",
     items: [
       { name: "Add Workouts", path: "/workouts", icon: <FaDumbbell /> },
@@ -176,7 +186,7 @@ export const userMenuSections = [
       { name: "Chat", path: "/chat", icon: <FaComments /> },
       {
         name: "Notifications",
-        path: "/coach/notifications",
+        path: "/notifications",
         icon: <FaBell />,
       },
     ],
@@ -199,6 +209,7 @@ export const userMenuSections = [
     title: "Wellness",
     items: [
       { name: "Health Tips", path: "/health-tips", icon: <FaHeartbeat /> },
+      { name: "Grocery ", path: "/grocery", icon: <FaStore /> },
     ],
   },
   {
@@ -210,7 +221,30 @@ export const userMenuSections = [
     items: [{ name: "Settings", path: "/settings", icon: <FaCog /> }],
   },
 ];
-
+export const sellerMenuSections = [
+  {
+    title: "Store",
+    items: [
+      { name: "Dashboard", path: "/seller", icon: <FaStore /> },
+      {
+        name: "My Products",
+        path: "/seller/products",
+        icon: <FaShoppingBag />,
+      },
+      { name: "Orders", path: "/seller/orders", icon: <FaClipboardList /> },
+    ],
+  },
+];
+export const affiliateMenuSections = [
+  {
+    title: "Affiliate",
+    items: [
+      { name: "Dashboard", path: "/affiliate", icon: <FaChartLine /> },
+      { name: "Earnings", path: "/affiliate/earnings", icon: <FaMoneyBill /> },
+      { name: "Referrals", path: "/affiliate/referrals", icon: <FaUsers /> },
+    ],
+  },
+];
 const getInitialOpenSections = (sections) =>
   sections.reduce((acc, section) => {
     if (section.title) {
@@ -237,6 +271,10 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
     menuSections = adminMenuSections;
   } else if (userRole === "coach") {
     menuSections = coachMenuSections;
+  } else if (userRole === "seller") {
+    menuSections = sellerMenuSections;
+  } else if (userRole === "affiliate") {
+    menuSections = affiliateMenuSections;
   } else {
     menuSections = userMenuSections;
   }
@@ -388,34 +426,39 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
                               }
                             }}
                             className={({ isActive }) =>
-                              `group flex items-center rounded-2xl border p-3 py-1 transition-all duration-200 ${
-                                menuBtn ? "justify-center gap-0 p-3" : "gap-3"
+                              `group relative flex items-center rounded-2xl border p-3 py-2 transition-all duration-300 overflow-hidden ${
+                                menuBtn ? "justify-center" : "gap-3"
                               } ${
                                 isActive ?
                                   "border-red-500/20 bg-gradient-to-r from-red-500/20 via-red-500/10 to-transparent text-white shadow-lg shadow-red-950/30"
-                                : "border-transparent text-slate-300 hover:border-slate-800 hover:bg-slate-800/70 hover:text-white"
+                                : "border-transparent text-slate-300 hover:border-purple-500/30 hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-transparent hover:shadow-lg hover:shadow-purple-500/10"
                               }`
                             }>
                             {({ isActive }) => (
                               <>
+                                {/* 🔥 ICON */}
                                 <span
-                                  className={`flex h-10 w-10 leading-10 shrink-0 duration-200 items-center justify-center rounded-xl border text-lg transition-colors ${
+                                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-lg transition-all duration-300 ${
                                     isActive ?
                                       "border-red-400/20 bg-red-500/15 text-white"
-                                    : "border-slate-800 bg-slate-900/90 text-slate-400 group-hover:border-slate-700 group-hover:text-slate-200"
+                                    : "border-slate-800 bg-slate-900/90 text-slate-400 group-hover:border-purple-400 group-hover:text-purple-300 group-hover:scale-110"
                                   }`}>
                                   {item.icon}
                                 </span>
-                                {!menuBtn ?
-                                  <span className='flex min-w-0 flex-1 items-center justify-between gap-3 truncate transition-opacity duration-300 opacity-100'>
-                                    <span className='truncate text-sm font-medium'>
+
+                                {/* 🔥 TEXT */}
+                                {!menuBtn && (
+                                  <span className='flex min-w-0 flex-1 items-center justify-between gap-3 truncate'>
+                                    <span className='truncate text-sm font-medium transition-all duration-300 group-hover:text-purple-300 group-hover:translate-x-1'>
                                       {item.name}
                                     </span>
-                                    {isActive ?
+
+                                    {/* 🔥 ACTIVE DOT */}
+                                    {isActive && (
                                       <span className='h-2 w-2 rounded-full bg-red-300 shadow-[0_0_0_4px_rgba(248,113,113,0.12)]' />
-                                    : null}
+                                    )}
                                   </span>
-                                : null}
+                                )}
                               </>
                             )}
                           </NavLink>

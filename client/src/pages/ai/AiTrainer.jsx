@@ -51,7 +51,11 @@ const AiTrainer = () => {
     try {
       await API.post("/workouts/complete-exercise", {
         workoutId: selectedExercise.workoutId,
-        exerciseName: selectedExercise.name,
+        exerciseId: selectedExercise._id,
+      });
+      console.log("Sending:", {
+        workoutId: selectedExercise.workoutId,
+        exerciseId: selectedExercise._id,
       });
       console.log(selectedExercise.workoutId);
       console.log(selectedExercise.name);
@@ -61,8 +65,10 @@ const AiTrainer = () => {
       };
       setCompleted(updated);
       setSelectedExercise(null);
+      setSuccess("workout completed successfully");
     } catch (err) {
       console.log(err);
+      setError("Workout not completed somthing went wrong ");
     }
   };
 
@@ -358,8 +364,12 @@ const AiTrainer = () => {
               </video>
 
               {/* 📋 SETS REPS */}
-              <p className='mb-2'>Sets: {selectedExercise.sets || 3}</p>
-              <p className='mb-4'>Reps: {selectedExercise.reps || 10}</p>
+              <p className='mb-2 text-black'>
+                Sets: {selectedExercise.sets || 3}
+              </p>
+              <p className='mb-4 text-black'>
+                Reps: {selectedExercise.reps || 10}
+              </p>
 
               {/* ✔ COMPLETE BUTTON */}
               <button

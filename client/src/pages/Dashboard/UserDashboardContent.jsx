@@ -289,7 +289,7 @@ const UserDashboardContent = ({
     return (now - date) / (1000 * 60 * 60 * 24) <= 7;
   });
   return (
-    <div className='flex flex-col gap-5'>
+    <div className='flex flex-col gap-5 mb-28'>
       <div className='space-y-6'>
         <div className='flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between'>
           <div>

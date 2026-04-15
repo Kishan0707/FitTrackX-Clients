@@ -158,7 +158,7 @@ const HealthTips = () => {
   const popularProblems = ["Hair Fall", "Acne", "Weight Gain", "Low Energy"];
   return (
     <DashboardLayout>
-      <div className='space-y-8'>
+      <div className='space-y-8 mb-28'>
         <header className='space-y-3 text-white'>
           <p className='text-xs uppercase tracking-[0.4em] text-slate-500'>
             Health cues

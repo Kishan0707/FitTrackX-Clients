@@ -579,7 +579,7 @@ const Products = () => {
 
   return (
     <DashboardLayout>
-      <div className='space-y-6'>
+      <div className='space-y-6 mb-28'>
         <header className='space-y-2 text-white'>
           <p className='text-xs uppercase tracking-[0.4em] text-slate-500'>
             Coach store

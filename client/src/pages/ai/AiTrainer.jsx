@@ -1,5 +1,4 @@
 import { useState } from "react";
-import React from "react";
 import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
 
@@ -7,6 +6,7 @@ const AiTrainer = () => {
   const [goal, setGoal] = useState("");
   const [experience, setExperience] = useState("");
   const [plan, setPlan] = useState([]);
+  const [planId, setPlanId] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
@@ -16,27 +16,26 @@ const AiTrainer = () => {
   const generateWorkout = async () => {
     try {
       setLoading(true);
-      const res = await API.post("/ai/ai-workout", {
-        goal,
-        experience,
-      });
+      const res = await API.post("/ai/ai-workout", { goal, experience });
 
-      if (!res.data.data) {
+      const days = res?.data?.data?.days ?? res?.data?.data;
+      const nextPlanId = res?.data?.data?.planId || "";
+
+      if (!Array.isArray(days) || days.length === 0) {
         setError("No plan generated");
         return;
       }
 
-      if (res.data.data.length === 0) {
-        setError("No plan generated");
-        return;
-      }
-
-      setPlan(res.data.data);
-      setSuccess("Workout Plan Generated Successfully! 💪");
+      setPlan(days);
+      setPlanId(nextPlanId);
+      setSuccess(
+        res?.data?.saved ?
+          "Workout plan generated and saved successfully!"
+        : "Workout plan generated successfully!",
+      );
       setTimeout(() => setSuccess(""), 3000);
       setError("");
     } catch (err) {
-      console.log(err);
       setError(
         err.response?.data?.error ||
           err.response?.data?.message ||
@@ -47,28 +46,49 @@ const AiTrainer = () => {
       setLoading(false);
     }
   };
+
   const handleComplete = async (exercise) => {
     try {
-      await API.post("/workouts/complete-exercise", {
-        workoutId: selectedExercise.workoutId,
-        exerciseId: selectedExercise._id,
-      });
-      console.log("Sending:", {
-        workoutId: selectedExercise.workoutId,
-        exerciseId: selectedExercise._id,
-      });
-      console.log(selectedExercise.workoutId);
-      console.log(selectedExercise.name);
-      const updated = {
-        ...completed,
-        [exercise.name]: true,
+      if (!exercise?.planId || !exercise?.dayId || !exercise?.exerciseId) {
+        setError(
+          "Generate the plan while logged in to save it before completing exercises.",
+        );
+        return;
+      }
+
+      const payload = {
+        planId: exercise.planId,
+        dayId: exercise.dayId,
+        exerciseId: exercise.exerciseId,
       };
-      setCompleted(updated);
+
+      await API.post("/ai/complete-exercise", payload);
+
+      setCompleted((prev) => ({ ...prev, [exercise.name]: true }));
+
+      setPlan((prev) =>
+        prev.map((day) => {
+          if (String(day?._id) !== String(exercise.dayId)) return day;
+
+          const nextExercises =
+            Array.isArray(day.exercises) ?
+              day.exercises.map((ex) =>
+                String(ex?._id) === String(exercise.exerciseId) ?
+                  { ...ex, isCompleted: true }
+                : ex,
+              )
+            : day.exercises;
+
+          return { ...day, exercises: nextExercises };
+        }),
+      );
+
       setSelectedExercise(null);
-      setSuccess("workout completed successfully");
+      setSuccess("Workout completed successfully");
+      setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
-      console.log(err);
-      setError("Workout not completed somthing went wrong ");
+      setError("Workout not completed, something went wrong");
+      setTimeout(() => setError(""), 3000);
     }
   };
 
@@ -76,19 +96,19 @@ const AiTrainer = () => {
     {
       value: "muscle gain",
       label: "Muscle Gain",
-      icon: "💪",
+      icon: "\u{1F4AA}",
       desc: "Build strength & size",
     },
     {
       value: "fat loss",
       label: "Fat Loss",
-      icon: "🔥",
+      icon: "\u{1F525}",
       desc: "Burn fat & get lean",
     },
     {
       value: "strength",
       label: "Strength",
-      icon: "🏋️",
+      icon: "\u{1F3CB}\uFE0F",
       desc: "Maximize power",
     },
   ];
@@ -97,16 +117,21 @@ const AiTrainer = () => {
     {
       value: "beginner",
       label: "Beginner",
-      icon: "🌱",
+      icon: "\u{1F331}",
       desc: "New to fitness",
     },
     {
       value: "intermediate",
       label: "Intermediate",
-      icon: "⚡",
+      icon: "\u26A1",
       desc: "Some experience",
     },
-    { value: "expert", label: "Expert", icon: "👑", desc: "Advanced level" },
+    {
+      value: "expert",
+      label: "Expert",
+      icon: "\u{1F451}",
+      desc: "Advanced level",
+    },
   ];
 
   return (
@@ -131,7 +156,7 @@ const AiTrainer = () => {
           <div className='max-w-4xl mx-auto mb-6 px-4'>
             <div className='bg-linear-to-r from-red-500 to-pink-500 text-white p-4 rounded-xl shadow-lg animate-bounce border border-red-400'>
               <div className='flex items-center'>
-                <span className='text-2xl mr-3'>⚠️</span>
+                <span className='text-2xl mr-3'>{"\u26A0\uFE0F"}</span>
                 <span className='font-semibold'>{error}</span>
               </div>
             </div>
@@ -142,7 +167,7 @@ const AiTrainer = () => {
           <div className='max-w-4xl mx-auto mb-6 px-4'>
             <div className='bg-linear-to-r from-green-500 to-emerald-500 text-white p-4 rounded-xl shadow-lg animate-pulse border border-green-400'>
               <div className='flex items-center'>
-                <span className='text-2xl mr-3'>🎉</span>
+                <span className='text-2xl mr-3'>{"\u{1F389}"}</span>
                 <span className='font-semibold'>{success}</span>
               </div>
             </div>
@@ -160,7 +185,7 @@ const AiTrainer = () => {
               {/* Goal Selection */}
               <div>
                 <label className='block text-lg font-semibold text-white mb-4'>
-                  🎯 Your Goal
+                  {"\u{1F3AF}"} Your Goal
                 </label>
                 <div className='space-y-3'>
                   {goalOptions.map((option) => (
@@ -176,11 +201,19 @@ const AiTrainer = () => {
                         <span className='text-2xl mr-3'>{option.icon}</span>
                         <div>
                           <div
-                            className={`font-semibold ${goal === option.value ? "text-white" : "text-gray-300"}`}>
+                            className={`font-semibold ${
+                              goal === option.value ?
+                                "text-white"
+                              : "text-gray-300"
+                            }`}>
                             {option.label}
                           </div>
                           <div
-                            className={`text-sm ${goal === option.value ? "text-purple-100" : "text-gray-400"}`}>
+                            className={`text-sm ${
+                              goal === option.value ?
+                                "text-purple-100"
+                              : "text-gray-400"
+                            }`}>
                             {option.desc}
                           </div>
                         </div>
@@ -193,7 +226,7 @@ const AiTrainer = () => {
               {/* Experience Selection */}
               <div>
                 <label className='block text-lg font-semibold text-white mb-4'>
-                  📊 Experience Level
+                  {"\u{1F4CA}"} Experience Level
                 </label>
                 <div className='space-y-3'>
                   {experienceOptions.map((option) => (
@@ -209,11 +242,19 @@ const AiTrainer = () => {
                         <span className='text-2xl mr-3'>{option.icon}</span>
                         <div>
                           <div
-                            className={`font-semibold ${experience === option.value ? "text-white" : "text-gray-300"}`}>
+                            className={`font-semibold ${
+                              experience === option.value ?
+                                "text-white"
+                              : "text-gray-300"
+                            }`}>
                             {option.label}
                           </div>
                           <div
-                            className={`text-sm ${experience === option.value ? "text-blue-100" : "text-gray-400"}`}>
+                            className={`text-sm ${
+                              experience === option.value ?
+                                "text-blue-100"
+                              : "text-gray-400"
+                            }`}>
                             {option.desc}
                           </div>
                         </div>
@@ -240,7 +281,7 @@ const AiTrainer = () => {
                     Generating Your Plan...
                   </div>
                 : <div className='flex items-center justify-center'>
-                    <span className='mr-2'>🚀</span>
+                    <span className='mr-2'>{"\u{1F680}"}</span>
                     Generate Workout Plan
                   </div>
                 }
@@ -257,26 +298,27 @@ const AiTrainer = () => {
                 Your Personalized Workout Plan
               </h2>
               <p className='text-xl text-gray-300'>
-                Follow this AI-generated plan to achieve your fitness goals! 💪
+                Follow this AI-generated plan to achieve your fitness goals!{" "}
+                {"\u{1F4AA}"}
               </p>
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
               {plan.map((day, index) => (
                 <div
-                  key={index}
+                  key={day?._id || index}
                   className='bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl'>
                   {/* Day Header */}
                   <div className='flex items-center mb-4'>
                     <div className='w-12 h-12 bg-linear-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4'>
-                      {day.day}
+                      {day.day || String(index + 1)}
                     </div>
                     <div>
                       <h3 className='text-xl font-bold text-white'>
-                        {day.workout}
+                        {day.workout || day.title}
                       </h3>
                       <p className='text-gray-400 text-sm'>
-                        Day {day.day} Workout
+                        Day {day.day || String(index + 1)} Workout
                       </p>
                     </div>
                   </div>
@@ -296,14 +338,22 @@ const AiTrainer = () => {
                   {day.exercises && day.exercises.length > 0 && (
                     <div>
                       <h4 className='text-lg font-semibold text-white mb-3 flex items-center'>
-                        <span className='mr-2'>🏋️</span>
+                        <span className='mr-2'>{"\u{1F3CB}\uFE0F"}</span>
                         Exercises
                       </h4>
                       <div className='space-y-2'>
                         {day.exercises.map((exercise, exIndex) => {
+                          const exerciseName = exercise?.name || exercise;
+                          const isCompletedExercise =
+                            Boolean(exercise?.isCompleted) ||
+                            Boolean(completed?.[exerciseName]);
+
                           const exWithWorkout = {
                             ...exercise,
-                            workoutId: day._id,
+                            planId,
+                            dayId: day._id,
+                            exerciseId: exercise._id,
+                            name: exerciseName,
                           };
 
                           return (
@@ -311,16 +361,16 @@ const AiTrainer = () => {
                               key={exIndex}
                               onClick={() => setSelectedExercise(exWithWorkout)}
                               className={`bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-white/10 transition-colors duration-200 ${
-                                exercise.isCompleted ? "bg-green-500/20" : (
+                                isCompletedExercise ? "bg-green-500/20" : (
                                   " hover:bg-white/10"
                                 )
                               }`}>
                               <div className='flex justify-between items-center'>
-                                <span className='text-gray-200 font-medium'>
-                                  {exercise.name || exercise}
+                                <span className='text-gray-200 font-medium truncate'>
+                                  {exerciseName}
                                 </span>
-                                <span className='text-purple-300 font-semibold text-sm bg-purple-500/20 px-2 py-1 rounded-full'>
-                                  {exercise.sets || 3} × {exercise.reps || 10}
+                                <span className='text-purple-300 font-semibold text-sm bg-purple-500/20 px-2 py-1 rounded-full truncate'>
+                                  {exercise.sets || 3} x {exercise.reps || 10}
                                 </span>
                               </div>
                             </div>
@@ -333,7 +383,7 @@ const AiTrainer = () => {
                   {/* Rest Day */}
                   {(!day.exercises || day.exercises.length === 0) && (
                     <div className='text-center py-8'>
-                      <span className='text-4xl mb-2 block'>😴</span>
+                      <span className='text-4xl mb-2 block'>{"\u{1F634}"}</span>
                       <p className='text-gray-400 font-medium'>Rest Day</p>
                       <p className='text-gray-500 text-sm'>
                         Take it easy, recover well!
@@ -345,6 +395,7 @@ const AiTrainer = () => {
             </div>
           </div>
         )}
+
         {selectedExercise && (
           <div className='fixed inset-0 bg-black/70 flex justify-center items-center z-50'>
             <div className='bg-white rounded-xl p-6 w-[400px] relative'>
@@ -363,19 +414,45 @@ const AiTrainer = () => {
                 <source src={selectedExercise.video || "/demo.mp4"} />
               </video>
 
-              {/* 📋 SETS REPS */}
-              <p className='mb-2 text-black'>
-                Sets: {selectedExercise.sets || 3}
-              </p>
+              {/* 🔥 SET LIST */}
+              <div className='space-y-2 mb-4'>
+                {[...Array(selectedExercise.sets || 3)].map((_, i) => {
+                  const key = `${selectedExercise.exerciseId}-set-${i}`;
+                  const inputId = `set-${i}`;
+                  return (
+                    <div
+                      key={i}
+                      className='flex justify-between items-center bg-gray-100 p-2 rounded hover:bg-slate-500'>
+                      <label className='text-slate-800' htmlFor={inputId}>
+                        Set {i + 1}
+                      </label>
+
+                      <input
+                        type='checkbox'
+                        id={inputId}
+                        checked={completed[key] || false}
+                        onChange={() => {
+                          setCompleted((prev) => ({
+                            ...prev,
+                            [key]: !prev[key],
+                          }));
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* REPS */}
               <p className='mb-4 text-black'>
                 Reps: {selectedExercise.reps || 10}
               </p>
 
-              {/* ✔ COMPLETE BUTTON */}
+              {/* COMPLETE BUTTON */}
               <button
                 onClick={() => handleComplete(selectedExercise)}
-                className='bg-green-500 text-white px-4 py-2 rounded'>
-                Mark as Done ✔
+                className='bg-green-500 text-white px-4 py-2 rounded w-full'>
+                Mark Exercise Done ✔
               </button>
             </div>
           </div>

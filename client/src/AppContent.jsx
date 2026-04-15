@@ -46,7 +46,6 @@ import ClientDetail from "./pages/coach/ClientDetail";
 import Steps from "./pages/steps/Steps";
 import Step from "./pages/coach/Step";
 import Onboarding from "./pages/onboarding";
-import Products from "./pages/products/Products";
 import HealthTips from "./pages/health/HealthTips";
 import Grocery from "./pages/health/Grocery";
 import ProductList from "./pages/products/ProductList";

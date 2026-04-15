@@ -2,6 +2,7 @@ import { Route } from "react-router-dom";
 import { Routes } from "react-router-dom";
 import { BrowserRouter, Navigate } from "react-router-dom";
 import "./App.css";
+import "./index.css";
 import Login from "./pages/auth/Login";
 import AppErrorBoundary from "./components/AppErrorBoundary";
 import ProtectedRoutes from "./components/ProtectedRoutes";
@@ -16,6 +17,7 @@ import Plans from "./pages/plans/Plans";
 import CoachPlans from "./pages/coach/Plans";
 import CoachMembers from "./pages/coach/Members";
 import CoachNotifications from "./pages/coach/Notifications";
+import Notifications from "./pages/Notifications";
 import Progress from "./pages/progress/Progress";
 import CoachProgress from "./pages/coach/Progress";
 import CoachReport from "./pages/coach/Report";
@@ -371,6 +373,14 @@ function App() {
                 element={
                   <ProtectedRoutes allowedRoles={["coach"]}>
                     <CoachNotifications />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path='/notifications'
+                element={
+                  <ProtectedRoutes>
+                    <Notifications />
                   </ProtectedRoutes>
                 }
               />

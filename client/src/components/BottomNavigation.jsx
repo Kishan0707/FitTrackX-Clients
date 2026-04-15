@@ -54,7 +54,7 @@ const BottomNavigation = () => {
       {/* Bottom Nav */}{" "}
       <div className='fixed bottom-0 left-0 right-0 z-50 md:hidden'>
         {" "}
-        <div className='relative backdrop-blur-xl bg-white/5 border-t border-white/10 rounded-tl-full rounded-tr-full pr-4 '>
+        <div className='relative rounded-tl-full rounded-tr-full border-t border-slate-200 bg-white/90 pr-4 backdrop-blur-xl transition-colors dark:border-white/10 dark:bg-white/5'>
           <div className='grid grid-cols-5 place-content-center translate-x-3 pt-2'>
             {menuWithFab.map((item, index) => {
               const isActive =
@@ -107,14 +107,16 @@ const BottomNavigation = () => {
                       <motion.div
                         whileTap={{ scale: 0.7 }}
                         className={`text-lg ${
-                          isActive ? "text-orange-500" : "text-slate-400"
+                          isActive
+                            ? "text-orange-500"
+                            : "text-slate-500 dark:text-slate-400"
                         }`}>
                         {item.icon}
                       </motion.div>
 
                       <span className='text-[10px]'>{item.name}</span>
                     </NavLink>
-                  : <button className='flex flex-col items-center text-slate-400'>
+                  : <button className='flex flex-col items-center text-slate-500 dark:text-slate-400'>
                       {item.icon}
                       <span className='text-[10px]'>{item.name}</span>
                     </button>

@@ -145,10 +145,10 @@ const Dashboard = () => {
     content = (
       <>
         <div className='mb-8'>
-          <h1 className='mb-2 text-3xl font-bold text-white'>
+          <h1 className='mb-2 text-3xl font-bold text-slate-900 dark:text-white'>
             Admin Dashboard
           </h1>
-          <p className='text-slate-400'>
+          <p className='text-slate-600 dark:text-slate-400'>
             Monitor your fitness platform&apos;s performance
           </p>
         </div>
@@ -177,24 +177,24 @@ const Dashboard = () => {
         </div>
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
-          <div className='rounded-xl bg-slate-900 p-6'>
+          <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
             <h3 className='mb-4 flex items-center text-xl font-semibold'>
               <FaChartLine className='mr-2 text-red-500' />
               Platform Overview
             </h3>
             <div className='space-y-4'>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Active Users</span>
+                <span className='text-slate-600 dark:text-slate-400'>Active Users</span>
                 <span className='font-semibold'>{stats.totalUsers || 0}</span>
               </div>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Total Activities</span>
+                <span className='text-slate-600 dark:text-slate-400'>Total Activities</span>
                 <span className='font-semibold'>
                   {(stats.totalWorkouts || 0) + (stats.totalDiets || 0)}
                 </span>
               </div>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Avg. Calories/User</span>
+                <span className='text-slate-600 dark:text-slate-400'>Avg. Calories/User</span>
                 <span className='font-semibold'>
                   {stats.totalUsers && stats.totalCaloriesBurned ?
                     Math.round(stats.totalCaloriesBurned / stats.totalUsers)
@@ -204,7 +204,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className='rounded-xl bg-slate-900 p-6'>
+          <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
             <h3 className='mb-4 flex items-center text-xl font-semibold'>
               <FaUsers className='mr-2 text-red-500' />
               Quick Actions
@@ -213,10 +213,10 @@ const Dashboard = () => {
               <button className='w-full rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700'>
                 Manage Users
               </button>
-              <button className='w-full rounded-lg bg-slate-700 px-4 py-2 text-white transition-colors hover:bg-slate-600'>
+              <button className='w-full rounded-lg bg-slate-200 px-4 py-2 text-slate-900 transition-colors hover:bg-slate-300 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600'>
                 View Reports
               </button>
-              <button className='w-full rounded-lg bg-slate-700 px-4 py-2 text-white transition-colors hover:bg-slate-600'>
+              <button className='w-full rounded-lg bg-slate-200 px-4 py-2 text-slate-900 transition-colors hover:bg-slate-300 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600'>
                 System Settings
               </button>
             </div>
@@ -228,10 +228,10 @@ const Dashboard = () => {
     content = (
       <>
         <div className='mb-8'>
-          <h1 className='mb-2 text-3xl font-bold text-white'>
+          <h1 className='mb-2 text-3xl font-bold text-slate-900 dark:text-white'>
             Coach Dashboard
           </h1>
-          <p className='text-slate-400'>
+          <p className='text-slate-600 dark:text-slate-400'>
             Manage your clients and track their progress
           </p>
         </div>
@@ -260,22 +260,22 @@ const Dashboard = () => {
         </div>
 
         <div className='mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2'>
-          <div className='rounded-xl bg-slate-900 p-6'>
+          <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
             <h3 className='mb-4 flex items-center text-xl font-semibold'>
               <FaChartLine className='mr-2 text-red-500' />
               Client Overview
             </h3>
             <div className='space-y-4'>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Active Clients</span>
+                <span className='text-slate-600 dark:text-slate-400'>Active Clients</span>
                 <span className='font-semibold'>{stats.totalClients || 0}</span>
               </div>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Active Plans</span>
+                <span className='text-slate-600 dark:text-slate-400'>Active Plans</span>
                 <span className='font-semibold'>{stats.activePlans || 0}</span>
               </div>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Sessions This Month</span>
+                <span className='text-slate-600 dark:text-slate-400'>Sessions This Month</span>
                 <span className='font-semibold'>
                   {stats.monthlySessions || 0}
                 </span>
@@ -283,26 +283,26 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className='rounded-xl bg-slate-900 p-6'>
+          <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
             <h3 className='mb-4 flex items-center text-xl font-semibold'>
               <FaUsers className='mr-2 text-red-500' />
               Client Progress
             </h3>
             <div className='space-y-4'>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Avg. Weight Loss</span>
+                <span className='text-slate-600 dark:text-slate-400'>Avg. Weight Loss</span>
                 <span className='font-semibold text-green-400'>
                   {stats.avgWeightLoss || 0} kg
                 </span>
               </div>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Completed Workouts</span>
+                <span className='text-slate-600 dark:text-slate-400'>Completed Workouts</span>
                 <span className='font-semibold'>
                   {stats.completedWorkouts || 0}
                 </span>
               </div>
               <div className='flex items-center justify-between'>
-                <span className='text-slate-400'>Client Satisfaction</span>
+                <span className='text-slate-600 dark:text-slate-400'>Client Satisfaction</span>
                 <span className='font-semibold text-yellow-400'>
                   {stats.clientSatisfaction || 0}%
                 </span>
@@ -311,7 +311,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className='rounded-xl bg-slate-900 p-6'>
+        <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
           <h3 className='mb-4 flex items-center text-xl font-semibold'>
             <FaPlus className='mr-2 text-red-500' />
             Quick Actions
@@ -321,11 +321,11 @@ const Dashboard = () => {
               <FaUsers className='mr-2' />
               Manage Clients
             </button>
-            <button className='flex items-center justify-center rounded-lg bg-slate-700 px-4 py-2 text-white transition-colors hover:bg-slate-600'>
+            <button className='flex items-center justify-center rounded-lg bg-slate-200 px-4 py-2 text-slate-900 transition-colors hover:bg-slate-300 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600'>
               <FaDumbbell className='mr-2' />
               Assign Workout
             </button>
-            <button className='flex items-center justify-center rounded-lg bg-slate-700 px-4 py-2 text-white transition-colors hover:bg-slate-600'>
+            <button className='flex items-center justify-center rounded-lg bg-slate-200 px-4 py-2 text-slate-900 transition-colors hover:bg-slate-300 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600'>
               <FaChartLine className='mr-2' />
               View Progress
             </button>

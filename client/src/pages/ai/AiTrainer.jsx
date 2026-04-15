@@ -96,19 +96,19 @@ const AiTrainer = () => {
     {
       value: "muscle gain",
       label: "Muscle Gain",
-      icon: "\u{1F4AA}",
+      icon: "💪",
       desc: "Build strength & size",
     },
     {
       value: "fat loss",
       label: "Fat Loss",
-      icon: "\u{1F525}",
+      icon: "🔥",
       desc: "Burn fat & get lean",
     },
     {
       value: "strength",
       label: "Strength",
-      icon: "\u{1F3CB}\uFE0F",
+      icon: "🏋️",
       desc: "Maximize power",
     },
   ];
@@ -117,33 +117,33 @@ const AiTrainer = () => {
     {
       value: "beginner",
       label: "Beginner",
-      icon: "\u{1F331}",
+      icon: "🌱",
       desc: "New to fitness",
     },
     {
       value: "intermediate",
       label: "Intermediate",
-      icon: "\u26A1",
+      icon: "⚡",
       desc: "Some experience",
     },
-    {
-      value: "expert",
-      label: "Expert",
-      icon: "\u{1F451}",
-      desc: "Advanced level",
-    },
+    { value: "expert", label: "Expert", icon: "👑", desc: "Advanced level" },
   ];
 
   return (
     <DashboardLayout>
-      <div className='min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900'>
-        {/* Header Section */}
+      {/* ─── Page wrapper ─── */}
+      <div className='min-h-screen bg-green-50 dark:bg-gradient-to-br dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 transition-colors duration-300'>
+        {/* ─── Header ─── */}
         <div className='text-center py-12 px-4'>
           <div className='max-w-4xl mx-auto'>
-            <h1 className='text-5xl md:text-6xl font-bold bg-linear-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent mb-4'>
+            <h1
+              className='text-5xl md:text-6xl font-bold mb-4
+              text-transparent bg-clip-text
+              bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500
+              dark:from-purple-400 dark:via-pink-400 dark:to-red-400'>
               AI Workout Generator
             </h1>
-            <p className='text-xl text-gray-300 mb-8 max-w-2xl mx-auto'>
+            <p className='text-xl mb-8 max-w-2xl mx-auto text-gray-600 dark:text-gray-300'>
               Get personalized workout plans powered by artificial intelligence.
               Choose your goals and experience level for the perfect fitness
               routine.
@@ -151,41 +151,41 @@ const AiTrainer = () => {
           </div>
         </div>
 
-        {/* Notification Messages */}
+        {/* ─── Error / Success toasts ─── */}
         {error && (
           <div className='max-w-4xl mx-auto mb-6 px-4'>
-            <div className='bg-linear-to-r from-red-500 to-pink-500 text-white p-4 rounded-xl shadow-lg animate-bounce border border-red-400'>
-              <div className='flex items-center'>
-                <span className='text-2xl mr-3'>{"\u26A0\uFE0F"}</span>
-                <span className='font-semibold'>{error}</span>
-              </div>
+            <div className='bg-gradient-to-r from-red-500 to-pink-500 text-white p-4 rounded-xl shadow-lg animate-bounce border border-red-400 flex items-center'>
+              <span className='text-2xl mr-3'>⚠️</span>
+              <span className='font-semibold'>{error}</span>
             </div>
           </div>
         )}
 
         {success && (
           <div className='max-w-4xl mx-auto mb-6 px-4'>
-            <div className='bg-linear-to-r from-green-500 to-emerald-500 text-white p-4 rounded-xl shadow-lg animate-pulse border border-green-400'>
-              <div className='flex items-center'>
-                <span className='text-2xl mr-3'>{"\u{1F389}"}</span>
-                <span className='font-semibold'>{success}</span>
-              </div>
+            <div className='bg-gradient-to-r from-green-500 to-emerald-500 text-white p-4 rounded-xl shadow-lg animate-pulse border border-green-400 flex items-center'>
+              <span className='text-2xl mr-3'>🎉</span>
+              <span className='font-semibold'>{success}</span>
             </div>
           </div>
         )}
 
-        {/* Form Section */}
+        {/* ─── Form card ─── */}
         <div className='max-w-4xl mx-auto px-4 mb-12'>
-          <div className='bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20'>
-            <h2 className='text-3xl font-bold text-white mb-8 text-center'>
+          <div
+            className='
+            bg-white border border-green-100 shadow-lg
+            dark:bg-white/10 dark:backdrop-blur-lg dark:border-white/20 dark:shadow-2xl
+            rounded-2xl p-8 transition-colors duration-300'>
+            <h2 className='text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white'>
               Customize Your Plan
             </h2>
 
             <div className='grid md:grid-cols-2 gap-8 mb-8'>
-              {/* Goal Selection */}
+              {/* Goal selection */}
               <div>
-                <label className='block text-lg font-semibold text-white mb-4'>
-                  {"\u{1F3AF}"} Your Goal
+                <label className='block text-lg font-semibold mb-4 text-gray-700 dark:text-white'>
+                  🎯 Your Goal
                 </label>
                 <div className='space-y-3'>
                   {goalOptions.map((option) => (
@@ -194,8 +194,8 @@ const AiTrainer = () => {
                       onClick={() => setGoal(option.value)}
                       className={`p-4 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-105 ${
                         goal === option.value ?
-                          "bg-linear-to-r from-purple-500 to-pink-500 shadow-lg ring-2 ring-purple-300"
-                        : "bg-white/5 hover:bg-white/10 border border-white/10"
+                          "bg-gradient-to-r from-green-500 to-emerald-500 dark:from-purple-500 dark:to-pink-500 shadow-lg ring-2 ring-green-300 dark:ring-purple-300"
+                        : "bg-green-50 hover:bg-green-100 border border-green-200 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10"
                       }`}>
                       <div className='flex items-center'>
                         <span className='text-2xl mr-3'>{option.icon}</span>
@@ -204,15 +204,15 @@ const AiTrainer = () => {
                             className={`font-semibold ${
                               goal === option.value ?
                                 "text-white"
-                              : "text-gray-300"
+                              : "text-gray-700 dark:text-gray-300"
                             }`}>
                             {option.label}
                           </div>
                           <div
                             className={`text-sm ${
                               goal === option.value ?
-                                "text-purple-100"
-                              : "text-gray-400"
+                                "text-green-100 dark:text-purple-100"
+                              : "text-gray-500 dark:text-gray-400"
                             }`}>
                             {option.desc}
                           </div>
@@ -223,10 +223,10 @@ const AiTrainer = () => {
                 </div>
               </div>
 
-              {/* Experience Selection */}
+              {/* Experience selection */}
               <div>
-                <label className='block text-lg font-semibold text-white mb-4'>
-                  {"\u{1F4CA}"} Experience Level
+                <label className='block text-lg font-semibold mb-4 text-gray-700 dark:text-white'>
+                  📊 Experience Level
                 </label>
                 <div className='space-y-3'>
                   {experienceOptions.map((option) => (
@@ -235,8 +235,8 @@ const AiTrainer = () => {
                       onClick={() => setExperience(option.value)}
                       className={`p-4 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-105 ${
                         experience === option.value ?
-                          "bg-linear-to-r from-blue-500 to-purple-500 shadow-lg ring-2 ring-blue-300"
-                        : "bg-white/5 hover:bg-white/10 border border-white/10"
+                          "bg-gradient-to-r from-teal-500 to-green-500 dark:from-blue-500 dark:to-purple-500 shadow-lg ring-2 ring-teal-300 dark:ring-blue-300"
+                        : "bg-green-50 hover:bg-green-100 border border-green-200 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10"
                       }`}>
                       <div className='flex items-center'>
                         <span className='text-2xl mr-3'>{option.icon}</span>
@@ -245,15 +245,15 @@ const AiTrainer = () => {
                             className={`font-semibold ${
                               experience === option.value ?
                                 "text-white"
-                              : "text-gray-300"
+                              : "text-gray-700 dark:text-gray-300"
                             }`}>
                             {option.label}
                           </div>
                           <div
                             className={`text-sm ${
                               experience === option.value ?
-                                "text-blue-100"
-                              : "text-gray-400"
+                                "text-teal-100 dark:text-blue-100"
+                              : "text-gray-500 dark:text-gray-400"
                             }`}>
                             {option.desc}
                           </div>
@@ -265,15 +265,15 @@ const AiTrainer = () => {
               </div>
             </div>
 
-            {/* Generate Button */}
+            {/* Generate button */}
             <div className='text-center'>
               <button
                 onClick={generateWorkout}
                 disabled={loading || !goal || !experience}
                 className={`px-12 py-4 rounded-full font-bold text-lg transition-all duration-300 transform ${
                   loading || !goal || !experience ?
-                    "bg-gray-600 cursor-not-allowed opacity-50"
-                  : "bg-linear-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 shadow-lg hover:shadow-xl hover:scale-105 text-white"
+                    "bg-gray-300 dark:bg-gray-600 cursor-not-allowed opacity-50 text-gray-500 dark:text-gray-400"
+                  : "bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 dark:from-purple-500 dark:via-pink-500 dark:to-red-500 hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 dark:hover:from-purple-600 dark:hover:via-pink-600 dark:hover:to-red-600 shadow-lg hover:shadow-xl hover:scale-105 text-white"
                 }`}>
                 {loading ?
                   <div className='flex items-center justify-center'>
@@ -281,7 +281,7 @@ const AiTrainer = () => {
                     Generating Your Plan...
                   </div>
                 : <div className='flex items-center justify-center'>
-                    <span className='mr-2'>{"\u{1F680}"}</span>
+                    <span className='mr-2'>🚀</span>
                     Generate Workout Plan
                   </div>
                 }
@@ -290,16 +290,15 @@ const AiTrainer = () => {
           </div>
         </div>
 
-        {/* Workout Plan Display */}
+        {/* ─── Workout plan grid ─── */}
         {plan.length > 0 && (
           <div className='max-w-7xl mx-auto px-4 pb-12'>
             <div className='text-center mb-12'>
-              <h2 className='text-4xl font-bold text-white mb-4'>
+              <h2 className='text-4xl font-bold mb-4 text-gray-800 dark:text-white'>
                 Your Personalized Workout Plan
               </h2>
-              <p className='text-xl text-gray-300'>
-                Follow this AI-generated plan to achieve your fitness goals!{" "}
-                {"\u{1F4AA}"}
+              <p className='text-xl text-gray-600 dark:text-gray-300'>
+                Follow this AI-generated plan to achieve your fitness goals! 💪
               </p>
             </div>
 
@@ -307,23 +306,28 @@ const AiTrainer = () => {
               {plan.map((day, index) => (
                 <div
                   key={day?._id || index}
-                  className='bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl'>
-                  {/* Day Header */}
+                  className='
+                    bg-white border border-green-100 shadow-md
+                    dark:bg-white/10 dark:backdrop-blur-lg dark:border-white/20 dark:shadow-xl
+                    rounded-2xl p-6
+                    hover:shadow-xl dark:hover:bg-white/15
+                    transition-all duration-300 transform hover:scale-105'>
+                  {/* Day header */}
                   <div className='flex items-center mb-4'>
-                    <div className='w-12 h-12 bg-linear-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4'>
+                    <div className='w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 dark:from-purple-500 dark:to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4'>
                       {day.day || String(index + 1)}
                     </div>
                     <div>
-                      <h3 className='text-xl font-bold text-white'>
+                      <h3 className='text-xl font-bold text-gray-800 dark:text-white'>
                         {day.workout || day.title}
                       </h3>
-                      <p className='text-gray-400 text-sm'>
+                      <p className='text-gray-500 dark:text-gray-400 text-sm'>
                         Day {day.day || String(index + 1)} Workout
                       </p>
                     </div>
                   </div>
 
-                  {/* Workout Image */}
+                  {/* Workout image */}
                   {day.image && (
                     <div className='mb-4'>
                       <img
@@ -337,9 +341,8 @@ const AiTrainer = () => {
                   {/* Exercises */}
                   {day.exercises && day.exercises.length > 0 && (
                     <div>
-                      <h4 className='text-lg font-semibold text-white mb-3 flex items-center'>
-                        <span className='mr-2'>{"\u{1F3CB}\uFE0F"}</span>
-                        Exercises
+                      <h4 className='text-lg font-semibold mb-3 flex items-center text-gray-700 dark:text-white'>
+                        <span className='mr-2'>🏋️</span> Exercises
                       </h4>
                       <div className='space-y-2'>
                         {day.exercises.map((exercise, exIndex) => {
@@ -360,16 +363,20 @@ const AiTrainer = () => {
                             <div
                               key={exIndex}
                               onClick={() => setSelectedExercise(exWithWorkout)}
-                              className={`bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-white/10 transition-colors duration-200 ${
-                                isCompletedExercise ? "bg-green-500/20" : (
-                                  " hover:bg-white/10"
-                                )
+                              className={`rounded-lg p-3 border transition-colors duration-200 cursor-pointer ${
+                                isCompletedExercise ?
+                                  "bg-green-100 border-green-300 dark:bg-green-500/20 dark:border-green-500/30"
+                                : "bg-gray-50 border-gray-200 hover:bg-green-50 hover:border-green-200 dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10"
                               }`}>
-                              <div className='flex justify-between items-center'>
-                                <span className='text-gray-200 font-medium truncate'>
-                                  {exerciseName}
+                              <div className='flex justify-between items-center p-1 rounded'>
+                                <span className='font-medium truncate text-gray-700 dark:text-gray-200'>
+                                  {exerciseName}{" "}
+                                  {isCompletedExercise ? "✅" : ""}
                                 </span>
-                                <span className='text-purple-300 font-semibold text-sm bg-purple-500/20 px-2 py-1 rounded-full truncate'>
+                                <span
+                                  className='font-semibold text-sm px-2 py-1 rounded-full truncate ml-2
+                                  text-green-700 bg-green-100
+                                  dark:text-purple-300 dark:bg-purple-500/20'>
                                   {exercise.sets || 3} x {exercise.reps || 10}
                                 </span>
                               </div>
@@ -380,12 +387,14 @@ const AiTrainer = () => {
                     </div>
                   )}
 
-                  {/* Rest Day */}
+                  {/* Rest day */}
                   {(!day.exercises || day.exercises.length === 0) && (
                     <div className='text-center py-8'>
-                      <span className='text-4xl mb-2 block'>{"\u{1F634}"}</span>
-                      <p className='text-gray-400 font-medium'>Rest Day</p>
-                      <p className='text-gray-500 text-sm'>
+                      <span className='text-4xl mb-2 block'>😴</span>
+                      <p className='font-medium text-gray-500 dark:text-gray-400'>
+                        Rest Day
+                      </p>
+                      <p className='text-sm text-gray-400 dark:text-gray-500'>
                         Take it easy, recover well!
                       </p>
                     </div>
@@ -396,25 +405,31 @@ const AiTrainer = () => {
           </div>
         )}
 
+        {/* ─── Exercise modal ─── */}
         {selectedExercise && (
           <div className='fixed inset-0 bg-black/70 flex justify-center items-center z-50'>
-            <div className='bg-white rounded-xl p-6 w-[400px] relative'>
+            <div
+              className='
+              bg-white text-gray-800
+              dark:bg-slate-800 dark:text-white
+              rounded-xl p-6 w-[400px] relative shadow-2xl
+              transition-colors duration-300'>
               <button
                 onClick={() => setSelectedExercise(null)}
-                className='absolute top-2 right-2 text-red-500'>
+                className='absolute top-2 right-2 text-red-500 hover:text-red-600 font-bold text-lg'>
                 ✖
               </button>
 
-              <h2 className='text-xl font-bold mb-4'>
+              <h2 className='text-xl font-bold mb-4 text-gray-800 dark:text-white'>
                 {selectedExercise.name}
               </h2>
 
-              {/* 🎥 VIDEO */}
+              {/* Video */}
               <video controls className='w-full mb-4 rounded'>
                 <source src={selectedExercise.video || "/demo.mp4"} />
               </video>
 
-              {/* 🔥 SET LIST */}
+              {/* Set list */}
               <div className='space-y-2 mb-4'>
                 {[...Array(selectedExercise.sets || 3)].map((_, i) => {
                   const key = `${selectedExercise.exerciseId}-set-${i}`;
@@ -422,11 +437,16 @@ const AiTrainer = () => {
                   return (
                     <div
                       key={i}
-                      className='flex justify-between items-center bg-gray-100 p-2 rounded hover:bg-slate-500'>
-                      <label className='text-slate-800' htmlFor={inputId}>
+                      className='flex justify-between items-center p-2 rounded
+                        bg-gray-50 border border-gray-200
+                        dark:bg-white/5 dark:border-white/10
+                        hover:bg-green-50 dark:hover:bg-white/10
+                        transition-colors duration-200'>
+                      <label
+                        className='font-medium text-gray-700 dark:text-gray-200'
+                        htmlFor={inputId}>
                         Set {i + 1}
                       </label>
-
                       <input
                         type='checkbox'
                         id={inputId}
@@ -443,15 +463,15 @@ const AiTrainer = () => {
                 })}
               </div>
 
-              {/* REPS */}
-              <p className='mb-4 text-black'>
+              {/* Reps */}
+              <p className='mb-4 text-gray-700 dark:text-gray-200'>
                 Reps: {selectedExercise.reps || 10}
               </p>
 
-              {/* COMPLETE BUTTON */}
+              {/* Complete button */}
               <button
                 onClick={() => handleComplete(selectedExercise)}
-                className='bg-green-500 text-white px-4 py-2 rounded w-full'>
+                className='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-full font-semibold transition-colors duration-200'>
                 Mark Exercise Done ✔
               </button>
             </div>

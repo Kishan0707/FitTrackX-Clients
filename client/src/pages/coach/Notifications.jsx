@@ -162,8 +162,10 @@ const Notifications = () => {
       <div className='mx-auto max-w-6xl space-y-6'>
         <div className='flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between'>
           <div>
-            <h1 className='text-2xl font-bold text-white'>Notifications</h1>
-            <p className='mt-1 text-sm text-slate-400'>
+            <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
+              Notifications
+            </h1>
+            <p className='mt-1 text-sm text-slate-600 dark:text-slate-400'>
               Client activity, subscription alerts aur system updates yahin milenge.
             </p>
           </div>
@@ -172,7 +174,7 @@ const Notifications = () => {
             disabled={unreadCount === 0 || markingAll}
             className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               unreadCount === 0 || markingAll ?
-                "cursor-not-allowed bg-slate-700 text-slate-400"
+                "cursor-not-allowed bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
               : "bg-blue-600 text-white hover:bg-blue-700"
             }`}>
             <FaCheck />
@@ -192,20 +194,22 @@ const Notifications = () => {
         )}
 
         <div className='grid gap-4 md:grid-cols-3'>
-          <div className='rounded-xl border border-slate-700 bg-slate-900 p-5'>
-            <p className='text-sm text-slate-400'>Total Notifications</p>
-            <p className='mt-2 text-3xl font-bold text-white'>
+          <div className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900'>
+            <p className='text-sm text-slate-600 dark:text-slate-400'>
+              Total Notifications
+            </p>
+            <p className='mt-2 text-3xl font-bold text-slate-900 dark:text-white'>
               {notifications.length}
             </p>
           </div>
-          <div className='rounded-xl border border-slate-700 bg-slate-900 p-5'>
-            <p className='text-sm text-slate-400'>Unread</p>
+          <div className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900'>
+            <p className='text-sm text-slate-600 dark:text-slate-400'>Unread</p>
             <p className='mt-2 text-3xl font-bold text-amber-400'>
               {unreadCount}
             </p>
           </div>
-          <div className='rounded-xl border border-slate-700 bg-slate-900 p-5'>
-            <p className='text-sm text-slate-400'>Read</p>
+          <div className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900'>
+            <p className='text-sm text-slate-600 dark:text-slate-400'>Read</p>
             <p className='mt-2 text-3xl font-bold text-emerald-400'>
               {notifications.length - unreadCount}
             </p>
@@ -213,14 +217,14 @@ const Notifications = () => {
         </div>
 
         {notifications.length === 0 ?
-          <div className='rounded-xl border border-slate-700 bg-slate-900 p-12 text-center'>
-            <div className='mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-slate-300'>
+          <div className='rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm dark:border-slate-700 dark:bg-slate-900'>
+            <div className='mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
               <FaInbox size={22} />
             </div>
-            <h2 className='mt-4 text-xl font-semibold text-white'>
+            <h2 className='mt-4 text-xl font-semibold text-slate-900 dark:text-white'>
               No notifications yet
             </h2>
-            <p className='mt-2 text-sm text-slate-400'>
+            <p className='mt-2 text-sm text-slate-600 dark:text-slate-400'>
               Jab client actions ya system alerts aayenge, woh yahan show honge.
             </p>
           </div>
@@ -230,7 +234,7 @@ const Notifications = () => {
                 key={notification._id}
                 className={`rounded-xl border p-5 transition-colors ${
                   notification.read ?
-                    "border-slate-700 bg-slate-900"
+                    "border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900"
                   : "border-blue-500/30 bg-blue-500/5"
                 }`}>
                 <div className='flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between'>
@@ -250,14 +254,14 @@ const Notifications = () => {
                     </div>
 
                     <div className='mt-3 flex items-start gap-3'>
-                      <div className='mt-1 rounded-full bg-slate-800 p-2 text-slate-300'>
+                      <div className='mt-1 rounded-full bg-slate-100 p-2 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
                         <FaBell />
                       </div>
                       <div className='min-w-0 flex-1'>
-                        <h2 className='text-lg font-semibold text-white'>
+                        <h2 className='text-lg font-semibold text-slate-900 dark:text-white'>
                           {notification.title}
                         </h2>
-                        <p className='mt-2 text-sm leading-6 text-slate-300'>
+                        <p className='mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300'>
                           {notification.message}
                         </p>
                         <p className='mt-3 text-xs text-slate-500'>
@@ -271,7 +275,7 @@ const Notifications = () => {
                     {notification.link && (
                       <button
                         onClick={() => handleOpenLink(notification)}
-                        className='inline-flex items-center gap-2 rounded-lg border border-slate-600 px-4 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-slate-500 hover:bg-slate-800'>
+                        className='inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:border-slate-300 hover:bg-slate-100 dark:border-slate-600 dark:bg-transparent dark:text-slate-200 dark:hover:border-slate-500 dark:hover:bg-slate-800'>
                         Open <FaArrowRight />
                       </button>
                     )}
@@ -281,7 +285,7 @@ const Notifications = () => {
                         disabled={busyId === notification._id}
                         className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                           busyId === notification._id ?
-                            "cursor-not-allowed bg-slate-700 text-slate-400"
+                            "cursor-not-allowed bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
                           : "bg-blue-600 text-white hover:bg-blue-700"
                         }`}>
                         <FaCheck /> Read

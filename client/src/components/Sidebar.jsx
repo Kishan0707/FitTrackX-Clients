@@ -122,7 +122,7 @@ export const coachMenuSections = [
       { name: "Chat", path: "/coach/chat", icon: <FaComments /> },
       {
         name: "Notifications",
-        path: "/coach/notifications",
+        path: "/notifications",
         icon: <FaBell />,
       },
     ],
@@ -272,14 +272,14 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
 
   return (
     <div
-      className={`pb-18 md:h-auto h-auto flex flex-col border-r border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 transition-all duration-300 overscroll-contain
+      className={`pb-18 md:h-auto h-auto flex flex-col border-r border-slate-200 bg-gradient-to-b from-white via-slate-50 to-white p-4 transition-all duration-300 overscroll-contain dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950
   ${
     menuBtn ?
       "w-20 -translate-x-full fixed inset-y-0 left-0 z-40 overflow-hidden md:w-20 md:translate-x-0 md:static "
     : "w-72 translate-x-0 fixed inset-y-0 left-0 z-90 overflow-y-auto md:w-64 md:static"
   }`}>
       <div
-        className={`mb-6 rounded-3xl border border-slate-800/80 bg-slate-950/70 shadow-[0_20px_45px_rgba(2,6,23,0.45)] backdrop-blur ${
+        className={`mb-6 rounded-3xl border border-slate-200 bg-white shadow-sm backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/70 dark:shadow-[0_20px_45px_rgba(2,6,23,0.45)] ${
           menuBtn ? "p-2" : "p-4"
         }`}>
         <div className='flex items-start justify-between gap-3'>
@@ -292,10 +292,10 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
             </div>
             {!menuBtn ?
               <div className='min-w-0'>
-                <p className='text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400'>
+                <p className='text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400'>
                   Workspace
                 </p>
-                <h1 className='truncate text-lg font-semibold text-white'>
+                <h1 className='truncate text-lg font-semibold text-slate-900 dark:text-white'>
                   FitTrackX
                 </h1>
                 {/*  */}
@@ -310,7 +310,7 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
           </div>
         : null}
         <button
-          className='mt-3 md:hidden flex w-full items-center justify-center rounded-2xl border border-slate-800 bg-slate-900/60 p-2 text-white transition hover:bg-slate-800 '
+          className='mt-3 md:hidden flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/60 dark:text-white dark:hover:bg-slate-800'
           onClick={() => setMenuBtn((prev) => !prev)}
           aria-label='Toggle sidebar'>
           <RiMenu2Fill size={20} />
@@ -323,7 +323,7 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
             key={section.title || `section-${sectionIndex}`}
             className={`flex flex-col gap-2 ${
               !menuBtn && section.title ?
-                "rounded-2xl border border-slate-800/80 bg-slate-950/60 p-2 shadow-[0_12px_30px_rgba(2,6,23,0.28)]"
+                "rounded-2xl border border-slate-200 bg-white p-2 shadow-sm dark:border-slate-800/80 dark:bg-slate-950/60 dark:shadow-[0_12px_30px_rgba(2,6,23,0.28)]"
               : ""
             }`}>
             {(() => {
@@ -346,16 +346,16 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
                           [section.title]: !isSectionOpen,
                         }))
                       }
-                      className='flex items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-900/70 px-3 py-2 text-left transition-colors hover:border-slate-700 hover:bg-slate-800/80'>
+                      className='flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-left transition-colors hover:border-slate-300 hover:bg-slate-100 dark:border-slate-800/70 dark:bg-slate-900/70 dark:hover:border-slate-700 dark:hover:bg-slate-800/80'>
                       <div className='flex  min-w-0 flex-1 items-center justify-center gap-2'>
-                        <span className='truncate text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400'>
+                        <span className='truncate text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400'>
                           {section.title}
                         </span>
-                        <span className='rounded-full border border-slate-700 bg-slate-950 px-2 py-0.5 text-[9px] font-semibold text-slate-500'>
+                        <span className='rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[9px] font-semibold text-slate-500 dark:border-slate-700 dark:bg-slate-950'>
                           {section.items.length}
                         </span>
                       </div>
-                      <span className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-950 text-slate-400'>
+                      <span className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 dark:bg-slate-950 dark:text-slate-400'>
                         <FaChevronDown
                           className={`text-[10px] transition-transform duration-200 ${
                             isSectionOpen ? "rotate-0" : "-rotate-90"

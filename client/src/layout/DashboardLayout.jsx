@@ -23,7 +23,7 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div
-      className='flex bg-slate-950 text-white min-h-screen'
+      className='flex min-h-screen bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white'
       // onTouchStart={handleTouchStart}
       // onTouchEnd={handleTouchEnd}
     >
@@ -33,7 +33,7 @@ const DashboardLayout = ({ children }) => {
       <div className='flex-1 flex flex-col min-w-0 overflow-x-hidden'>
         <Navbar setMenuBtn={setMenuBtn} menuBtn={menuBtn} />
 
-        <main className='p-6 w-full flex-1 overflow-x-hidden min-w-0 pb-24 md:pb-6'>
+        <main className='w-full flex-1 min-w-0 overflow-x-hidden p-6 pb-24 md:pb-6'>
           {children}
         </main>
       </div>

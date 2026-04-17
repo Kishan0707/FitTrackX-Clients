@@ -33,7 +33,7 @@ const DashboardLayout = ({ children }) => {
       <div className='flex-1 flex flex-col min-w-0 overflow-x-hidden'>
         <Navbar setMenuBtn={setMenuBtn} menuBtn={menuBtn} />
 
-        <main className='w-full flex-1 min-w-0 overflow-x-hidden p-6 pb-24 md:pb-6'>
+        <main className='w-full flex-1 min-w-0 overflow-x-hidden p-6  md:pb-6 pb-36'>
           {children}
         </main>
       </div>

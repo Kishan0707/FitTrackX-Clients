@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
-
+import { loadStripe } from "@stripe/stripe-js";
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 const Plans = () => {
   const [plans, setPlans] = useState([]);
   const [error, setError] = useState("");
@@ -13,7 +14,6 @@ const Plans = () => {
     const fetchPlans = async () => {
       try {
         const res = await API.get("/plans");
-        console.log("Plans response:", res.data);
         setPlans(res.data.data);
         setSuccess(res.data.message || "Plans fetched successfully");
         setError("");
@@ -29,44 +29,20 @@ const Plans = () => {
     };
     fetchPlans();
   }, []);
-
-  const handlePayment = async (planId) => {
-    setProcessingPayment(planId);
-    console.log("Handling payment for planId:", planId);
+  const handleStripePayment = async (planId) => {
     try {
-      const res = await API.post(`/payment/create-order`, { planId });
-      console.log("Create order response:", res.data);
-      const order = res.data.order;
-      const options = {
-        key: "rzp_test_1DP5mmOlF5G5ag",
-        amount: order.amount,
-        currency: order.currency,
-        name: "FitTrackX",
-        description: "Premium Plan",
-        order_id: order.id,
-        handler: async function (response) {
-          await API.post("/payment/verify-payment", {
-            ...response,
-            planId,
-          });
-          alert("Plan activated successfully!");
-          setProcessingPayment(null);
-        },
-        modal: {
-          ondismiss: function () {
-            setProcessingPayment(null);
-          },
-        },
-      };
+      const res = await API.post("/payment/plan-checkout", {
+        planId,
+      });
+      console.log(res.data);
 
-      const razor = new window.Razorpay(options);
-      razor.open();
-    } catch (error) {
-      console.error("Error subscribing to plan:", error);
-      setProcessingPayment(null);
+      // 🔥 DIRECT REDIRECT
+      window.location.href = res.data.url;
+    } catch (err) {
+      console.error(err);
+      alert("Payment failed ❌");
     }
   };
-
   if (loading) {
     return (
       <DashboardLayout>
@@ -168,19 +144,19 @@ const Plans = () => {
                 </div>
 
                 <button
-                  onClick={() => handlePayment(plan._id)}
+                  onClick={() => handleStripePayment(plan._id)}
                   disabled={processingPayment === plan._id}
-                  className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-colors duration-200 ${
+                  className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition ${
                     processingPayment === plan._id ?
                       "bg-gray-400 cursor-not-allowed"
-                    : "bg-linear-to-r from-blue-500/50 to-purple-600/50 hover:from-blue-600/50 hover:to-purple-700/50 backdrop-blur-2xl"
+                    : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
                   }`}>
                   {processingPayment === plan._id ?
                     <div className='flex items-center justify-center'>
-                      <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2'></div>
+                      <div className='animate-spin h-5 w-5 border-b-2 border-white mr-2'></div>
                       Processing...
                     </div>
-                  : "Get Started"}
+                  : "Pay with Stripe 💳"}
                 </button>
               </div>
             </div>

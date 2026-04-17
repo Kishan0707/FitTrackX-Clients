@@ -55,6 +55,12 @@ import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import AppErrorBoundary from "./components/AppErrorBoundary";
+import SellerDashboard from "./pages/SellerDashboard/SellerDashboard";
+import AffiliateDashboard from "./pages/AffiliateDashboard/AffiliateDashboard";
+import Cart from "./pages/orders/Cart";
+import Success from "./pages/Success";
+import Cancel from "./pages/Cancel";
+import OrderDetail from "./pages/orders/OrderDetail";
 
 function AppContent() {
   const location = useLocation();
@@ -489,17 +495,45 @@ function AppContent() {
               </ProtectedRoutes>
             }
           />
+          <Route path='/affiliate/earnings' element={<div>Earnings</div>} />
+          <Route path='/affiliate/referrals' element={<div>Referrals</div>} />
           <Route
             path='/cart'
             element={
               <ProtectedRoutes>
-                <div>Cart Page</div>
+                <Cart />
               </ProtectedRoutes>
             }
           />
-          <Route path='/affiliate/earnings' element={<div>Earnings</div>} />
-          <Route path='/affiliate/referrals' element={<div>Referrals</div>} />
+          <Route
+            path='/products'
+            element={
+              <ProtectedRoutes>
+                <ProductList />
+              </ProtectedRoutes>
+            }
+          />
 
+          <Route
+            path='/seller'
+            element={
+              <ProtectedRoutes allowedRoles={["seller"]}>
+                <SellerDashboard />
+              </ProtectedRoutes>
+            }
+          />
+
+          <Route
+            path='/affiliate'
+            element={
+              <ProtectedRoutes allowedRoles={["affiliate"]}>
+                <AffiliateDashboard />
+              </ProtectedRoutes>
+            }
+          />
+          <Route path='/order/:id' element={<OrderDetail />} />
+          <Route path='/success' element={<Success />} />
+          <Route path='/cancel' element={<Cancel />} />
           <Route path='/test-users' element={<UsersPage />} />
         </Routes>
       </div>

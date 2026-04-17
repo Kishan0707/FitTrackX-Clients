@@ -106,6 +106,17 @@ const ProductCard = ({ product, onView }) => {
   return (
     <div className='group relative rounded-3xl border border-slate-800 bg-gradient-to-b from-slate-950/60 via-slate-950/70 to-slate-950/80 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-2 hover:border-white/30 hover:shadow-[0_30px_70px_rgba(0,0,0,0.8)]'>
       {/* 🔥 Discount Badge */}
+
+      {/* 🔥 OUT OF STOCK OVERLAY */}
+      {product.inventory === 0 && (
+        <div className='absolute inset-0 z-30 flex flex-col items-center justify-center rounded-2xl bg-black/80 backdrop-blur-sm'>
+          <span className='text-red-400 font-bold text-lg'>Out of Stock</span>
+
+          <span className='text-xs text-gray-400 mt-1'>Coming Soon</span>
+        </div>
+      )}
+
+      {/* बाकी card content */}
       {hasDiscount && (
         <div className='absolute top-4 right-4 z-10 rounded-full bg-red-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg'>
           Save ₹{product.originalPrice - product.discountPrice}
@@ -142,7 +153,10 @@ const ProductCard = ({ product, onView }) => {
           <img
             src={product.imageUrl}
             alt={product.name}
-            className='h-52 w-full object-cover transition-transform duration-500 group-hover:scale-110'
+            className={`h-52 w-full object-cover transition-transform duration-500 
+    ${
+      product.inventory === 0 ? "blur-sm opacity-50" : "group-hover:scale-110"
+    }`}
           />
         : <div className='flex h-52 items-center justify-center bg-slate-900 text-slate-500'>
             No image
@@ -175,12 +189,42 @@ const ProductCard = ({ product, onView }) => {
           )}
         </div>
 
-        {/* CTA */}
-        <button
-          onClick={() => onView?.(product)}
-          className='rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white transition hover:bg-red-700 active:scale-95'>
-          View
-        </button>
+        <div className='flex gap-2'>
+          {/* View */}
+          <button
+            onClick={() => onView?.(product)}
+            className='rounded-xl bg-slate-700 px-3 py-2 text-xs text-white hover:bg-slate-600'>
+            View
+          </button>
+
+          {/* Add to Cart */}
+          <button
+            onClick={async () => {
+              await API.post("/cart", {
+                productId: product._id,
+              });
+              alert("Added to cart 🛒");
+            }}
+            className='rounded-xl bg-purple-600 px-3 py-2 text-xs text-white hover:bg-purple-700'>
+            Cart
+          </button>
+
+          {/* Buy Now */}
+          <button
+            onClick={async () => {
+              const ref = localStorage.getItem("refCode");
+
+              await API.post("/orders", {
+                productId: product._id,
+                referralCode: ref,
+              });
+
+              alert("Order placed 🚀");
+            }}
+            className='rounded-xl bg-green-600 px-3 py-2 text-xs text-white hover:bg-green-700'>
+            Buy
+          </button>
+        </div>
       </div>
 
       {/* Coach Instructions */}
@@ -318,6 +362,49 @@ const ProductDetailModal = ({ product, onClose }) => {
             </p>
           </div>
         )}
+      </div>
+      <div className='mt-6 flex gap-3'>
+        <button
+          disabled={product.inventory === 0}
+          onClick={async () => {
+            await API.post("/cart", {
+              productId: product._id,
+            });
+            alert("Added to cart 🛒");
+          }}
+          className={`rounded-xl px-3 py-2 text-xs text-white transition
+    ${
+      product.inventory === 0 ?
+        "bg-gray-600 cursor-not-allowed opacity-50"
+      : "bg-purple-600 hover:bg-purple-700"
+    }`}>
+          Cart
+        </button>
+
+        <button
+          disabled={product.inventory === 0}
+          onClick={async () => {
+            try {
+              const ref = localStorage.getItem("refCode");
+
+              await API.post("/orders", {
+                productId: product._id,
+                referralCode: ref,
+              });
+
+              alert("Order placed 🚀");
+            } catch (err) {
+              console.log(err);
+            }
+          }}
+          className={`rounded-xl px-3 py-2 text-xs text-white transition
+    ${
+      product.inventory === 0 ?
+        "bg-gray-600 cursor-not-allowed opacity-50"
+      : "bg-green-600 hover:bg-green-700"
+    }`}>
+          Buy
+        </button>
       </div>
     </div>
   );
@@ -547,7 +634,8 @@ const Products = () => {
     setLoading(true);
     try {
       const res = await API.get("/products");
-      setProducts(res.data.data || []);
+      console.log("product", res);
+      setProducts(res.data.products || []);
     } catch (error) {
       console.error("Failed to load products:", error);
     } finally {

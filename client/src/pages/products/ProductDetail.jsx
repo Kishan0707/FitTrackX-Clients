@@ -18,18 +18,30 @@ const ProductDetail = () => {
     console.log(res.data);
   };
 
-  // 🔥 STRIPE CHECKOUT
   const handleStripePayment = async () => {
     try {
+      if (!product?._id) {
+        alert("Product is not ready yet. Please try again.");
+        return;
+      }
+
       setLoading(true);
+      const payload = { productId: product._id };
 
-      const res = await API.post("/payment/checkout", {
-        productId: product._id,
+      const res = await API.post("/payment/checkout", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-      console.log("Sending productId:", product._id);
 
-      // 👉 redirect to Stripe
-      window.location.href = res.data.url;
+      console.log("Sending productId:", payload.productId);
+
+      if (res?.data?.url) {
+        window.location.href = res.data.url;
+        return;
+      }
+
+      alert("Could not start payment. Please try again.");
     } catch (err) {
       console.error(err);
       alert("Payment failed ❌");
@@ -57,7 +69,6 @@ const ProductDetail = () => {
               {product.description.slice(0, 200)}...
             </p>
 
-            {/* 🔥 BUTTON */}
             <button
               onClick={handleStripePayment}
               disabled={loading}

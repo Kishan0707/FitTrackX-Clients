@@ -1,0 +1,43 @@
+[33mc6c6afb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mbackup[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33mc6c6afb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mbackup[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33mc6c6afb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mbackup[m[33m)[m HEAD@{2}: pull origin main --rebase (finish): returning to refs/heads/main
+[33mc6c6afb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mbackup[m[33m)[m HEAD@{3}: pull origin main --rebase (pick): fix vercel routing
+[33mc4d6959[m HEAD@{4}: pull origin main --rebase (start): checkout c4d695963627275cd056da41c7381327a3a9dcd4
+[33m62b325e[m HEAD@{5}: commit: fix vercel routing
+[33m14861e3[m HEAD@{6}: commit: plan + product
+[33m461b0b8[m HEAD@{7}: commit: cart UI change
+[33me280d83[m HEAD@{8}: commit: add order/myorder + products/productDetial , /productList
+[33mf7e073a[m HEAD@{9}: commit: dark mode
+[33m11e18c4[m HEAD@{10}: commit: change dashboard padding + Ai traning fixed DB store problem
+[33mb14910a[m HEAD@{11}: commit: change api call
+[33mb0df974[m HEAD@{12}: commit: Adding API
+[33m15af007[m HEAD@{13}: commit: API change
+[33m4cdc7bd[m HEAD@{14}: commit: change Ai traner
+[33m73196b9[m HEAD@{15}: commit: change UserDashboar
+[33m06bd4d5[m HEAD@{16}: commit: vite config change
+[33m334a925[m HEAD@{17}: commit: add emai; otp verifyed
+[33m2c70bcf[m HEAD@{18}: commit: update Healthtips or product card
+[33ma4ee075[m HEAD@{19}: commit: added onBoarding
+[33m73783fd[m HEAD@{20}: commit: notification gmail + chat
+[33mc7a0713[m HEAD@{21}: commit: UI update
+[33mb1be0e4[m HEAD@{22}: commit: bottom nav fixed ui
+[33m07a06c3[m HEAD@{23}: commit: mobile screen UI update With Bottom Nav
+[33m3ec47dd[m HEAD@{24}: commit: h-auto
+[33ma36224f[m HEAD@{25}: commit: update Sidebar UI + Dashboard
+[33m70abf5d[m HEAD@{26}: commit: workout diet edit + notification show in dashboard
+[33m68af0af[m HEAD@{27}: commit: forget password UI update
+[33m4142f54[m HEAD@{28}: commit: axios not use change to API.js
+[33me3f7eb9[m HEAD@{29}: commit: .env
+[33m01671e2[m HEAD@{30}: commit: .env
+[33m6ff42c1[m HEAD@{31}: commit: .env
+[33mdb6c566[m HEAD@{32}: commit: change forget-password URL
+[33m66cf6ad[m HEAD@{33}: commit: mail password change
+[33m7067f96[m HEAD@{34}: commit: responsive Client page
+[33m0acd708[m HEAD@{35}: commit: coach add steps targets client accept reject padding state with show in coach dashboard
+[33m24d039a[m HEAD@{36}: commit: fix: npmrc for vercel
+[33mcfd037a[m HEAD@{37}: commit: client last message show + seen mark UI update
+[33m3d9b1c3[m HEAD@{38}: commit: node + vite update
+[33m3f877b1[m HEAD@{39}: commit: vite update
+[33m2d28f88[m HEAD@{40}: Branch: renamed refs/heads/main to refs/heads/main
+[33m2d28f88[m HEAD@{42}: commit: chat system add using socket.io
+[33m6986e4e[m HEAD@{43}: clone: from https://github.com/Kishan0707/FitTrackX-Clients.git

@@ -26,6 +26,7 @@ const ProductDetail = () => {
       const res = await API.post("/payment/checkout", {
         productId: product._id,
       });
+      console.log("Sending productId:", product._id);
 
       // 👉 redirect to Stripe
       window.location.href = res.data.url;

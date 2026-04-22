@@ -4,9 +4,26 @@ import API from "../services/api";
 
 const Success = () => {
   const [params] = useSearchParams();
-
-  const type = params.get("type"); //  plan / product
+  const role = params.get("role");
+  const type = params.get("type");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (role) {
+      localStorage.setItem("selectedRole", role);
+    }
+
+    let redirectPath = "/login";
+    if (type === "product") {
+      redirectPath = "/orders";
+    } else if (type === "plan") {
+      redirectPath = "/dashboard";
+    }
+
+    setTimeout(() => {
+      navigate(redirectPath, { replace: true });
+    }, 2000);
+  }, [role, type, navigate]);
   useEffect(() => {
     const handleRedirect = async () => {
       try {

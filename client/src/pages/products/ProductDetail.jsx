@@ -14,8 +14,10 @@ const ProductDetail = () => {
 
   const fetchProduct = async () => {
     const res = await API.get(`/products/${id}`);
+    console.log("res", res);
+    console.log(product);
     setProduct(res.data.product);
-    console.log(res.data);
+    console.log("res.data", res.data);
   };
 
   const handleStripePayment = async () => {

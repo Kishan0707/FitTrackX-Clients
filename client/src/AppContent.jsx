@@ -61,6 +61,7 @@ import Cart from "./pages/orders/Cart";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 import OrderDetail from "./pages/orders/OrderDetail";
+import Landing from "./pages/Landing/Landing";
 
 function AppContent() {
   const location = useLocation();
@@ -78,8 +79,8 @@ function AppContent() {
     <AppErrorBoundary>
       <div className='App'>
         <Routes>
-          <Route path='/' element={<Login />} />
-          <Route path='/register' element={<Register />} />
+          <Route path='/' element={<Landing />} />
+          <Route path='/login' element={<Login />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/reset-password' element={<ResetPassword />} />
           <Route path='/unauthorized' element={<Unauthorized />} />

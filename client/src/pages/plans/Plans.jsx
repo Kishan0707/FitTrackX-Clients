@@ -34,9 +34,6 @@ const Plans = () => {
       const res = await API.post("/payment/plan-checkout", {
         planId,
       });
-      console.log(res.data);
-
-      // 🔥 DIRECT REDIRECT
       window.location.href = res.data.url;
     } catch (err) {
       console.error(err);

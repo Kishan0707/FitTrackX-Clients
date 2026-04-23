@@ -45,134 +45,116 @@ const AdminDashboard = () => {
   const [moderationLoading, setModerationLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await API.get("/admin/dashboard");
-        if (res.data.success) {
-          setStats(res.data.data);
-          setError("");
-        }
+   useEffect(() => {
+     const fetchStats = async () => {
+       try {
+         // Parallel fetch all data
+         const [
+           statsRes,
+           growthRes,
+           distRes,
+           activitiesRes,
+           performersRes,
+           healthRes,
+           usersRes,
+           auditRes,
+         ] = await Promise.all([
+           API.get("/admin/dashboard"),
+           API.get("/admin/user-growth"),
+           API.get("/admin/workout-distribution"),
+           API.get("/admin/recent-activities"),
+           API.get("/admin/top-performers"),
+           API.get("/admin/system-health"),
+           API.get("/admin/users?excludeRoles=doctor"),
+           API.get("/admin/audit-logs", { params: { page: 1, limit: 20 } }),
+         ]);
 
-        // Fetch charts data
-        const growthRes = await API.get("/admin/user-growth");
-        if (growthRes.data.success) {
-          const chartData = growthRes.data.data.months.map((month, idx) => ({
-            month,
-            users: growthRes.data.data.users[idx],
-          }));
-          setUserGrowth(chartData);
-        }
+         if (!isMounted) return;
 
-        const distRes = await API.get("/admin/workout-distribution");
-        if (distRes.data.success) {
-          setWorkoutDist(distRes.data.data);
-        }
+         // Base stats with corrected totalUsers
+         const rawStats = statsRes.data?.data || {};
+         const usersPayload = usersRes.data?.data ?? usersRes.data;
+         const usersList = Array.isArray(usersPayload)
+           ? usersPayload
+           : usersPayload?.users || usersPayload?.items || [];
+         const filteredTotalUsers = usersList.length;
 
-        // Fetch recent activities
-        const activitiesRes = await API.get("/admin/recent-activities");
-        if (activitiesRes.data.success) {
-          setRecentActivities(activitiesRes.data.data);
-        }
+         setStats({
+           ...rawStats,
+           totalUsers: filteredTotalUsers,
+         });
 
-        // Fetch top performers
-        const performersRes = await API.get("/admin/top-performers");
-        if (performersRes.data.success) {
-          setTopPerformers(performersRes.data.data);
-        }
+         // Charts
+         if (growthRes.data.success) {
+           const chartData = growthRes.data.data.months.map((month, idx) => ({
+             month,
+             users: growthRes.data.data.users[idx],
+           }));
+           setUserGrowth(chartData);
+         }
 
-        // Fetch system health
-        const healthRes = await API.get("/admin/system-health");
-        if (healthRes.data.success) {
-          setSystemHealth(healthRes.data.data);
-        }
+         if (distRes.data.success) {
+           setWorkoutDist(distRes.data.data);
+         }
 
-        // Fetch moderation stats for dashboard mini cards
-        try {
-          const [usersRes, auditRes] = await Promise.all([
-            API.get("/admin/users"),
-            API.get("/admin/audit-logs", {
-              params: { page: 1, limit: 20 },
-            }),
-          ]);
+         setRecentActivities(
+           activitiesRes.data?.success ? activitiesRes.data.data : [],
+         );
+         setTopPerformers(
+           performersRes.data?.success ? performersRes.data.data : null,
+         );
+         setSystemHealth(healthRes.data?.success ? healthRes.data.data : null);
 
-          const usersPayload = usersRes.data?.data ?? usersRes.data;
-          const usersList = Array.isArray(usersPayload)
-            ? usersPayload
-            : usersPayload?.users || usersPayload?.items || [];
+         // Moderation summary from filtered users + audit logs
+         const resolveStatus = (user) => {
+           const rawStatus =
+             user?.status ||
+             user?.moderationStatus ||
+             (user?.isBanned ? "banned" : user?.isSuspended ? "suspended" : "active");
+           const normalized = String(rawStatus || "active").toLowerCase();
+           if (normalized === "suspend") return "suspended";
+           if (normalized === "ban") return "banned";
+           if (normalized === "suspended" || normalized === "banned") return normalized;
+           return "active";
+         };
 
-          const resolveStatus = (user) => {
-            const rawStatus =
-              user?.status ||
-              user?.moderationStatus ||
-              (user?.isBanned
-                ? "banned"
-                : user?.isSuspended
-                  ? "suspended"
-                  : "active");
+         const suspendedUsers = usersList.filter((u) => resolveStatus(u) === "suspended").length;
+         const bannedUsers = usersList.filter((u) => resolveStatus(u) === "banned").length;
 
-            const normalized = String(rawStatus || "active").toLowerCase();
-            if (normalized === "suspend") return "suspended";
-            if (normalized === "ban") return "banned";
-            if (normalized === "suspended" || normalized === "banned") {
-              return normalized;
-            }
-            return "active";
-          };
+         const logsPayload = auditRes.data?.data ?? auditRes.data;
+         const logsList = Array.isArray(logsPayload)
+           ? logsPayload
+           : logsPayload?.logs || logsPayload?.items || logsPayload?.results || [];
+         const recentModerationActions = logsList.filter((log) => {
+           const actionValue = String(log?.action || log?.event || "").toLowerCase();
+           return actionValue.includes("suspend") || actionValue.includes("ban") || actionValue.includes("activ");
+         }).length;
 
-          const suspendedUsers = usersList.filter(
-            (user) => resolveStatus(user) === "suspended",
-          ).length;
-          const bannedUsers = usersList.filter(
-            (user) => resolveStatus(user) === "banned",
-          ).length;
+         setModerationSummary({
+           suspended: suspendedUsers,
+           banned: bannedUsers,
+           recentActions: recentModerationActions,
+         });
 
-          const logsPayload = auditRes.data?.data ?? auditRes.data;
-          const logsList = Array.isArray(logsPayload)
-            ? logsPayload
-            : logsPayload?.logs ||
-              logsPayload?.items ||
-              logsPayload?.results ||
-              [];
+         setError("");
+       } catch (error) {
+         console.error("Error fetching stats:", error);
+         setError("Failed to fetch dashboard stats");
+       } finally {
+         setModerationLoading(false);
+         setLoading(false);
+       }
+     };
 
-          const recentModerationActions = logsList.filter((log) => {
-            const actionValue = String(
-              log?.action || log?.event || "",
-            ).toLowerCase();
-            return (
-              actionValue.includes("suspend") ||
-              actionValue.includes("ban") ||
-              actionValue.includes("activ")
-            );
-          }).length;
+     let isMounted = true;
+     fetchStats();
 
-          setModerationSummary({
-            suspended: suspendedUsers,
-            banned: bannedUsers,
-            recentActions: recentModerationActions,
-          });
-        } catch (moderationError) {
-          console.error("Error fetching moderation summary:", moderationError);
-          setModerationSummary({
-            suspended: 0,
-            banned: 0,
-            recentActions: 0,
-          });
-        } finally {
-          setModerationLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching stats:", error);
-        setError("Failed to fetch dashboard stats");
-      } finally {
-        setModerationLoading(false);
-        setLoading(false);
-      }
-    };
-    fetchStats();
-  }, []);
+     return () => {
+       isMounted = false;
+     };
+   }, []);
 
-  if (loading) {
+   if (loading) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">

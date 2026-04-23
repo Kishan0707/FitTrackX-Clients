@@ -38,8 +38,12 @@ const ProtectedRoutes = ({ children, allowedRoles = [] }) => {
 
   const currentPath = location.pathname.toLowerCase();
   const isOnboardingRoute = currentPath === "/onboarding";
-  const requiresOnboarding = user?.role === "user";
-  if (requiresOnboarding && user && !onboardingComplete && !isOnboardingRoute) {
+  const isDoctorRoute = currentPath.startsWith("/doctor") || 
+                        currentPath.startsWith("/doctors") || 
+                        currentPath.startsWith("/book-appointment");
+  const requiresOnboarding = (user?.role === "user" || user?.role === "doctor") && !user?.onboardingComplete;
+  
+    if (requiresOnboarding && user && user.role && !isOnboardingRoute && !isDoctorRoute) {
     return <Navigate to='/onboarding' replace />;
   }
 

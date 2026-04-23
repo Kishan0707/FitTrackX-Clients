@@ -48,17 +48,17 @@ const UserCard = ({ user, onUserDeleted }) => {
           <div className="space-y-2 mb-4">
             <div className="flex items-center">
               <span className="text-gray-400 w-16">Role:</span>
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  user.role === "admin"
-                    ? "bg-red-500/20 text-red-300"
-                    : user.role === "coach"
-                      ? "bg-blue-500/20 text-blue-300"
-                      : "bg-green-500/20 text-green-300"
-                }`}
-              >
-                {user.role || "user"}
-              </span>
+               <span
+                 className={`px-2 py-1 rounded-full text-xs font-medium ${
+                   user?.role === "admin"
+                     ? "bg-red-500/20 text-red-300"
+                     : user?.role === "coach"
+                       ? "bg-blue-500/20 text-blue-300"
+                       : "bg-green-500/20 text-green-300"
+                 }`}
+               >
+                 {user?.role || "user"}
+               </span>
             </div>
             <div className="flex items-center">
               <span className="text-gray-400 w-16">Joined:</span>

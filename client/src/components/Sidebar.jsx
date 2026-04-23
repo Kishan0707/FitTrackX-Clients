@@ -22,9 +22,18 @@ import {
   FaShoppingBasket,
   FaStore,
   FaMoneyBill,
+  FaUserMd,
+  FaPrescription,
+  FaCalendarAlt,
+  FaFileMedical,
+  FaStethoscope,
 } from "react-icons/fa";
-import { GrSchedule } from "react-icons/gr";
-import { MdManageAccounts } from "react-icons/md";
+import { GrSchedule, GrUserManager } from "react-icons/gr";
+import {
+  MdManageAccounts,
+  MdMedicalServices,
+  MdAssessment,
+} from "react-icons/md";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { RiMenu2Fill } from "react-icons/ri";
@@ -145,6 +154,92 @@ export const coachMenuSections = [
   {
     title: "Account",
     items: [{ name: "Profile", path: "/settings", icon: <FaUserTie /> }],
+  },
+];
+
+export const doctorMenuSections = [
+  {
+    title: "Overview",
+    items: [
+      { name: "Dashboard", path: "/doctor", icon: <FaStethoscope /> },
+      { name: "Find Doctors", path: "/doctors", icon: <FaUserMd /> },
+    ],
+  },
+  {
+    title: "Patients",
+    items: [
+      { name: "All Patients", path: "/doctor/patients", icon: <FaUsers /> },
+      {
+        name: "Medical History",
+        path: "/doctor/patient",
+        icon: <FaFileMedical />,
+      },
+    ],
+  },
+  {
+    title: "Clinical Care",
+    items: [
+      {
+        name: "Appointments",
+        path: "/doctor/appointments",
+        icon: <FaCalendarAlt />,
+      },
+      {
+        name: "Prescriptions",
+        path: "/doctor/prescriptions",
+        icon: <FaPrescription />,
+      },
+      {
+        name: "Lab Reports",
+        path: "/doctor/lab-reports",
+        icon: <FaFileMedical />,
+      },
+    ],
+  },
+  {
+    title: "Analytics",
+    items: [
+      {
+        name: "Progress Tracking",
+        path: "/doctor/progress",
+        icon: <FaChartBar />,
+      },
+      { name: "Risk Assessment", path: "/doctor/risk", icon: <MdAssessment /> },
+    ],
+  },
+  {
+    title: "Planning",
+    items: [
+      { name: "Diet Plans", path: "/doctor/diet-plans", icon: <FaAppleAlt /> },
+      {
+        name: "Workout Overrides",
+        path: "/doctor/workout-adjustments",
+        icon: <FaDumbbell />,
+      },
+    ],
+  },
+  {
+    title: "Communication",
+    items: [
+      { name: "Chat", path: "/doctor/chat", icon: <FaComments /> },
+      { name: "Video Consult", path: "/doctor/video", icon: <FaUserMd /> },
+      { name: "Notifications", path: "/notifications", icon: <FaBell /> },
+    ],
+  },
+  {
+    title: "Business",
+    items: [
+      { name: "Earnings", path: "/doctor/earnings", icon: <FaMoneyBill /> },
+      {
+        name: "Subscriptions",
+        path: "/doctor/subscriptions",
+        icon: <FaCrown />,
+      },
+    ],
+  },
+  {
+    title: "Account",
+    items: [{ name: "Profile Settings", path: "/settings", icon: <FaCog /> }],
   },
 ];
 

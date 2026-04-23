@@ -43,7 +43,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", res.data.token);
     const profileRes = await API.get("/auth/me");
     applyOnboardingFlag(profileRes.data.data);
-    return profileRes.data.data;
+    return {
+      ...profileRes.data.data,
+      role: profileRes.data.data.role,
+    };
   };
 
   const register = async (data) => {

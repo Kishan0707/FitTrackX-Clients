@@ -37,7 +37,7 @@ const AssignWorkoutForm = ({ onWorkoutAssigned, onClose }) => {
     try {
       setLoading(true);
       const [usersRes, workoutsRes] = await Promise.all([
-        API.get("/admin/users"),
+        API.get("/admin/users?role=user"),
         API.get("/admin/workouts"),
       ]);
 

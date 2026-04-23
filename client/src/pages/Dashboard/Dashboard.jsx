@@ -42,13 +42,13 @@ const Dashboard = () => {
       }
 
       try {
-        if (user.role === "admin") {
+        if (user?.role === "admin") {
           const statsRes = await API.get("/admin/dashboard");
 
           if (!isMounted) return;
 
           setStats(statsRes.data.data || {});
-        } else if (user.role === "coach") {
+        } else if (user?.role === "coach") {
           const statsRes = await API.get("/coach/dashboard");
 
           if (!isMounted) return;

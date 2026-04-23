@@ -20,7 +20,7 @@ import CoachReport from "./pages/coach/Report";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminUsers from "./pages/admin/Users";
-import AdminWorkouts from "./pages/admin/Workouts";
+import AdminWorkouts from "./pages/admin/AdminWorkout";
 import CoachDashboard from "./pages/coach/CoachDashboard";
 import Clients from "./pages/coach/Clients";
 import DietPlans from "./pages/coach/DietPlans";
@@ -51,7 +51,6 @@ import Grocery from "./pages/health/Grocery";
 import ProductList from "./pages/products/ProductList";
 import ProductDetail from "./pages/products/ProductDetail";
 import MyOrders from "./pages/orders/MyOrders";
-import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import AppErrorBoundary from "./components/AppErrorBoundary";
@@ -62,6 +61,14 @@ import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 import OrderDetail from "./pages/orders/OrderDetail";
 import Landing from "./pages/Landing/Landing";
+
+// Doctor components
+import DoctorsList from "./pages/doctor/DoctorsList";
+import DoctorProfile from "./pages/doctor/DoctorProfile";
+import DoctorDashboard from "./pages/doctor/DoctorDashboard";
+import BookAppointment from "./pages/doctor/BookAppointment";
+import PatientMedicalHistory from "./pages/doctor/PatientMedicalHistory";
+import { useEffect } from "react";
 
 function AppContent() {
   const location = useLocation();
@@ -461,43 +468,98 @@ function AppContent() {
               </ProtectedRoutes>
             }
           />
-          <Route
-            path='/seller'
-            element={
-              <ProtectedRoutes allowedRoles={["seller"]}>
-                <div>Seller Dashboard</div>
-              </ProtectedRoutes>
-            }
-          />
 
+          {/* Doctor Routes */}
           <Route
-            path='/seller/products'
+            path='/doctors'
             element={
-              <ProtectedRoutes allowedRoles={["seller"]}>
-                <div>Seller Products</div>
+              <ProtectedRoutes allowedRoles={["doctor", "user"]}>
+                <DoctorsList />
               </ProtectedRoutes>
             }
           />
-
           <Route
-            path='/seller/orders'
+            path='/doctors/:doctorId'
             element={
-              <ProtectedRoutes allowedRoles={["seller"]}>
-                <div>Seller Orders</div>
+              <ProtectedRoutes allowedRoles={["doctor", "user"]}>
+                <DoctorProfile />
               </ProtectedRoutes>
             }
           />
-
           <Route
-            path='/affiliate'
+            path='/book-appointment'
             element={
-              <ProtectedRoutes allowedRoles={["affiliate"]}>
-                <div>Affiliate Dashboard</div>
+              <ProtectedRoutes allowedRoles={["user"]}>
+                <BookAppointment />
               </ProtectedRoutes>
             }
           />
-          <Route path='/affiliate/earnings' element={<div>Earnings</div>} />
-          <Route path='/affiliate/referrals' element={<div>Referrals</div>} />
+          <Route
+            path='/doctor'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorDashboard />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/patients'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <div className='p-8 text-white'>
+                  Patients List (Coming Soon)
+                </div>
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/patient/:userId'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <PatientMedicalHistory />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/appointments'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <div className='p-8 text-white'>Doctor Appointments</div>
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/prescriptions'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <div className='p-8 text-white'>Prescriptions Management</div>
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/lab-reports'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <div className='p-8 text-white'>Lab Reports Review</div>
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/earnings'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <div className='p-8 text-white'>Earnings Dashboard</div>
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/subscriptions'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <div className='p-8 text-white'>Subscription Plans</div>
+              </ProtectedRoutes>
+            }
+          />
           <Route
             path='/cart'
             element={

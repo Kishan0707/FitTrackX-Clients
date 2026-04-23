@@ -7,12 +7,14 @@ import { MdDarkMode, MdLightMode } from "react-icons/md";
 import API from "../services/api";
 import { AuthContext } from "../context/authContext";
 import { useTheme } from "../context/themeContext";
+import NotificationSettings from "./NotificationSettings";
 
 const Navbar = ({ setMenuBtn }) => {
   const { user, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showNotifSettings, setShowNotifSettings] = useState(false);
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -138,22 +140,31 @@ const Navbar = ({ setMenuBtn }) => {
 
       <div className='flex items-center justify-center gap-3'>
         {user && (
-          <button
-            onClick={() => navigate(notificationsPath)}
-            className={`relative rounded-lg border-2 p-2 transition md:p-3 ${
-              isOnNotifications ?
-                "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-300"
-              : "border-slate-200 bg-white text-slate-900 hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
-            }`}
-            title='Open notifications'
-            aria-label='Open notifications'>
-            <FaBell size={20} />
-            {unreadCount > 0 && (
-              <span className='absolute -right-1 -top-1 min-w-[1.25rem] rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-slate-950'>
-                {unreadCount > 99 ? "99+" : unreadCount}
-              </span>
-            )}
-          </button>
+          <>
+            <button
+              onClick={() => setShowNotifSettings(true)}
+              className='rounded-lg border-2 border-slate-200 bg-white p-2 text-slate-900 transition hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 md:p-3'
+              title='Notification Settings'
+              aria-label='Notification Settings'>
+              <FaCog size={18} />
+            </button>
+            <button
+              onClick={() => navigate(notificationsPath)}
+              className={`relative rounded-lg border-2 p-2 transition md:p-3 ${
+                isOnNotifications ?
+                  "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-300"
+                : "border-slate-200 bg-white text-slate-900 hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
+              }`}
+              title='Open notifications'
+              aria-label='Open notifications'>
+              <FaBell size={20} />
+              {unreadCount > 0 && (
+                <span className='absolute -right-1 -top-1 min-w-[1.25rem] rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-slate-950'>
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
+            </button>
+          </>
         )}
 
         <button
@@ -248,6 +259,9 @@ const Navbar = ({ setMenuBtn }) => {
           )}
         </div>
       </div>
+      {showNotifSettings && (
+        <NotificationSettings onClose={() => setShowNotifSettings(false)} />
+      )}
     </div>
   );
 };

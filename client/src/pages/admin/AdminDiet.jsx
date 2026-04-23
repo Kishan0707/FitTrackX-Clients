@@ -55,23 +55,23 @@ const AdminDiet = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      setUsersLoading(true);
-      const response = await API.get("/admin/users");
-      console.log("Users response:", response.data);
-      const userData = response.data.data || [];
-      setUsers(userData);
-    } catch (error) {
-      console.error(
-        "Error fetching users:",
-        error.response?.data || error.message,
-      );
-      setUsers([]);
-    } finally {
-      setUsersLoading(false);
-    }
-  };
+   const fetchUsers = async () => {
+     try {
+       setUsersLoading(true);
+       const response = API.get("/admin/users?role=user");
+       console.log("Users response:", response.data);
+       const userData = response.data.data || [];
+       setUsers(userData);
+     } catch (error) {
+       console.error(
+         "Error fetching users:",
+         error.response?.data || error.message,
+       );
+       setUsers([]);
+     } finally {
+       setUsersLoading(false);
+     }
+   };
 
   const handleInputChange = (e, mealIndex = null, foodIndex = null) => {
     const { name, value } = e.target;

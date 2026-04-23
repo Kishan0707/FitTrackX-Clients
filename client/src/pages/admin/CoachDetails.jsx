@@ -50,17 +50,17 @@ const CoachDetails = () => {
     }
   };
 
-  const fetchAvailableClients = async () => {
-    try {
-      const res = await API.get("/admin/users");
-      const clients = res.data.data.filter(
-        (user) => user.role === "user" && !user.assignedCoach,
-      );
-      setAvailableClients(clients);
-    } catch (error) {
-      console.error("Failed to fetch clients", error);
-    }
-  };
+   const fetchAvailableClients = async () => {
+     try {
+       const res = await API.get("/admin/users?role=user");
+       const clients = res.data.data.filter(
+         (user) => !user.assignedCoach,
+       );
+       setAvailableClients(clients);
+     } catch (error) {
+       console.error("Failed to fetch clients", error);
+     }
+   };
 
   const showMessage = (msg, type) => {
     setMessage(msg);

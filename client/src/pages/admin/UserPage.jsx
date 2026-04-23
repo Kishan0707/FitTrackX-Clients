@@ -96,27 +96,28 @@ const UserPage = () => {
     return () => clearTimeout(timer);
   }, [toast]);
 
-  const fetchUsers = async ({ silent = false } = {}) => {
-    try {
-      if (silent) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
+   const fetchUsers = async ({ silent = false } = {}) => {
+     try {
+       if (silent) {
+         setRefreshing(true);
+       } else {
+         setLoading(true);
+       }
 
-      const res = await API.get("/admin/users");
-      const fetchedUsers = extractUsersFromResponse(res.data);
-      setUsers(fetchedUsers);
-      setError("");
-    } catch (err) {
-      setError(
-        err.response?.data?.message || err.message || "Failed to fetch users",
-      );
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+       // Fetch users excluding doctors - only fetch fitness users
+       const res = await API.get("/admin/users?excludeRoles=doctor");
+       const fetchedUsers = extractUsersFromResponse(res.data);
+       setUsers(fetchedUsers);
+       setError("");
+     } catch (err) {
+       setError(
+         err.response?.data?.message || err.message || "Failed to fetch users",
+       );
+     } finally {
+       setLoading(false);
+       setRefreshing(false);
+     }
+   };
 
   const roleOptions = useMemo(() => {
     const uniqueRoles = new Set(users.map((user) => getUserRole(user)));

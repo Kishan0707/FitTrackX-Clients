@@ -219,7 +219,7 @@ export const SIDEBAR = [
   },
   {
     name: "Medical History",
-    path: "/doctor/patient",
+    path: "/doctor/medical-history",
     icon: FaFileMedical,
     roles: [ROLES.DOCTOR],
     section: "Patients",

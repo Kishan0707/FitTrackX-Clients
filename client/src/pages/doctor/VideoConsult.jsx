@@ -19,6 +19,7 @@ import {
 import { BsCameraVideoFill } from "react-icons/bs";
 import { IoMdSettings } from "react-icons/io";
 import DashboardLayout from "../../layout/DashboardLayout";
+import API from "../../services/api";
 
 export default function VideoConsult() {
   const { appointmentId } = useParams();
@@ -61,11 +62,8 @@ export default function VideoConsult() {
 
   const fetchAppointment = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/appointment/${appointmentId}`,
-      );
-      const data = await res.json();
-      setAppointment(data);
+      const res = await API.get(`/appointment/${appointmentId}`);
+      setAppointment(res);
     } catch (err) {
       console.error(err);
     }
@@ -83,7 +81,12 @@ export default function VideoConsult() {
     setSocket(s);
     startCall(s, appointment.roomId);
 
-    return () => s.disconnect();
+    return () => {
+      s.disconnect();
+      socket.off("offer");
+      socket.off("answer");
+      socket.off("ice-candidate");
+    };
   }, [appointment]);
 
   const startCall = async (socket, roomId) => {
@@ -111,10 +114,16 @@ export default function VideoConsult() {
       };
 
       socket.emit("join-call", { roomId });
+      const isDoctor = true;
+      if (isDoctor) {
+        const offer = await peerRef.current.createOffer();
+        await peerRef.current.setLocalDescription(offer);
 
-      const offer = await peer.createOffer();
-      await peer.setLocalDescription(offer);
-      socket.emit("offer", { offer, roomId });
+        socket.emit("offer", {
+          offer,
+          roomId,
+        });
+      }
 
       socket.on("offer", async (offer) => {
         await peer.setRemoteDescription(offer);

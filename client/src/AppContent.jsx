@@ -48,6 +48,7 @@ import Step from "./pages/coach/Step";
 import Onboarding from "./pages/onboarding";
 import HealthTips from "./pages/health/HealthTips";
 import Grocery from "./pages/health/Grocery";
+import MedicalHistory from "./pages/health/MedicalHistory";
 import ProductList from "./pages/products/ProductList";
 import ProductDetail from "./pages/products/ProductDetail";
 import MyOrders from "./pages/orders/MyOrders";
@@ -69,6 +70,8 @@ import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import BookAppointment from "./pages/doctor/BookAppointment";
 import PatientMedicalHistory from "./pages/doctor/PatientMedicalHistory";
+import PrescriptionsManagement from "./pages/doctor/PrescriptionsManagement";
+import LabReports from "./pages/doctor/LabReports";
 import Patients from "./pages/doctor/Patients";
 import AddPatient from "./pages/doctor/AddPatient";
 import { useEffect } from "react";
@@ -450,6 +453,14 @@ function AppContent() {
             }
           />
           <Route
+            path='/doctor/medical-history'
+            element={
+              <ProtectedRoutes>
+                <MedicalHistory />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
             path='/products'
             element={
               <ProtectedRoutes>
@@ -524,6 +535,14 @@ function AppContent() {
             }
           />
           <Route
+            path='/doctor/medical-history/:userId'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <MedicalHistory />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
             path='/doctor/patient/new'
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
@@ -543,7 +562,7 @@ function AppContent() {
             path='/doctor/prescriptions'
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
-                <div className='p-8 text-white'>Prescriptions Management</div>
+                <PrescriptionsManagement />
               </ProtectedRoutes>
             }
           />
@@ -551,7 +570,7 @@ function AppContent() {
             path='/doctor/lab-reports'
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
-                <div className='p-8 text-white'>Lab Reports Review</div>
+                <LabReports />
               </ProtectedRoutes>
             }
           />

@@ -26,6 +26,9 @@ export const API_ENDPOINTS = {
     
     // User: view own profile
     USER_PROFILE: "/user/profile",
+
+    // User: medical history
+    MEDICAL_HISTORY: "/user/medical-history",
     
     // Admin: get single user by ID
     ADMIN_GET: (userId) => `/admin/users/${userId}`,

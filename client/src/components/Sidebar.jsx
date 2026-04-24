@@ -1,416 +1,73 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { NavLink } from "react-router-dom";
-import {
-  FaChartLine,
-  FaDumbbell,
-  FaAppleAlt,
-  FaChartBar,
-  FaRobot,
-  FaCrown,
-  FaBell,
-  FaCog,
-  FaFileAlt,
-  FaClipboardList,
-  FaHistory,
-  FaChartPie,
-  FaUserTie,
-  FaUsers,
-  FaComments,
-  FaWalking,
-  FaChevronDown,
-  FaShoppingBag,
-  FaHeartbeat,
-  FaShoppingBasket,
-  FaStore,
-  FaMoneyBill,
-  FaUserMd,
-  FaPrescription,
-  FaCalendarAlt,
-  FaFileMedical,
-  FaStethoscope,
-} from "react-icons/fa";
-import { GrSchedule, GrUserManager } from "react-icons/gr";
-import {
-  MdManageAccounts,
-  MdMedicalServices,
-  MdAssessment,
-} from "react-icons/md";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/authContext";
 import { RiMenu2Fill } from "react-icons/ri";
-
-export const adminMenuSections = [
-  {
-    title: "Overview",
-    items: [{ name: "Dashboard", path: "/admin", icon: <FaChartLine /> }],
-  },
-  {
-    title: "Management",
-    items: [
-      {
-        name: "User Management",
-        path: "/admin/users",
-        icon: <MdManageAccounts />,
-      },
-      {
-        name: "Coach Management",
-        path: "/admin/coaches",
-        icon: <FaUserTie />,
-      },
-    ],
-  },
-  {
-    title: "Content",
-    items: [
-      {
-        name: "Workouts Management",
-        path: "/admin/workouts",
-        icon: <FaDumbbell />,
-      },
-      {
-        name: "Diet Management",
-        path: "/admin/diet",
-        icon: <FaAppleAlt />,
-      },
-      {
-        name: "Product Requests",
-        path: "/admin/products",
-        icon: <FaShoppingBag />,
-      },
-    ],
-  },
-  {
-    title: "Insights",
-    items: [
-      {
-        name: "Reports",
-        path: "/admin/reports",
-        icon: <FaFileAlt />,
-      },
-      {
-        name: "Audit Logs",
-        path: "/admin/audit-logs",
-        icon: <FaClipboardList />,
-      },
-    ],
-  },
-  {
-    title: "Account",
-    items: [{ name: "Settings", path: "/settings", icon: <FaCog /> }],
-  },
-];
-
-export const coachMenuSections = [
-  {
-    title: "Overview",
-    items: [
-      { name: "Dashboard", path: "/coachDashboard", icon: <FaChartLine /> },
-    ],
-  },
-  {
-    title: "Clients",
-    items: [
-      { name: "Clients", path: "/coach/clients", icon: <MdManageAccounts /> },
-      { name: "Members", path: "/coach/members", icon: <FaUsers /> },
-    ],
-  },
-  {
-    title: "Training",
-    items: [
-      { name: "Workouts", path: "/coach/workouts", icon: <FaDumbbell /> },
-      { name: "Diet Plans", path: "/coach/diet", icon: <FaAppleAlt /> },
-      { name: "Sessions", path: "/coach/sessions", icon: <GrSchedule /> },
-    ],
-  },
-  {
-    title: "Tracking",
-    items: [
-      { name: "Progress", path: "/coach/progress", icon: <FaChartBar /> },
-      { name: "Steps", path: "/coach/steps", icon: <FaWalking /> },
-    ],
-  },
-  {
-    title: "Communication",
-    items: [
-      { name: "Chat", path: "/coach/chat", icon: <FaComments /> },
-      {
-        name: "Notifications",
-        path: "/notifications",
-        icon: <FaBell />,
-      },
-    ],
-  },
-  {
-    title: "Tools",
-    items: [
-      { name: "AI Trainer", path: "/coach/ai", icon: <FaRobot /> },
-      { name: "Reports", path: "/coach/reports", icon: <FaFileAlt /> },
-      { name: "Products", path: "/products", icon: <FaShoppingBag /> },
-    ],
-  },
-  {
-    title: "Business",
-    items: [{ name: "Plans", path: "/coach/plans", icon: <FaCrown /> }],
-  },
-  {
-    title: "Account",
-    items: [{ name: "Profile", path: "/settings", icon: <FaUserTie /> }],
-  },
-];
-
-export const doctorMenuSections = [
-  {
-    title: "Overview",
-    items: [
-      { name: "Dashboard", path: "/doctor", icon: <FaStethoscope /> },
-      { name: "Find Doctors", path: "/doctors", icon: <FaUserMd /> },
-    ],
-  },
-  {
-    title: "Patients",
-    items: [
-      { name: "All Patients", path: "/doctor/patients", icon: <FaUsers /> },
-      {
-        name: "Medical History",
-        path: "/doctor/patient",
-        icon: <FaFileMedical />,
-      },
-    ],
-  },
-  {
-    title: "Clinical Care",
-    items: [
-      {
-        name: "Appointments",
-        path: "/doctor/appointments",
-        icon: <FaCalendarAlt />,
-      },
-      {
-        name: "Prescriptions",
-        path: "/doctor/prescriptions",
-        icon: <FaPrescription />,
-      },
-      {
-        name: "Lab Reports",
-        path: "/doctor/lab-reports",
-        icon: <FaFileMedical />,
-      },
-    ],
-  },
-  {
-    title: "Analytics",
-    items: [
-      {
-        name: "Progress Tracking",
-        path: "/doctor/progress",
-        icon: <FaChartBar />,
-      },
-      { name: "Risk Assessment", path: "/doctor/risk", icon: <MdAssessment /> },
-    ],
-  },
-  {
-    title: "Planning",
-    items: [
-      { name: "Diet Plans", path: "/doctor/diet-plans", icon: <FaAppleAlt /> },
-      {
-        name: "Workout Overrides",
-        path: "/doctor/workout-adjustments",
-        icon: <FaDumbbell />,
-      },
-    ],
-  },
-  {
-    title: "Communication",
-    items: [
-      { name: "Chat", path: "/doctor/chat", icon: <FaComments /> },
-      { name: "Video Consult", path: "/doctor/video", icon: <FaUserMd /> },
-      { name: "Notifications", path: "/notifications", icon: <FaBell /> },
-    ],
-  },
-  {
-    title: "Business",
-    items: [
-      { name: "Earnings", path: "/doctor/earnings", icon: <FaMoneyBill /> },
-      {
-        name: "Subscriptions",
-        path: "/doctor/subscriptions",
-        icon: <FaCrown />,
-      },
-    ],
-  },
-  {
-    title: "Account",
-    items: [{ name: "Profile Settings", path: "/settings", icon: <FaCog /> }],
-  },
-];
-
-export const userMenuSections = [
-  {
-    title: "Overview",
-    items: [{ name: "Dashboard", path: "/dashboard", icon: <FaChartLine /> }],
-  },
-  {
-    title: "Marketplace",
-    items: [
-      { name: "My Orders", path: "/orders", icon: <FaClipboardList /> },
-      { name: "Cart", path: "/cart", icon: <FaShoppingBasket /> },
-    ],
-  },
-  {
-    title: "Workouts",
-    items: [
-      { name: "Add Workouts", path: "/workouts", icon: <FaDumbbell /> },
-      {
-        name: "Workout Analytics",
-        path: "/workout-analytics",
-        icon: <FaChartPie />,
-      },
-      {
-        name: "Workout History",
-        path: "/workout-history",
-        icon: <FaHistory />,
-      },
-    ],
-  },
-  {
-    title: "Nutrition",
-    items: [{ name: "Add-Diet", path: "/add-meal", icon: <FaAppleAlt /> }],
-  },
-  {
-    title: "Communication",
-    items: [
-      { name: "Chat", path: "/chat", icon: <FaComments /> },
-      {
-        name: "Notifications",
-        path: "/notifications",
-        icon: <FaBell />,
-      },
-    ],
-  },
-  {
-    title: "Tracking",
-    items: [
-      { name: "Progress", path: "/progress", icon: <FaChartBar /> },
-      { name: "Steps", path: "/steps", icon: <FaWalking /> },
-    ],
-  },
-  {
-    title: "Tools",
-    items: [
-      { name: "AI Trainer", path: "/ai", icon: <FaRobot /> },
-      { name: "Products", path: "/products", icon: <FaShoppingBag /> },
-    ],
-  },
-  {
-    title: "Wellness",
-    items: [
-      { name: "Health Tips", path: "/health-tips", icon: <FaHeartbeat /> },
-      { name: "Grocery ", path: "/grocery", icon: <FaStore /> },
-    ],
-  },
-  {
-    title: "Membership",
-    items: [{ name: "Plans", path: "/plans", icon: <FaCrown /> }],
-  },
-  {
-    title: "Account",
-    items: [{ name: "Settings", path: "/settings", icon: <FaCog /> }],
-  },
-];
-export const sellerMenuSections = [
-  {
-    title: "Store",
-    items: [
-      { name: "Dashboard", path: "/seller", icon: <FaStore /> },
-      {
-        name: "My Products",
-        path: "/seller/products",
-        icon: <FaShoppingBag />,
-      },
-      { name: "Orders", path: "/seller/orders", icon: <FaClipboardList /> },
-    ],
-  },
-];
-export const affiliateMenuSections = [
-  {
-    title: "Affiliate",
-    items: [
-      { name: "Dashboard", path: "/affiliate", icon: <FaChartLine /> },
-      { name: "Earnings", path: "/affiliate/earnings", icon: <FaMoneyBill /> },
-      { name: "Referrals", path: "/affiliate/referrals", icon: <FaUsers /> },
-    ],
-  },
-];
-const getInitialOpenSections = (sections) =>
-  sections.reduce((acc, section) => {
-    if (section.title) {
-      acc[section.title] = true;
-    }
-
-    return acc;
-  }, {});
-
-const getWorkspaceLabel = (role) => {
-  if (role === "admin") return "Admin Console";
-  if (role === "coach") return "Coach Workspace";
-  return "Member Workspace";
-};
+import { AuthContext } from "../context/authContext";
+import { SIDEBAR } from "../config/sidebarConfig";
+import { ROLES } from "../constants/roles";
+import { FaChevronDown } from "react-icons/fa";
 
 const Sidebar = ({ menuBtn, setMenuBtn }) => {
   const { user } = useContext(AuthContext);
-  const userRole = user?.role;
+  const userRole = user?.role || ROLES.USER;
   const isSidebarOpen = !menuBtn;
   const [openSections, setOpenSections] = useState({});
-  const workspaceLabel = getWorkspaceLabel(userRole);
-  let menuSections = [];
-  if (userRole === "admin") {
-    menuSections = adminMenuSections;
-  } else if (userRole === "coach") {
-    menuSections = coachMenuSections;
-  } else if (userRole === "seller") {
-    menuSections = sellerMenuSections;
-  } else if (userRole === "affiliate") {
-    menuSections = affiliateMenuSections;
-  } else {
-    menuSections = userMenuSections;
-  }
+
+  // Filter items by role and group by section
+  const menuSections = SIDEBAR.filter((item) =>
+    item.roles.includes(userRole),
+  ).reduce((acc, item) => {
+    const sec = item.section || "Other";
+    if (!acc[sec]) acc[sec] = { title: sec, items: [] };
+    acc[sec].items.push(item);
+    return acc;
+  }, {});
+  const sectionsArray = Object.values(menuSections);
+
+  const workspaceLabel =
+    userRole === "admin" ? "Admin Console"
+    : userRole === "coach" ? "Coach Workspace"
+    : userRole === "doctor" ? "Doctor Workspace"
+    : "Member Workspace";
+
+  // Mobile body lock
   useEffect(() => {
     const syncBodyOverflow = () => {
       const shouldLockBody = isSidebarOpen && window.innerWidth < 768;
       document.body.style.overflow = shouldLockBody ? "hidden" : "auto";
     };
-
     syncBodyOverflow();
     window.addEventListener("resize", syncBodyOverflow);
-
     return () => {
       window.removeEventListener("resize", syncBodyOverflow);
       document.body.style.overflow = "auto";
     };
   }, [isSidebarOpen]);
 
+  // Open all sections on role change
   useEffect(() => {
     setOpenSections((prev) => {
-      const defaultState = getInitialOpenSections(menuSections);
-      const nextState = {};
-
-      Object.keys(defaultState).forEach((title) => {
-        nextState[title] = prev[title] ?? true;
+      const next = {};
+      sectionsArray.forEach((section) => {
+        if (section.title) next[section.title] = true;
       });
-
-      return nextState;
+      return { ...prev, ...next };
     });
   }, [userRole]);
 
   if (!user) return null;
 
+  // Helper to create icon element from icon name string
+
   return (
     <div
       className={`pb-18 md:h-auto h-auto flex flex-col border-r border-slate-200 bg-gradient-to-b from-white via-slate-50 to-white p-4 transition-all duration-300 overscroll-contain dark:border-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950
-  ${
-    menuBtn ?
-      "w-20 -translate-x-full fixed inset-y-0 left-0 z-40 overflow-hidden md:w-20 md:translate-x-0 md:static "
-    : "w-72 translate-x-0 fixed inset-y-0 left-0 z-90 overflow-y-auto md:w-64 md:static"
-  }`}>
+        ${
+          menuBtn ?
+            "w-20 -translate-x-full fixed inset-y-0 left-0 z-40 overflow-hidden md:w-20 md:translate-x-0 md:static"
+          : "w-72 translate-x-0 fixed inset-y-0 left-0 z-90 overflow-y-auto md:w-64 md:static"
+        }`}>
+      {/* Logo Card */}
       <div
         className={`mb-6 rounded-3xl border border-slate-200 bg-white shadow-sm backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/70 dark:shadow-[0_20px_45px_rgba(2,6,23,0.45)] ${
           menuBtn ? "p-2" : "p-4"
@@ -423,7 +80,7 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
             <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 via-rose-500 to-orange-400 text-sm font-black tracking-[0.18em] text-white shadow-lg shadow-red-950/50'>
               FX
             </div>
-            {!menuBtn ?
+            {!menuBtn && (
               <div className='min-w-0'>
                 <p className='text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400'>
                   Workspace
@@ -431,17 +88,15 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
                 <h1 className='truncate text-lg font-semibold text-slate-900 dark:text-white'>
                   FitTrackX
                 </h1>
-                {/*  */}
               </div>
-            : null}
+            )}
           </div>
         </div>
-        {/*  */}
-        {!menuBtn ?
+        {!menuBtn && (
           <div className='mt-3 w-full flex items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 px-14 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-red-200'>
             {workspaceLabel}
           </div>
-        : null}
+        )}
         <button
           className='mt-3 md:hidden flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/60 dark:text-white dark:hover:bg-slate-800'
           onClick={() => setMenuBtn((prev) => !prev)}
@@ -450,8 +105,9 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
         </button>
       </div>
 
-      <nav className='flex flex-col  gap-3 md:text-sm text-xs'>
-        {menuSections.map((section, sectionIndex) => (
+      {/* Menu */}
+      <nav className='flex flex-col gap-3 md:text-sm text-xs'>
+        {sectionsArray.map((section, sectionIndex) => (
           <div
             key={section.title || `section-${sectionIndex}`}
             className={`flex flex-col gap-2 ${
@@ -460,27 +116,27 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
               : ""
             }`}>
             {(() => {
-              const isSectionOpen =
+              const isOpen =
                 section.title ? (openSections[section.title] ?? true) : true;
 
               return (
                 <>
-                  {menuBtn && sectionIndex > 0 ?
+                  {menuBtn && sectionIndex > 0 && (
                     <div className='mx-2 border-t border-slate-800/80' />
-                  : null}
+                  )}
 
-                  {!menuBtn && section.title ?
+                  {!menuBtn && section.title && (
                     <button
                       type='button'
-                      aria-expanded={isSectionOpen}
+                      aria-expanded={isOpen}
                       onClick={() =>
                         setOpenSections((prev) => ({
                           ...prev,
-                          [section.title]: !isSectionOpen,
+                          [section.title]: !isOpen,
                         }))
                       }
                       className='flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-left transition-colors hover:border-slate-300 hover:bg-slate-100 dark:border-slate-800/70 dark:bg-slate-900/70 dark:hover:border-slate-700 dark:hover:bg-slate-800/80'>
-                      <div className='flex  min-w-0 flex-1 items-center justify-center gap-2'>
+                      <div className='flex min-w-0 flex-1 items-center justify-center gap-2'>
                         <span className='truncate text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400'>
                           {section.title}
                         </span>
@@ -491,16 +147,16 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
                       <span className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 dark:bg-slate-950 dark:text-slate-400'>
                         <FaChevronDown
                           className={`text-[10px] transition-transform duration-200 ${
-                            isSectionOpen ? "rotate-0" : "-rotate-90"
+                            isOpen ? "rotate-0" : "-rotate-90"
                           }`}
                         />
                       </span>
                     </button>
-                  : null}
+                  )}
 
                   <div
                     className={`grid transition-[grid-template-rows,opacity] duration-300 ${
-                      menuBtn || isSectionOpen ?
+                      menuBtn || isOpen ?
                         "grid-rows-[1fr] opacity-100"
                       : "grid-rows-[0fr] opacity-70"
                     }`}>
@@ -538,7 +194,10 @@ const Sidebar = ({ menuBtn, setMenuBtn }) => {
                                       "border-red-400/20 bg-red-500/15 text-white"
                                     : "border-slate-800 bg-slate-900/90 text-slate-400 group-hover:border-purple-400 group-hover:text-purple-300 group-hover:scale-110"
                                   }`}>
-                                  {item.icon}
+                                  {(() => {
+                                    const Icon = item.icon;
+                                    return Icon ? <Icon /> : null;
+                                  })()}
                                 </span>
 
                                 {/* 🔥 TEXT */}

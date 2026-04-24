@@ -17,3 +17,6 @@ body {
   background: #020617; /* slate-950 */
   color: #ffffff;
 }
+video {
+  object-fit: cover;
+}

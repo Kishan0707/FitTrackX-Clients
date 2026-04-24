@@ -39,24 +39,42 @@ export const API_ENDPOINTS = {
     // Public: list all doctors (anyone can browse)
     LIST: "/doctors",
     DETAIL: (id) => `/doctors/${id}`,
-    
+
     // Doctor: my own dashboard data
     DASHBOARD: "/doctor/dashboard",
     APPOINTMENTS: "/doctor/appointments",
     PRESCRIPTIONS: "/doctor/prescriptions",
-    LAB_REPORTS: "/doctor/lab-reports",
+    REPORTS: "/doctor/reports",
     EARNINGS: "/doctor/earnings",
-    SUBSCRIPTIONS: "/doctor/subscriptions",
-    
+
+    // Patient management
+    PATIENTS: "/doctor/patients",
+    PATIENT_DETAILS: (id) => `/doctor/patients/${id}`,
+    PATIENT_HISTORY: (id) => `/doctor/patients/${id}/history`,
+    PATIENT_ANALYTICS: "/doctor/patients/analytics",
+
     // Patient medical data (doctor only)
-    PATIENT_HISTORY: (userId) => `/doctor/patient/${userId}`,
     PATIENT_NOTES: (userId) => `/doctor/patient/${userId}/notes`,
-    LAB_REPORT_UPLOAD: "/doctor/lab-reports/upload",
-    PRESCRIBE: "/doctor/prescribe",
-    
+    PRESCRIBE: "/doctor/prescriptions",
+
     // Doctor profile management
+    PROFILE: "/doctor/profile",
     PROFILE_UPDATE: "/doctor/profile",
     AVAILABILITY: "/doctor/availability",
+    CONSULTATION_FEE: "/doctor/settings/consultation-fee",
+    SET_CONSULTATION_FEE: "/doctor/settings/consultation-fee",
+
+    // Video consultation
+    VIDEO_CONSULT_START: "/doctor/video-consult/start",
+    VIDEO_CONSULT_END: (appointmentId) => `/doctor/video-consult/${appointmentId}/end`,
+    VIDEO_CONSULT_HISTORY: "/doctor/video-consult/history",
+
+    // Schedule
+    SCHEDULE: "/doctor/schedule",
+
+    // Reports
+    REPORT_SUMMARY: "/doctor/reports/summary/appointments",
+    UPDATE_REPORT_STATUS: (id) => `/doctor/reports/${id}/status`,
   },
 
   // ==================== APPOINTMENTS ====================
@@ -64,13 +82,14 @@ export const API_ENDPOINTS = {
     // User: book appointment
     BOOK: "/appointments",
     USER_LIST: "/user/appointments",
-    
+
     // Doctor: view/manage appointments
     DOCTOR_LIST: "/doctor/appointments",
+    DOCTOR_DETAIL: (id) => `/doctor/appointments/${id}`,
+    DOCTOR_CREATE: "/doctor/appointments",
     DOCTOR_UPDATE: (id) => `/doctor/appointments/${id}`,
-    
-    // Admin: all appointments
-    ADMIN_LIST: "/admin/appointments",
+    DOCTOR_CANCEL: (id) => `/doctor/appointments/${id}`,
+    DOCTOR_BULK_STATUS: "/doctor/appointments/bulk-status",
   },
 
   // ==================== DASHBOARD ====================

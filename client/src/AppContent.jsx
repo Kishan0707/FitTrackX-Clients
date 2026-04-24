@@ -66,9 +66,14 @@ import Landing from "./pages/Landing/Landing";
 import DoctorsList from "./pages/doctor/DoctorsList";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
+import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import BookAppointment from "./pages/doctor/BookAppointment";
 import PatientMedicalHistory from "./pages/doctor/PatientMedicalHistory";
+import Patients from "./pages/doctor/Patients";
+import AddPatient from "./pages/doctor/AddPatient";
 import { useEffect } from "react";
+import VideoConsult from "./pages/doctor/VideoConsult";
+import Chat from "./Chat";
 
 function AppContent() {
   const location = useLocation();
@@ -506,9 +511,7 @@ function AppContent() {
             path='/doctor/patients'
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
-                <div className='p-8 text-white'>
-                  Patients List (Coming Soon)
-                </div>
+                <Patients />
               </ProtectedRoutes>
             }
           />
@@ -521,10 +524,18 @@ function AppContent() {
             }
           />
           <Route
+            path='/doctor/patient/new'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <AddPatient />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
             path='/doctor/appointments'
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
-                <div className='p-8 text-white'>Doctor Appointments</div>
+                <DoctorAppointments />
               </ProtectedRoutes>
             }
           />
@@ -594,6 +605,25 @@ function AppContent() {
               </ProtectedRoutes>
             }
           />
+
+          {/* 🔥 VIDEO CONSULT (IMPORTANT) */}
+          <Route
+            path='/doctor/video'
+            element={
+              <ProtectedRoutes
+                allowedRoles={[
+                  "user",
+                  "doctor",
+                  "admin",
+                  "affiliate",
+                  "seller",
+                ]}>
+                <VideoConsult />
+              </ProtectedRoutes>
+            }
+          />
+
+          <Route path='/doctor/chat' element={<Chat />} />
           <Route path='/order/:id' element={<OrderDetail />} />
           <Route path='/success' element={<Success />} />
           <Route path='/cancel' element={<Cancel />} />

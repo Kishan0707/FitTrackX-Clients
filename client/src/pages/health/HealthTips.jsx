@@ -565,7 +565,7 @@ const HealthTips = () => {
               <p className='text-xs uppercase tracking-[0.3em] text-slate-500 font-semibold'>
                 🔥 Quick Access
               </p>
-              <div className='flex gap-3  pb-2'>
+              <div className='flex gap-3 overflow-x-scroll pb-2'>
                 {popularProblems.map((problem) => {
                   const emojiMap = {
                     "Hair Fall": "💇",
@@ -579,7 +579,7 @@ const HealthTips = () => {
                       whileHover={{ scale: 1.07 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setSearch(problem)}
-                      className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl transition-all border ${
+                      className={`flex items-center gap-2.5 md:px-5 px-2.5 md:py-3 py-1.5 rounded-2xl transition-all border ${
                         search === problem ?
                           "bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-xl scale-105 border-orange-500"
                         : "bg-slate-900/70 text-slate-300 border-slate-700 hover:border-orange-500/50"

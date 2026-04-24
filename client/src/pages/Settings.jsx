@@ -231,9 +231,11 @@ const Settings = () => {
 
   return (
     <DashboardLayout>
-      <div className='p-3 sm:p-6 bg-slate-900 min-h-screen'>
+      <div className='p-3 sm:p-6 bg-slate-900 min-h-screen rounded-xl shadow-lg'>
         <div className='max-w-4xl mx-auto'>
-          <h1 className='text-3xl font-bold text-white mb-8'>Settings</h1>
+          <h1 className='text-3xl font-bold text-white md:mb-8 my-4'>
+            Settings
+          </h1>
 
           {/* Message Alert */}
           {message && (

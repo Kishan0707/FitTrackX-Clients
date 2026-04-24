@@ -107,9 +107,9 @@ const BottomNavigation = () => {
                       <motion.div
                         whileTap={{ scale: 0.7 }}
                         className={`text-lg ${
-                          isActive
-                            ? "text-orange-500"
-                            : "text-slate-500 dark:text-slate-400"
+                          isActive ? "text-orange-500" : (
+                            "text-slate-500 dark:text-slate-400"
+                          )
                         }`}>
                         {item.icon}
                       </motion.div>

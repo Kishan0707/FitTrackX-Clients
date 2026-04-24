@@ -1,7 +1,16 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import API from "../services/api";
+import {
+  getActiveToken,
+  getActiveUser,
+  addSession,
+  getAllSessions,
+  switchSession,
+  removeSession,
+  clearAllSessions,
+  generateSessionId,
+} from "../utils/sessionStorage";
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
 
 const getStoredOnboardingFlag = () =>
@@ -13,6 +22,7 @@ export const AuthProvider = ({ children }) => {
   const [onboardingComplete, setOnboardingComplete] = useState(
     getStoredOnboardingFlag(),
   );
+  const [sessions, setSessions] = useState([]);
 
   const applyOnboardingFlag = useCallback((userData) => {
     if (!userData) {
@@ -22,9 +32,9 @@ export const AuthProvider = ({ children }) => {
 
     const storedFlag = getStoredOnboardingFlag();
     const derived =
-      typeof userData.onboardingComplete === "boolean"
-        ? userData.onboardingComplete
-        : storedFlag;
+      typeof userData.onboardingComplete === "boolean" ?
+        userData.onboardingComplete
+      : storedFlag;
 
     if (derived) {
       localStorage.setItem("onboardingComplete", "true");
@@ -39,10 +49,21 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (data) => {
     const res = await API.post("/auth/login", data);
+    const token = res.data.token;
 
-    localStorage.setItem("token", res.data.token);
-    const profileRes = await API.get("/auth/me");
+    // First get user profile
+    const profileRes = await API.get("/auth/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // Then add session to storage
+    addSession(profileRes.data.data, token);
+
     applyOnboardingFlag(profileRes.data.data);
+
+    // Refresh sessions list
+    setSessions(getAllSessions());
+
     return {
       ...profileRes.data.data,
       role: profileRes.data.data.role,
@@ -53,28 +74,50 @@ export const AuthProvider = ({ children }) => {
     await API.post("/auth/register", data);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("onboardingComplete");
-    setOnboardingComplete(false);
-    setUser(null);
+  const logout = (sessionId = null) => {
+    if (sessionId) {
+      // Logout specific session
+      removeSession(sessionId);
+      setSessions(getAllSessions());
+
+      // If we removed the active session, clear user state
+      const activeSession = getActiveUser();
+      if (!activeSession) {
+        setUser(null);
+        setOnboardingComplete(false);
+      }
+    } else {
+      // Logout all sessions
+      clearAllSessions();
+      setUser(null);
+      setOnboardingComplete(false);
+      setSessions([]);
+    }
   };
 
-  const completeOnboarding = async (payload) => {
+  const switchToSession = (sessionId) => {
     try {
-      await API.post("/onboarding/complete", payload);
-    } catch (error) {
-      console.error("Failed to complete onboarding:", error);
-    }
+      const session = switchSession(sessionId);
 
-    localStorage.setItem("onboardingComplete", "true");
-    setOnboardingComplete(true);
-    setUser((prev) => (prev ? { ...prev, onboardingComplete: true } : prev));
+      setUser(session.user);
+
+      // 🔥 force axios to use new token
+      window.dispatchEvent(new Event("session-changed"));
+
+      setSessions(getAllSessions());
+
+      return session;
+    } catch (error) {
+      console.error("Failed to switch session:", error);
+    }
+  };
+  const refreshSessions = () => {
+    setSessions(getAllSessions());
   };
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem("token");
+      const token = getActiveToken();
 
       if (!token) {
         setLoading(false);
@@ -86,8 +129,7 @@ export const AuthProvider = ({ children }) => {
         applyOnboardingFlag(res.data.data);
       } catch (err) {
         console.log(err);
-        localStorage.removeItem("token");
-        localStorage.removeItem("onboardingComplete");
+        clearAllSessions();
         setUser(null);
         setOnboardingComplete(false);
       } finally {
@@ -96,6 +138,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     fetchUser();
+    setSessions(getAllSessions());
   }, [applyOnboardingFlag]);
 
   return (
@@ -107,7 +150,22 @@ export const AuthProvider = ({ children }) => {
         logout,
         loading,
         onboardingComplete,
-        completeOnboarding,
+        completeOnboarding: async (payload) => {
+          try {
+            await API.post("/onboarding/complete", payload);
+          } catch (error) {
+            console.error("Failed to complete onboarding:", error);
+          }
+
+          localStorage.setItem("onboardingComplete", "true");
+          setOnboardingComplete(true);
+          setUser((prev) =>
+            prev ? { ...prev, onboardingComplete: true } : prev,
+          );
+        },
+        sessions,
+        switchToSession,
+        refreshSessions,
       }}>
       {children}
     </AuthContext.Provider>

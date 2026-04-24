@@ -65,6 +65,7 @@ export default function InstallButton() {
             color: "white",
             borderRadius: "10px",
             border: "none",
+            zIndex: "100",
           }}>
           🔔 Enable Notifications
         </button>

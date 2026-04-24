@@ -30,7 +30,7 @@ const OrderDetail = () => {
 
   return (
     <DashboardLayout>
-      <div className='p-6 text-white max-w-3xl mx-auto bg-slate-900/80 border border-slate-800 rounded-2xl'>
+      <div className='md:p-6 text-white max-w-3xl mx-auto bg-slate-900/80 border border-slate-800 rounded-2xl'>
         {/* PRODUCT */}
         <div className='flex gap-4 items-center mb-6'>
           <img src={order.productId?.imageUrl} className='w-20 h-20 rounded' />

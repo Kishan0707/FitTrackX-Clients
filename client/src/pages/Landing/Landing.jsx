@@ -1,25 +1,35 @@
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  FaBars,
+  FaChalkboardTeacher,
+  FaMoneyBillWave,
+  FaStore,
+  FaTimes,
+} from "react-icons/fa";
+import {
+  FaDumbbell,
+  FaRocket,
+  FaChartLine,
+  FaUserMd,
+  FaCheckCircle,
+  FaStar,
+  FaArrowRight,
+  FaPlay,
+  FaApple,
+  FaGooglePlay,
+} from "react-icons/fa";
+import { MdHealthAndSafety, MdTrendingUp } from "react-icons/md";
+import SessionSwitcher from "../../components/SessionSwitcher";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../../context/authContext";
 import RoleCard from "../../components/RoleCard/RoleCard";
+import { AuthContext } from "../../context/authContext";
 import coachAnim from "../../assets/Tyler.json";
 import sellerAnim from "../../assets/Ecommerce.json";
 import affiliateAnim from "../../assets/money.json";
-import {
-  FaChalkboardTeacher,
-  FaStore,
-  FaMoneyBillWave,
-  FaRocket,
-  FaChartLine,
-  FaBox,
-  FaBolt,
-  FaCheckCircle,
-  FaStar,
-} from "react-icons/fa";
-
 const Landing = () => {
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, loading } = useContext(AuthContext);
 
   useEffect(() => {
@@ -40,7 +50,34 @@ const Landing = () => {
       }
     }
   }, [user, loading, navigate]);
-
+  const features = [
+    {
+      icon: <FaDumbbell className='text-3xl' />,
+      title: "Smart Workouts",
+      description:
+        "AI-powered workout plans that adapt to your progress and goals",
+      color: "from-orange-500 to-red-500",
+    },
+    {
+      icon: <FaChartLine className='text-3xl' />,
+      title: "Progress Tracking",
+      description: "Visual analytics to keep you motivated and on track",
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: <FaUserMd className='text-3xl' />,
+      title: "Expert Coaching",
+      description:
+        "Connect with certified trainers and healthcare professionals",
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      icon: <MdHealthAndSafety className='text-3xl' />,
+      title: "Health Monitoring",
+      description: "Track vitals, nutrition, and overall wellness metrics",
+      color: "from-purple-500 to-pink-500",
+    },
+  ];
   if (loading) {
     return (
       <div className='flex h-screen items-center justify-center bg-slate-950 text-white'>
@@ -68,7 +105,6 @@ const Landing = () => {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
-
   const testimonials = [
     {
       name: "Rahul Sharma",
@@ -94,7 +130,6 @@ const Landing = () => {
       earnings: "₹1.2L+",
     },
   ];
-
   const faqs = [
     {
       q: "How does payout work?",
@@ -111,14 +146,165 @@ const Landing = () => {
   ];
 
   const brandIcons = ["🏋️", "💪", "🏃", "🧘", "🏊", "🚴"];
-
   return (
-    <div className='relative overflow-hidden min-h-screen pb-20 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white'>
-      {/* Background blur blobs */}
-      <div className='absolute top-[-120px] left-[-120px] w-[500px] h-[500px] bg-purple-600/20 blur-[120px] rounded-full'></div>
-      <div className='absolute bottom-[-120px] right-[-120px] w-[500px] h-[500px] bg-pink-500/20 blur-[120px] rounded-full'></div>
-      <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 blur-[150px] rounded-full'></div>
+    <div className='min-h-screen bg-slate-950 text-white overflow-hidden'>
+      {/* Animated Background */}
+      <div className='fixed inset-0 pointer-events-none'>
+        <div className='absolute top-20 left-10 w-72 h-72 bg-orange-500/5 rounded-full blur-3xl animate-pulse'></div>
+        <div className='absolute bottom-20 right-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-700'></div>
+      </div>
 
+      {/* Navigation */}
+      <nav className='relative z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl'>
+        <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+          <div className='flex items-center justify-between h-16'>
+            {/* Logo */}
+            <div className='flex items-center gap-3'>
+              <div className='flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 shadow-lg shadow-orange-500/20'>
+                <FaDumbbell className='text-xl text-white' />
+              </div>
+              <span className='text-xl font-bold bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent'>
+                FitTrackX
+              </span>
+            </div>
+
+            {/* Desktop Nav */}
+            <div className='hidden md:flex items-center gap-8'>
+              <a
+                href='#features'
+                className='text-sm text-slate-300 hover:text-white transition'>
+                Features
+              </a>
+              <a
+                href='#download'
+                className='text-sm text-slate-300 hover:text-white transition'>
+                Download
+              </a>
+              <a
+                href='#about'
+                className='text-sm text-slate-300 hover:text-white transition'>
+                About
+              </a>
+            </div>
+
+            {/* Auth Buttons */}
+            <div className='hidden md:flex items-center gap-3'>
+              <button
+                onClick={() => navigate("/login")}
+                className='px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white transition'>
+                Sign In
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                className='px-6 py-2 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-xl hover:shadow-lg hover:shadow-orange-500/25 transition'>
+                Get Started
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className='md:hidden text-slate-300 hover:text-white'>
+              {isMenuOpen ?
+                <FaTimes size={24} />
+              : <FaBars size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className='md:hidden bg-slate-900 border-t border-slate-800 p-4'>
+            <div className='flex flex-col gap-4'>
+              <a
+                href='#features'
+                className='text-sm text-slate-300 hover:text-white'>
+                Features
+              </a>
+              <a
+                href='#download'
+                className='text-sm text-slate-300 hover:text-white'>
+                Download
+              </a>
+              <a
+                href='#about'
+                className='text-sm text-slate-300 hover:text-white'>
+                About
+              </a>
+              <hr className='border-slate-800' />
+              <button
+                onClick={() => navigate("/login")}
+                className='text-left text-sm text-slate-300 hover:text-white'>
+                Sign In
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                className='px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-xl'>
+                Get Started
+              </button>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <section className='relative z-10 px-4 sm:px-6 lg:px-8 pt-20 pb-32'>
+        <div className='mx-auto max-w-7xl'>
+          <div className='text-center'>
+            {/* Badge */}
+            <div className='inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700 mb-8'>
+              <FaRocket className='text-orange-400' />
+              <span className='text-sm text-slate-300'>
+                Transform your fitness journey today
+              </span>
+            </div>
+
+            {/* Main Heading */}
+            <h1 className='text-5xl md:text-7xl font-black mb-6'>
+              <span className='block text-white'>Your Personal</span>
+              <span className='block bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent'>
+                Fitness Revolution
+              </span>
+            </h1>
+
+            {/* Subtitle */}
+            <p className='mx-auto max-w-2xl text-lg text-slate-400 mb-10'>
+              Track workouts, monitor health, connect with experts, and achieve
+              your goals with AI-powered insights and personalized coaching.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className='flex flex-wrap justify-center gap-4 mb-16'>
+              <button
+                onClick={() => navigate("/login")}
+                className='group flex items-center gap-2 px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl hover:shadow-2xl hover:shadow-orange-500/25 transition-all hover:scale-105'>
+                Start Free Trial
+                <FaArrowRight className='group-hover:translate-x-1 transition' />
+              </button>
+              <button className='group flex items-center gap-2 px-8 py-4 text-lg font-semibold text-white border-2 border-slate-700 rounded-2xl hover:bg-slate-800 transition-all hover:scale-105'>
+                <FaPlay />
+                Watch Demo
+              </button>
+            </div>
+
+            {/* Stats */}
+            <div className='grid grid-cols-3 gap-8 max-w-3xl mx-auto'>
+              {[
+                { number: "10K+", label: "Active Users" },
+                { number: "50K+", label: "Workouts Tracked" },
+                { number: "98%", label: "Satisfaction" },
+              ].map((stat, idx) => (
+                <div key={idx} className='text-center'>
+                  <p className='text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent'>
+                    {stat.number}
+                  </p>
+                  <p className='text-sm text-slate-400 mt-1'>{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
       {/* Hero Section */}
       <div className='text-center pt-20 px-4 z-10 relative'>
         <motion.h1
@@ -136,7 +322,6 @@ const Landing = () => {
           Join as Coach, Seller or Affiliate and start earning today 🚀
         </motion.p>
       </div>
-
       {/* Role Cards */}
       <motion.div
         initial='hidden'
@@ -169,7 +354,6 @@ const Landing = () => {
           />
         </motion.div>
       </motion.div>
-
       {/* Quick trust badges */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -184,68 +368,6 @@ const Landing = () => {
           <span>⚡ Lightning Dashboard</span>
         </div>
       </motion.div>
-
-      {/* Primary CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.5 }}
-        className='text-center md:mt-12 mt-9'>
-        <button
-          onClick={() => navigate("/login")}
-          className='px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all duration-300 text-lg font-semibold shadow-lg shadow-purple-500/30 hover:scale-105 hover:shadow-purple-500/50 border border-purple-500/20'>
-          Start Free Today 🚀
-        </button>
-      </motion.div>
-
-      {/* SECTION 1: Trust + Social Proof */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        className='mt-24 py-20 bg-slate-900/50 backdrop-blur-sm border-y border-slate-800/50'>
-        <div className='max-w-6xl mx-auto px-6'>
-          <h2 className='text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent'>
-            Trusted by Fitness Entrepreneurs Worldwide
-          </h2>
-
-          {/* Brand icon marquee */}
-          <div className='flex justify-center items-center gap-8 md:gap-16 mb-12 flex-wrap'>
-            {brandIcons.map((icon, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.2, rotate: 5 }}
-                className='text-4xl md:text-5xl bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50 shadow-lg hover:shadow-purple-500/20 transition-all duration-300'>
-                {icon}
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Counter metrics */}
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8 text-center'>
-            {[
-              { value: "10K+", label: "Coaches" },
-              { value: "50K+", label: "Products Sold" },
-              { value: "₹100Cr+", label: "Earnings" },
-            ].map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className='p-6 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl border border-slate-700/50 shadow-xl hover:shadow-purple-500/10 hover:border-purple-500/30 transition-all duration-300'>
-                <p className='text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent'>
-                  {stat.value}
-                </p>
-                <p className='text-slate-300 mt-2 text-lg'>{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
       {/* SECTION 2: Features / Benefits */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
@@ -440,7 +562,42 @@ const Landing = () => {
           </p>
         </div>
       </motion.section>
+      {/* Features Section */}
+      <section
+        id='features'
+        className='relative z-10 px-4 sm:px-6 lg:px-8 py-20'>
+        <div className='mx-auto max-w-7xl'>
+          <div className='text-center mb-16'>
+            <h2 className='text-4xl md:text-5xl font-bold text-white mb-4'>
+              Everything You Need to{" "}
+              <span className='bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent'>
+                Succeed
+              </span>
+            </h2>
+            <p className='text-lg text-slate-400 max-w-2xl mx-auto'>
+              Comprehensive tools and features designed to support every aspect
+              of your fitness journey
+            </p>
+          </div>
 
+          <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
+            {features.map((feature, idx) => (
+              <div
+                key={idx}
+                className='group relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/50 p-6 hover:border-orange-500/50 transition-all hover:shadow-2xl hover:shadow-orange-500/10'>
+                <div
+                  className={`inline-flex p-3 rounded-2xl bg-gradient-to-br ${feature.color} mb-4`}>
+                  {feature.icon}
+                </div>
+                <h3 className='text-xl font-bold text-white mb-2'>
+                  {feature.title}
+                </h3>
+                <p className='text-slate-400 text-sm'>{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* SECTION 5: Testimonials */}
       <motion.section
         initial={{ opacity: 0 }}
@@ -487,7 +644,6 @@ const Landing = () => {
           </div>
         </div>
       </motion.section>
-
       {/* SECTION 6: FAQ */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
@@ -517,7 +673,6 @@ const Landing = () => {
           </div>
         </div>
       </motion.section>
-
       {/* SECTION 7: Final CTA */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
@@ -560,6 +715,73 @@ const Landing = () => {
           </motion.div>
         </div>
       </motion.section>
+
+      {/* Download Section */}
+      <section
+        id='download'
+        className='relative z-10 px-4 sm:px-6 lg:px-8 py-20'>
+        <div className='mx-auto max-w-7xl'>
+          <div className='rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 p-8 md:p-16 text-center'>
+            <h2 className='text-4xl md:text-5xl font-bold text-white mb-4'>
+              Get FitTrackX Today
+            </h2>
+            <p className='text-lg text-slate-400 mb-10 max-w-2xl mx-auto'>
+              Download our mobile app and take your fitness journey anywhere.
+              Available on iOS and Android.
+            </p>
+            <div className='flex flex-wrap justify-center gap-4'>
+              <button className='flex items-center gap-3 px-8 py-4 bg-black text-white rounded-2xl hover:bg-slate-800 transition'>
+                <FaApple className='text-3xl' />
+                <div className='text-left'>
+                  <p className='text-xs text-slate-400'>Download on the</p>
+                  <p className='text-lg font-semibold'>App Store</p>
+                </div>
+              </button>
+              <button className='flex items-center gap-3 px-8 py-4 bg-black text-white rounded-2xl hover:bg-slate-800 transition'>
+                <FaGooglePlay className='text-3xl' />
+                <div className='text-left'>
+                  <p className='text-xs text-slate-400'>Get it on</p>
+                  <p className='text-lg font-semibold'>Google Play</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className='relative z-10 border-t border-slate-800 px-4 sm:px-6 lg:px-8 py-12'>
+        <div className='mx-auto max-w-7xl'>
+          <div className='flex flex-col md:flex-row items-center justify-between gap-4'>
+            <div className='flex items-center gap-3'>
+              <div className='flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 via-red-500 to-pink-500'>
+                <FaDumbbell className='text-white' />
+              </div>
+              <span className='font-bold text-white'>FitTrackX</span>
+            </div>
+            <p className='text-sm text-slate-400'>
+              © 2026 FitTrackX. All rights reserved.
+            </p>
+            <div className='flex items-center gap-4'>
+              <a
+                href='#'
+                className='text-slate-400 hover:text-white transition'>
+                Privacy
+              </a>
+              <a
+                href='#'
+                className='text-slate-400 hover:text-white transition'>
+                Terms
+              </a>
+              <a
+                href='#'
+                className='text-slate-400 hover:text-white transition'>
+                Contact
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

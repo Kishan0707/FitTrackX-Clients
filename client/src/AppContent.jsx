@@ -48,7 +48,6 @@ import Step from "./pages/coach/Step";
 import Onboarding from "./pages/onboarding";
 import HealthTips from "./pages/health/HealthTips";
 import Grocery from "./pages/health/Grocery";
-import MedicalHistory from "./pages/health/MedicalHistory";
 import ProductList from "./pages/products/ProductList";
 import ProductDetail from "./pages/products/ProductDetail";
 import MyOrders from "./pages/orders/MyOrders";
@@ -70,10 +69,12 @@ import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import BookAppointment from "./pages/doctor/BookAppointment";
 import PatientMedicalHistory from "./pages/doctor/PatientMedicalHistory";
+import MedicalHistory from "./pages/doctor/MedicalHistory";
 import PrescriptionsManagement from "./pages/doctor/PrescriptionsManagement";
 import LabReports from "./pages/doctor/LabReports";
 import Patients from "./pages/doctor/Patients";
 import AddPatient from "./pages/doctor/AddPatient";
+import MedicalHistoryPage from "./pages/health/MedicalHistory";
 import { useEffect } from "react";
 import VideoConsult from "./pages/doctor/VideoConsult";
 import Chat from "./Chat";
@@ -445,18 +446,18 @@ function AppContent() {
             }
           />
           <Route
-            path='/grocery'
+            path='/medical-history'
             element={
               <ProtectedRoutes>
-                <Grocery />
+                <MedicalHistoryPage />
               </ProtectedRoutes>
             }
           />
           <Route
-            path='/doctor/medical-history'
+            path='/grocery'
             element={
               <ProtectedRoutes>
-                <MedicalHistory />
+                <Grocery />
               </ProtectedRoutes>
             }
           />

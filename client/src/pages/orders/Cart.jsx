@@ -32,7 +32,7 @@ const Cart = () => {
 
   return (
     <DashboardLayout>
-      <div className='p-6'>
+      <div className='md:p-6'>
         {cart.length === 0 && (
           <p className='text-red-500 border-red-100 bg-red-50 p-5 backdrop-blur-2xl rounded-2xl mb-5 font-bold'>
             {" "}

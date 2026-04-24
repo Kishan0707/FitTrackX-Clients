@@ -23,7 +23,7 @@ const MyOrders = () => {
 
   return (
     <DashboardLayout>
-      <div className='p-4 md:p-6 space-y-6'>
+      <div className='p-0 md:p-6 space-y-6'>
         {/* 🔴 EMPTY STATE */}
         {orders.length === 0 && (
           <div className='text-center mt-16'>

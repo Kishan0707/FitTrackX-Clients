@@ -16,7 +16,7 @@ const ProductList = () => {
   return (
     <DashboardLayout>
       <h1 className='text-2xl'>Products List</h1>
-      <div className='p-6 grid grid-cols-1 md:grid-cols-3 gap-4'>
+      <div className='my-5 grid grid-cols-1 md:grid-cols-3 gap-4'>
         {products.map((product) => (
           <div
             className='bg-slate-900 p-4 rounded-xl border border-slate-800 hover:shadow-lg transition-all duration-300 '

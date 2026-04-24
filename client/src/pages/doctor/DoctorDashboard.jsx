@@ -139,13 +139,13 @@ const DoctorDashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className='min-h-screen bg-slate-950 p-4 md:p-8'>
+      <div className='min-h-screen bg-slate-950  md:p-8'>
         <div className='mx-auto max-w-7xl'>
           <div className='mb-8 flex items-center justify-between'>
             <h1 className='text-3xl font-bold text-white'>Doctor Dashboard</h1>
             <button
               onClick={() => navigate("/doctor/appointments")}
-              className='rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 transition'>
+              className='truncate rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 transition'>
               + New Appointment
             </button>
           </div>
@@ -234,15 +234,23 @@ const DoctorDashboard = () => {
                   Recent Activity
                 </h2>
                 <div className='space-y-4'>
-                  {stats.upcomingAppointments && stats.upcomingAppointments.length > 0 ? (
+                  {(
+                    stats.upcomingAppointments &&
+                    stats.upcomingAppointments.length > 0
+                  ) ?
                     stats.upcomingAppointments.map((apt, idx) => (
-                      <div key={idx} className='flex items-center justify-between rounded-xl border border-slate-700 p-4'>
+                      <div
+                        key={idx}
+                        className='flex items-center justify-between rounded-xl border border-slate-700 p-4'>
                         <div className='flex items-center gap-4'>
-                          <div className={`rounded-full p-2 ${
-                            apt.status === 'confirmed' ? 'bg-green-500/20 text-green-400' :
-                            apt.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                            'bg-blue-500/20 text-blue-400'
-                          }`}>
+                          <div
+                            className={`rounded-full p-2 ${
+                              apt.status === "confirmed" ?
+                                "bg-green-500/20 text-green-400"
+                              : apt.status === "pending" ?
+                                "bg-yellow-500/20 text-yellow-400"
+                              : "bg-blue-500/20 text-blue-400"
+                            }`}>
                             <FaCalendarAlt />
                           </div>
                           <div>
@@ -250,28 +258,32 @@ const DoctorDashboard = () => {
                               {apt.userId?.name || "Patient"}
                             </p>
                             <p className='text-sm text-slate-400'>
-                              {new Date(apt.date).toLocaleDateString()} at {apt.timeSlot || "N/A"}
+                              {new Date(apt.date).toLocaleDateString()} at{" "}
+                              {apt.timeSlot || "N/A"}
                             </p>
                           </div>
                         </div>
-                        <span className={`rounded px-2 py-1 text-xs ${
-                          apt.status === 'confirmed' ? 'bg-green-500/20 text-green-400' :
-                          apt.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                          'bg-blue-500/20 text-blue-400'
-                        }`}>
+                        <span
+                          className={`rounded px-2 py-1 text-xs ${
+                            apt.status === "confirmed" ?
+                              "bg-green-500/20 text-green-400"
+                            : apt.status === "pending" ?
+                              "bg-yellow-500/20 text-yellow-400"
+                            : "bg-blue-500/20 text-blue-400"
+                          }`}>
                           {apt.status}
                         </span>
                       </div>
                     ))
-                  ) : (
-                    <p className='text-slate-400'>No upcoming appointments</p>
-                  )}
+                  : <p className='text-slate-400'>No upcoming appointments</p>}
                 </div>
 
                 {/* Quick Stats */}
                 <div className='mt-8 grid gap-4 md:grid-cols-3'>
                   <div className='rounded-xl border border-slate-700 p-4'>
-                    <p className='text-sm text-slate-400'>Monthly Prescriptions</p>
+                    <p className='text-sm text-slate-400'>
+                      Monthly Prescriptions
+                    </p>
                     <p className='mt-2 text-2xl font-bold text-white'>
                       {stats.monthlyPrescriptions || 0}
                     </p>
@@ -348,27 +360,34 @@ const DoctorDashboard = () => {
                   My Appointments
                 </h2>
                 <div className='space-y-4'>
-                  {appointments.length > 0 ? (
+                  {appointments.length > 0 ?
                     appointments.map((apt, idx) => (
-                      <div key={idx} className='rounded-xl border border-slate-700 p-4'>
+                      <div
+                        key={idx}
+                        className='rounded-xl border border-slate-700 p-4'>
                         <div className='flex items-center justify-between'>
                           <div>
                             <p className='font-semibold text-white'>
                               {apt.userId?.name || "Patient"}
                             </p>
                             <p className='text-sm text-slate-400'>
-                              {new Date(apt.date).toLocaleDateString()} • {apt.timeSlot || "N/A"}
+                              {new Date(apt.date).toLocaleDateString()} •{" "}
+                              {apt.timeSlot || "N/A"}
                             </p>
-                            <p className='text-xs text-slate-500 capitalize'>{apt.mode}</p>
+                            <p className='text-xs text-slate-500 capitalize'>
+                              {apt.mode}
+                            </p>
                           </div>
                           <div className='flex gap-2'>
-                            {apt.status === 'pending' && (
+                            {apt.status === "pending" && (
                               <button className='rounded-lg bg-green-500 px-4 py-2 text-sm text-white hover:bg-green-600'>
                                 Start Call
                               </button>
                             )}
                             <button
-                              onClick={() => navigate(`/doctor/patient/${apt.userId?._id}`)}
+                              onClick={() =>
+                                navigate(`/doctor/patient/${apt.userId?._id}`)
+                              }
                               className='rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm text-white hover:bg-slate-700'>
                               View Patient
                             </button>
@@ -376,9 +395,10 @@ const DoctorDashboard = () => {
                         </div>
                       </div>
                     ))
-                  ) : (
-                    <p className='text-slate-400 text-center py-8'>No appointments found</p>
-                  )}
+                  : <p className='text-slate-400 text-center py-8'>
+                      No appointments found
+                    </p>
+                  }
                 </div>
               </div>
             )}
@@ -388,36 +408,51 @@ const DoctorDashboard = () => {
                 <h2 className='mb-4 text-xl font-bold text-white'>
                   My Schedule
                 </h2>
-                {schedule ? (
+                {schedule ?
                   <div className='space-y-6'>
-                    {Object.entries(schedule.schedule || {}).map(([date, appts]) => (
-                      <div key={date} className='rounded-xl border border-slate-700 p-4'>
-                        <h3 className='mb-3 font-semibold text-white'>{date}</h3>
-                        <div className='space-y-2'>
-                          {appts.map((apt, idx) => (
-                            <div key={idx} className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
-                              <div>
-                                <p className='text-white'>{apt.userId?.name || "Patient"}</p>
-                                <p className='text-sm text-slate-400'>
-                                  {apt.timeSlot || new Date(apt.date).toLocaleTimeString()}
-                                </p>
+                    {Object.entries(schedule.schedule || {}).map(
+                      ([date, appts]) => (
+                        <div
+                          key={date}
+                          className='rounded-xl border border-slate-700 p-4'>
+                          <h3 className='mb-3 font-semibold text-white'>
+                            {date}
+                          </h3>
+                          <div className='space-y-2'>
+                            {appts.map((apt, idx) => (
+                              <div
+                                key={idx}
+                                className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                                <div>
+                                  <p className='text-white'>
+                                    {apt.userId?.name || "Patient"}
+                                  </p>
+                                  <p className='text-sm text-slate-400'>
+                                    {apt.timeSlot ||
+                                      new Date(apt.date).toLocaleTimeString()}
+                                  </p>
+                                </div>
+                                <span
+                                  className={`rounded px-2 py-1 text-xs ${
+                                    apt.status === "confirmed" ?
+                                      "bg-green-500/20 text-green-400"
+                                    : apt.status === "pending" ?
+                                      "bg-yellow-500/20 text-yellow-400"
+                                    : "bg-blue-500/20 text-blue-400"
+                                  }`}>
+                                  {apt.status}
+                                </span>
                               </div>
-                              <span className={`rounded px-2 py-1 text-xs ${
-                                apt.status === 'confirmed' ? 'bg-green-500/20 text-green-400' :
-                                apt.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                                'bg-blue-500/20 text-blue-400'
-                              }`}>
-                                {apt.status}
-                              </span>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ),
+                    )}
                   </div>
-                ) : (
-                  <p className='text-slate-400 text-center py-8'>Loading schedule...</p>
-                )}
+                : <p className='text-slate-400 text-center py-8'>
+                    Loading schedule...
+                  </p>
+                }
               </div>
             )}
 
@@ -427,18 +462,21 @@ const DoctorDashboard = () => {
                   My Prescriptions
                 </h2>
                 <div className='space-y-4'>
-                  {prescriptions.length > 0 ? (
+                  {prescriptions.length > 0 ?
                     prescriptions.map((prescription, idx) => (
-                      <div key={idx} className='rounded-xl border border-slate-700 p-4'>
+                      <div
+                        key={idx}
+                        className='rounded-xl border border-slate-700 p-4'>
                         <div className='flex items-center justify-between'>
                           <p className='font-semibold text-white'>
                             Prescription #{idx + 1}
                           </p>
-                          <span className={`rounded px-2 py-1 text-xs ${
-                            prescription.isEmergency ?
-                              "bg-red-500/20 text-red-400"
-                            : "bg-green-500/20 text-green-400"
-                          }`}>
+                          <span
+                            className={`rounded px-2 py-1 text-xs ${
+                              prescription.isEmergency ?
+                                "bg-red-500/20 text-red-400"
+                              : "bg-green-500/20 text-green-400"
+                            }`}>
                             {prescription.isEmergency ? "Emergency" : "Normal"}
                           </span>
                         </div>
@@ -446,13 +484,16 @@ const DoctorDashboard = () => {
                           Patient: {prescription.userId?.name || "N/A"}
                         </p>
                         <p className='text-xs text-slate-400'>
-                          {new Date(prescription.createdAt).toLocaleDateString()}
+                          {new Date(
+                            prescription.createdAt,
+                          ).toLocaleDateString()}
                         </p>
                       </div>
                     ))
-                  ) : (
-                    <p className='text-slate-400 text-center py-8'>No prescriptions found</p>
-                  )}
+                  : <p className='text-slate-400 text-center py-8'>
+                      No prescriptions found
+                    </p>
+                  }
                 </div>
               </div>
             )}
@@ -463,29 +504,35 @@ const DoctorDashboard = () => {
                   Lab Reports
                 </h2>
                 <div className='space-y-4'>
-                  {reports.length > 0 ? (
+                  {reports.length > 0 ?
                     reports.map((report, idx) => (
-                      <div key={idx} className='rounded-xl border border-slate-700 p-4'>
+                      <div
+                        key={idx}
+                        className='rounded-xl border border-slate-700 p-4'>
                         <div className='flex items-center justify-between'>
                           <div>
-                            <p className='font-semibold text-white'>{report.type}</p>
+                            <p className='font-semibold text-white'>
+                              {report.type}
+                            </p>
                             <p className='text-sm text-slate-400'>
                               Patient: {report.userId?.name || "N/A"}
                             </p>
                           </div>
-                          <span className={`rounded px-2 py-1 text-xs ${
-                            report.status === "reviewed" ?
-                              "bg-green-500/20 text-green-400"
-                            : "bg-yellow-500/20 text-yellow-400"
-                          }`}>
+                          <span
+                            className={`rounded px-2 py-1 text-xs ${
+                              report.status === "reviewed" ?
+                                "bg-green-500/20 text-green-400"
+                              : "bg-yellow-500/20 text-yellow-400"
+                            }`}>
                             {report.status || "pending"}
                           </span>
                         </div>
                       </div>
                     ))
-                  ) : (
-                    <p className='text-slate-400 text-center py-8'>No reports found</p>
-                  )}
+                  : <p className='text-slate-400 text-center py-8'>
+                      No reports found
+                    </p>
+                  }
                 </div>
               </div>
             )}
@@ -495,7 +542,7 @@ const DoctorDashboard = () => {
                 <h2 className='mb-4 text-xl font-bold text-white'>
                   Earnings Summary
                 </h2>
-                {earnings ? (
+                {earnings ?
                   <div className='space-y-6'>
                     <div className='grid gap-4 md:grid-cols-3'>
                       <div className='rounded-xl border border-slate-700 bg-slate-800 p-4'>
@@ -505,7 +552,9 @@ const DoctorDashboard = () => {
                         </p>
                       </div>
                       <div className='rounded-xl border border-slate-700 bg-slate-800 p-4'>
-                        <p className='text-sm text-slate-400'>Active Subscriptions</p>
+                        <p className='text-sm text-slate-400'>
+                          Active Subscriptions
+                        </p>
                         <p className='text-2xl font-bold text-white'>
                           {earnings.activeSubscriptions || 0}
                         </p>
@@ -519,27 +568,34 @@ const DoctorDashboard = () => {
                     </div>
 
                     {/* Recent earnings breakdown */}
-                    {earnings.recentEarnings && earnings.recentEarnings.length > 0 && (
-                      <div>
-                        <h3 className='mb-3 font-semibold text-white'>Recent Earnings</h3>
-                        <div className='space-y-2'>
-                          {earnings.recentEarnings.map((item, idx) => (
-                            <div key={idx} className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
-                              <p className='text-white'>
-                                {item._id?.month || "N/A"}
-                              </p>
-                              <p className='text-green-400 font-semibold'>
-                                ₹{item.total || 0} ({item.count} subscriptions)
-                              </p>
-                            </div>
-                          ))}
+                    {earnings.recentEarnings &&
+                      earnings.recentEarnings.length > 0 && (
+                        <div>
+                          <h3 className='mb-3 font-semibold text-white'>
+                            Recent Earnings
+                          </h3>
+                          <div className='space-y-2'>
+                            {earnings.recentEarnings.map((item, idx) => (
+                              <div
+                                key={idx}
+                                className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                                <p className='text-white'>
+                                  {item._id?.month || "N/A"}
+                                </p>
+                                <p className='text-green-400 font-semibold'>
+                                  ₹{item.total || 0} ({item.count}{" "}
+                                  subscriptions)
+                                </p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </div>
-                ) : (
-                  <p className='text-slate-400 text-center py-8'>Loading earnings...</p>
-                )}
+                : <p className='text-slate-400 text-center py-8'>
+                    Loading earnings...
+                  </p>
+                }
               </div>
             )}
           </div>

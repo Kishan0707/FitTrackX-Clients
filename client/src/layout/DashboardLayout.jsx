@@ -2,7 +2,6 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useRef, useState } from "react";
 import BottomNavigation from "../components/BottomNavigation";
-// import { useNavigate } from "react-router-dom";
 
 const DashboardLayout = ({ children }) => {
   const [menuBtn, setMenuBtn] = useState(true);

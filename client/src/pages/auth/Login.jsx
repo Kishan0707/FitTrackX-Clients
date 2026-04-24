@@ -88,7 +88,7 @@ const Login = () => {
           <div className='inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 shadow-2xl shadow-orange-500/30 mb-4 transform hover:scale-105 transition-transform'>
             <FaDumbbell className='text-4xl text-white' />
           </div>
-          <h1 className='text-5xl font-bold bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent'>
+          <h1 className='text-5xl font-bold bg-linear-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent'>
             FitTrackX
           </h1>
           <p className='text-slate-400 mt-2 text-lg'>

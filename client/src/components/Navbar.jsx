@@ -8,6 +8,7 @@ import API from "../services/api";
 import { AuthContext } from "../context/authContext";
 import { useTheme } from "../context/themeContext";
 import NotificationSettings from "./NotificationSettings";
+import SessionSwitcher from "./SessionSwitcher";
 
 const Navbar = ({ setMenuBtn }) => {
   const { user, logout } = useContext(AuthContext);
@@ -141,6 +142,9 @@ const Navbar = ({ setMenuBtn }) => {
       <div className='flex items-center justify-center gap-3'>
         {user && (
           <>
+            {/* Session Switcher */}
+            <SessionSwitcher />
+
             <button
               onClick={() => setShowNotifSettings(true)}
               className='rounded-lg border-2 border-slate-200 bg-white p-2 text-slate-900 transition hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 md:p-3'
@@ -227,6 +231,7 @@ const Navbar = ({ setMenuBtn }) => {
               </div>
 
               <div className='space-y-1 border-t border-slate-200 px-3 py-2 dark:border-slate-800'>
+                <SessionSwitcher />
                 {profileMenuLinks.map((item) => (
                   <button
                     key={item.key}

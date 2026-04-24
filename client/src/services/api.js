@@ -1,4 +1,12 @@
 import axios from "axios";
+import {
+  getActiveToken,
+  clearAllSessions,
+  removeSession,
+  getAllSessions,
+  switchSession,
+  getActiveSessionId,
+} from "../utils/sessionStorage";
 
 const DEFAULT_LOCAL_API_URL = "http://localhost:5000/api";
 
@@ -10,9 +18,8 @@ const sanitizeApiUrl = (value) => {
   const malformedProtocolMatch = trimmedValue.match(
     /^(https?)=(https?:\/\/.+)$/i,
   );
-  const normalizedValue = malformedProtocolMatch
-    ? malformedProtocolMatch[2]
-    : trimmedValue;
+  const normalizedValue =
+    malformedProtocolMatch ? malformedProtocolMatch[2] : trimmedValue;
 
   return normalizedValue.replace(/\/+$/, "");
 };
@@ -70,7 +77,9 @@ const resolveApiBaseUrl = () => {
         }
       }
     } catch {
-      console.warn("VITE_API_URL could not be parsed. Check your deployment env.");
+      console.warn(
+        "VITE_API_URL could not be parsed. Check your deployment env.",
+      );
     }
 
     return publicApiUrl;
@@ -86,8 +95,9 @@ const API = axios.create({
   baseURL: resolveApiBaseUrl(),
 });
 
+// Request interceptor - use active session token
 API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("token");
+  const token = getActiveToken();
 
   if (token) {
     req.headers.Authorization = `Bearer ${token}`;
@@ -95,13 +105,31 @@ API.interceptors.request.use((req) => {
 
   return req;
 });
-
+// 🔥 Session change listener (debug + future use)
+window.addEventListener("session-changed", () => {
+  console.log("✅ Session updated → new token applied");
+});
+// Response interceptor - handle 401 errors
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/";
+      // Clear active session on auth error
+      const active = getActiveSessionId();
+      if (active) {
+        removeSession(active);
+      }
+
+      const remainingSessions = getAllSessions();
+      if (remainingSessions.length > 0) {
+        // Switch to another session if available
+        switchSession(remainingSessions[0].id);
+        window.location.href = "/";
+      } else {
+        // No sessions left, logout completely
+        clearAllSessions();
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   },

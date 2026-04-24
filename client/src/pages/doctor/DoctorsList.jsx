@@ -55,7 +55,7 @@ const DoctorsList = () => {
 
   return (
     <DashboardLayout>
-      <div className='min-h-screen bg-slate-950 p-4 md:p-8'>
+      <div className='min-h-screen bg-slate-950  md:p-8'>
         <div className='mx-auto max-w-7xl'>
           <h1 className='mb-8 text-3xl font-bold text-white'>Find a Doctor</h1>
 

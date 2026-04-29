@@ -9,6 +9,7 @@ import { AuthContext } from "../context/authContext";
 import { useTheme } from "../context/themeContext";
 import NotificationSettings from "./NotificationSettings";
 import SessionSwitcher from "./SessionSwitcher";
+import AccountManager from "./AccountManager";
 
 const Navbar = ({ setMenuBtn }) => {
   const { user, logout } = useContext(AuthContext);
@@ -16,6 +17,7 @@ const Navbar = ({ setMenuBtn }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showNotifSettings, setShowNotifSettings] = useState(false);
+
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,9 +54,21 @@ const Navbar = ({ setMenuBtn }) => {
       window.removeEventListener("notifications-updated", handleRefresh);
     };
   }, [user]);
+  // ================= BODY SCROLL LOCK =================
+  useEffect(() => {
+    if (showNotifSettings) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showNotifSettings]);
 
   useEffect(() => {
-    if (!isProfileMenuOpen) return undefined;
+    if (!isProfileMenuOpen) return;
 
     const handleOutsideClick = (event) => {
       if (
@@ -84,6 +98,7 @@ const Navbar = ({ setMenuBtn }) => {
   const roleLabel =
     user?.role === "admin" ? "Admin"
     : user?.role === "coach" ? "Coach"
+    : user?.role === "doctor" ? "Doctor"
     : "Member";
 
   const initials =
@@ -120,11 +135,24 @@ const Navbar = ({ setMenuBtn }) => {
     : `Good Evening ${"\u{1F319}"}`;
 
   const notificationsPath =
-    user?.role === "coach" ? "/coach/notifications" : "/notifications";
+    user?.role === "coach" ? "/coach/notifications"
+    : user?.role === "doctor" ? "/doctor/notifications"
+    : "/notifications";
   const isOnNotifications =
     location.pathname === "/coach/notifications" ||
     location.pathname === "/notifications";
 
+  useEffect(() => {
+    if (showNotifSettings) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showNotifSettings]);
   return (
     <div className='flex items-center justify-between border-b border-slate-200 bg-white px-4 py-2 transition-colors dark:border-slate-700 dark:bg-slate-900 md:p-4'>
       <div className='flex items-center justify-center gap-3'>
@@ -142,8 +170,8 @@ const Navbar = ({ setMenuBtn }) => {
       <div className='flex items-center justify-center gap-3'>
         {user && (
           <>
-            {/* Session Switcher */}
-            <SessionSwitcher />
+            {/* Account Manager */}
+            <AccountManager />
 
             <button
               onClick={() => setShowNotifSettings(true)}
@@ -231,7 +259,6 @@ const Navbar = ({ setMenuBtn }) => {
               </div>
 
               <div className='space-y-1 border-t border-slate-200 px-3 py-2 dark:border-slate-800'>
-                <SessionSwitcher />
                 {profileMenuLinks.map((item) => (
                   <button
                     key={item.key}

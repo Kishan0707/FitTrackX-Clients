@@ -129,9 +129,10 @@ const NotificationSettings = ({ onClose }) => {
     : "bg-white/95 backdrop-blur-sm border border-gray-200";
 
   return (
-    <div className='fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 overflow-y-scroll min-h-screen w-full '>
+    <div className='fixed inset-0 z-[100] flex items-start justify-center bg-black/50 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-slate-800 scrollbar-thumb-rounded-full'>
       <div
-        className={`w-full max-w-2xl rounded-2xl p-6 overflow-y-scroll min-h-screen mt-36 ${bgClass}`}>
+        className={`w-full max-w-2xl rounded-2xl p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700 max-h-[90vh] overflow-y-auto ${bgClass}`}>
+        {" "}
         <div className='mb-6 flex items-center justify-between'>
           <div className='flex items-center gap-3'>
             <div className='rounded-lg bg-orange-500/20 p-2 text-orange-400'>
@@ -145,11 +146,9 @@ const NotificationSettings = ({ onClose }) => {
             ×
           </button>
         </div>
-
         <p className='mb-6 text-sm opacity-70'>
           Enable these permissions for the best FitTrackX experience:
         </p>
-
         <div className='space-y-4 '>
           <PermissionCard
             icon={<FaBell size={20} />}
@@ -200,7 +199,6 @@ const NotificationSettings = ({ onClose }) => {
             buttonText='Built-in'
           />
         </div>
-
         <div className='mt-8 border-t border-slate-700 pt-4'>
           <h4 className='mb-3 font-semibold'>Notification Types</h4>
           <p className='mb-4 text-sm text-slate-400'>
@@ -230,7 +228,6 @@ const NotificationSettings = ({ onClose }) => {
             ))}
           </div>
         </div>
-
         <div className='mt-8 border-t border-slate-700 pt-4'>
           <h4 className='mb-3 font-semibold'>Geofencing</h4>
           <p className='mb-4 text-sm text-slate-400'>
@@ -250,7 +247,6 @@ const NotificationSettings = ({ onClose }) => {
             buttonText='Enable'
           />
         </div>
-
         <button
           onClick={onClose}
           className='mt-6 w-full rounded-xl bg-orange-500 py-3 font-semibold text-white hover:bg-orange-600 transition'>

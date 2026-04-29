@@ -78,6 +78,8 @@ import MedicalHistoryPage from "./pages/health/MedicalHistory";
 import { useEffect } from "react";
 import VideoConsult from "./pages/doctor/VideoConsult";
 import Chat from "./Chat";
+import ProgressTracking from "./pages/doctor/ProgressTracking";
+import DoctorsNotification from "./pages/doctor/DoctorsNotification";
 
 function AppContent() {
   const location = useLocation();
@@ -404,11 +406,12 @@ function AppContent() {
               </ProtectedRoutes>
             }
           />
+
           <Route
-            path='/coach/notifications'
+            path='/doctor/notifications'
             element={
-              <ProtectedRoutes allowedRoles={["coach"]}>
-                <CoachNotifications />
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorsNotification />
               </ProtectedRoutes>
             }
           />
@@ -639,6 +642,14 @@ function AppContent() {
                   "seller",
                 ]}>
                 <VideoConsult />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/progress'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <ProgressTracking />
               </ProtectedRoutes>
             }
           />

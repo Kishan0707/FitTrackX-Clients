@@ -10,6 +10,7 @@ import {
   FaClock,
 } from "react-icons/fa";
 import API from "../../services/api";
+import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 import DashboardLayout from "../../layout/DashboardLayout";
 
 const DoctorsList = () => {

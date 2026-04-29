@@ -22,17 +22,17 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div
-      className='flex min-h-screen bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white'
+      className='flex h-screen overflow-hidden bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white'
       // onTouchStart={handleTouchStart}
       // onTouchEnd={handleTouchEnd}
     >
       <Sidebar setMenuBtn={setMenuBtn} menuBtn={menuBtn} />
       <BottomNavigation className='' />
 
-      <div className='flex-1 flex flex-col min-w-0 overflow-x-hidden'>
+      <div className='flex-1 flex flex-col min-w-0 min-h-0 overflow-x-hidden'>
         <Navbar setMenuBtn={setMenuBtn} menuBtn={menuBtn} />
 
-        <main className='w-full flex-1 min-w-0 overflow-x-hidden p-6  md:pb-6 pb-36'>
+        <main className='w-full flex-1 min-w-0 overflow-x-hidden overflow-y-auto p-6 md:pb-6 pb-36'>
           {children}
         </main>
       </div>

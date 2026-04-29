@@ -60,6 +60,16 @@ export const API_ENDPOINTS = {
     PATIENT_NOTES: (userId) => `/doctor/patient/${userId}/notes`,
     PRESCRIBE: "/doctor/prescriptions",
 
+    // Progress tracking
+    PATIENT_PROGRESS: (id) => `/doctor/patients/${id}/progress`,
+    PATIENT_PROGRESS_ENTRY: (id) => `/doctor/patients/${id}/progress/entry`,
+    PATIENT_PROGRESS_PHOTO: (id) => `/doctor/patients/${id}/progress/photo`,
+    PATIENT_PROGRESS_GOALS: (id) => `/doctor/patients/${id}/progress/goals`,
+    PATIENT_PROGRESS_NOTE: (id) => `/doctor/patients/${id}/progress/note`,
+    PATIENT_PROGRESS_ANALYTICS: (id) => `/doctor/patients/${id}/progress/analytics`,
+    PATIENT_PROGRESS_STATUS: (id) => `/doctor/patients/${id}/progress/status`,
+    PROGRESS_SUMMARY: "/doctor/progress/summary",
+
     // Doctor profile management
     PROFILE: "/doctor/profile",
     PROFILE_UPDATE: "/doctor/profile",

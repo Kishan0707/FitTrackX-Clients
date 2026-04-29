@@ -21,6 +21,9 @@ const Login = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isAddingAccount] = useState(
+    localStorage.getItem("addAccountMode") === "true"
+  );
 
   const togglePanel = () => setIsRegister(!isRegister);
 
@@ -44,13 +47,16 @@ const Login = () => {
       const res = await login(loginFormData);
       setSuccess("Login Successful");
 
+      // Clear the add account flag
+      localStorage.removeItem("addAccountMode");
+
       setTimeout(() => {
         switch (res?.role) {
           case "admin":
             navigate("/admin");
             break;
           case "coach":
-            navigate("/coach/Dashboard");
+            navigate("/coach/dashboard");
             break;
           case "doctor":
             navigate("/doctor");
@@ -62,7 +68,7 @@ const Login = () => {
             navigate("/affiliateDashboard");
             break;
           default:
-            navigate("/onboarding");
+            navigate("/dashboard");
         }
       }, 800);
     } catch (err) {
@@ -116,6 +122,15 @@ const Login = () => {
                     <p className='text-slate-400 mb-8'>
                       Login to continue your fitness journey
                     </p>
+
+                    {/* Add Account Indicator */}
+                    {isAddingAccount && (
+                      <div className='mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/30'>
+                        <p className='text-sm text-green-400'>
+                          <span className='font-semibold'>Adding a new account</span> - Your existing accounts will remain active. You can switch between them anytime.
+                        </p>
+                      </div>
+                    )}
 
                     <form onSubmit={handleSubmit} className='space-y-5'>
                       {/* Email Input */}

@@ -109,7 +109,7 @@ API.interceptors.request.use((req) => {
 window.addEventListener("session-changed", () => {
   console.log("✅ Session updated → new token applied");
 });
-// Response interceptor - handle 401 errors
+// Response interceptor - handle 401 errors (auth expired/invalid)
 API.interceptors.response.use(
   (response) => response,
   (error) => {

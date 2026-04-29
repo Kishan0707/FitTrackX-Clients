@@ -8,8 +8,8 @@ import {
   FaChartLine,
   FaClock,
   FaCheck,
-  FaTimes,
-  FaSearch,
+  FaBell,
+  FaArrowRight,
 } from "react-icons/fa";
 import { MdBarChart } from "react-icons/md";
 import API from "../../services/api";
@@ -34,7 +34,11 @@ const DoctorDashboard = () => {
   const [reports, setReports] = useState([]);
   const [earnings, setEarnings] = useState(null);
   const [schedule, setSchedule] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(true);
   const navigate = useNavigate();
+
+  const unreadNotificationsCount = notifications.filter((n) => !n.read).length;
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -52,6 +56,22 @@ const DoctorDashboard = () => {
     };
 
     fetchDashboard();
+  }, []);
+
+  useEffect(() => {
+    const fetchRecentNotifications = async () => {
+      try {
+        const response = await API.get("/notifications");
+        const notifs = response.data?.data || [];
+        setNotifications(notifs.slice(0, 5));
+      } catch (err) {
+        console.error("Failed to fetch notifications:", err);
+      } finally {
+        setNotificationsLoading(false);
+      }
+    };
+
+    fetchRecentNotifications();
   }, []);
 
   const fetchData = async (tab) => {
@@ -169,7 +189,7 @@ const DoctorDashboard = () => {
             <div className='rounded-2xl border border-slate-700 bg-slate-900 p-6'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <p className='text-sm text-slate-400'>Today's Appointments</p>
+                  <p className='text-sm text-slate-400'>Today&apos;s Appointments</p>
                   <p className='mt-2 text-3xl font-bold text-white'>
                     {stats.todayAppointments}
                   </p>
@@ -207,6 +227,20 @@ const DoctorDashboard = () => {
                 </div>
               </div>
             </div>
+
+            <div className='rounded-2xl border border-slate-700 bg-slate-900 p-6'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <p className='text-sm text-slate-400'>Unread Notifications</p>
+                  <p className={`mt-2 text-3xl font-bold ${unreadNotificationsCount > 0 ? 'text-amber-400' : 'text-slate-400'}`}>
+                    {unreadNotificationsCount}
+                  </p>
+                </div>
+                <div className={`rounded-xl p-3 ${unreadNotificationsCount > 0 ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-500/20 text-slate-400'}`}>
+                  <FaBell size={24} />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Tabs */}
@@ -230,52 +264,128 @@ const DoctorDashboard = () => {
           <div className='rounded-2xl border border-slate-700 bg-slate-900 p-6'>
             {activeTab === "overview" && (
               <div>
-                <h2 className='mb-4 text-xl font-bold text-white'>
-                  Recent Activity
-                </h2>
-                <div className='space-y-4'>
-                  {(
-                    stats.upcomingAppointments &&
-                    stats.upcomingAppointments.length > 0
-                  ) ?
-                    stats.upcomingAppointments.map((apt, idx) => (
-                      <div
-                        key={idx}
-                        className='flex items-center justify-between rounded-xl border border-slate-700 p-4'>
-                        <div className='flex items-center gap-4'>
-                          <div
-                            className={`rounded-full p-2 ${
+                <div className='mb-8 flex items-center justify-between'>
+                  <h2 className='text-xl font-bold text-white'>Overview</h2>
+                  <button
+                    onClick={() => navigate("/notifications")}
+                    className='flex items-center gap-2 text-sm text-orange-500 hover:text-orange-400'>
+                    <FaBell /> View All Notifications
+                  </button>
+                </div>
+
+                {/* Recent Notifications */}
+                <div className='mb-8'>
+                  <h3 className='mb-4 flex items-center gap-2 text-lg font-semibold text-white'>
+                    <FaBell className='text-orange-500' /> Recent Notifications
+                  </h3>
+                  {notificationsLoading ? (
+                    <div className='flex items-center justify-center py-8'>
+                      <div className='h-8 w-8 animate-spin rounded-full border-2 border-orange-500 border-t-transparent'></div>
+                    </div>
+                  ) : notifications.length > 0 ? (
+                    <div className='space-y-3'>
+                      {notifications.map((notif) => (
+                        <div
+                          key={notif._id}
+                          onClick={() => navigate("/notifications")}
+                          className={`cursor-pointer rounded-xl border p-4 transition ${
+                            notif.read
+                              ? "border-slate-700 bg-slate-800/50 hover:bg-slate-800"
+                              : "border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10"
+                          }`}>
+                          <div className='flex items-start justify-between gap-3'>
+                            <div className='flex items-start gap-3'>
+                              <div className={`rounded-full p-2 text-sm ${
+                                notif.type === "workout" ? "bg-orange-500/20 text-orange-400" :
+                                notif.type === "diet" ? "bg-green-500/20 text-green-400" :
+                                notif.type === "goal" ? "bg-cyan-500/20 text-cyan-400" :
+                                notif.type === "subscription" ? "bg-yellow-500/20 text-yellow-400" :
+                                notif.type === "coach" ? "bg-blue-500/20 text-blue-400" :
+                                "bg-slate-500/20 text-slate-400"
+                              }`}>
+                                <FaBell />
+                              </div>
+                              <div>
+                                <p className={`font-semibold ${notif.read ? "text-slate-300" : "text-white"}`}>
+                                  {notif.title}
+                                </p>
+                                <p className='mt-1 text-sm text-slate-400 line-clamp-2'>
+                                  {notif.message}
+                                </p>
+                                <p className='mt-2 text-xs text-slate-500'>
+                                  {new Date(notif.createdAt).toLocaleDateString("en-IN", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                            {!notif.read && (
+                              <span className='h-2 w-2 shrink-0 rounded-full bg-amber-500'></span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className='rounded-xl border border-slate-700 bg-slate-800/30 p-6 text-center text-slate-400'>
+                      <FaBell className='mx-auto mb-2 text-2xl' />
+                      <p>No new notifications</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Upcoming Appointments */}
+                <div>
+                  <h2 className='mb-4 text-xl font-bold text-white'>
+                    Upcoming Appointments
+                  </h2>
+                  <div className='space-y-4'>
+                    {(
+                      stats.upcomingAppointments &&
+                      stats.upcomingAppointments.length > 0
+                    ) ?
+                      stats.upcomingAppointments.map((apt, idx) => (
+                        <div
+                          key={idx}
+                          className='flex items-center justify-between rounded-xl border border-slate-700 p-4'>
+                          <div className='flex items-center gap-4'>
+                            <div
+                              className={`rounded-full p-2 ${
+                                apt.status === "confirmed" ?
+                                  "bg-green-500/20 text-green-400"
+                                : apt.status === "pending" ?
+                                  "bg-yellow-500/20 text-yellow-400"
+                                : "bg-blue-500/20 text-blue-400"
+                              }`}>
+                              <FaCalendarAlt />
+                            </div>
+                            <div>
+                              <p className='font-semibold text-white'>
+                                {apt.userId?.name || "Patient"}
+                              </p>
+                              <p className='text-sm text-slate-400'>
+                                {new Date(apt.date).toLocaleDateString()} at{" "}
+                                {apt.timeSlot || "N/A"}
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            className={`rounded px-2 py-1 text-xs ${
                               apt.status === "confirmed" ?
                                 "bg-green-500/20 text-green-400"
                               : apt.status === "pending" ?
                                 "bg-yellow-500/20 text-yellow-400"
                               : "bg-blue-500/20 text-blue-400"
                             }`}>
-                            <FaCalendarAlt />
-                          </div>
-                          <div>
-                            <p className='font-semibold text-white'>
-                              {apt.userId?.name || "Patient"}
-                            </p>
-                            <p className='text-sm text-slate-400'>
-                              {new Date(apt.date).toLocaleDateString()} at{" "}
-                              {apt.timeSlot || "N/A"}
-                            </p>
-                          </div>
+                            {apt.status}
+                          </span>
                         </div>
-                        <span
-                          className={`rounded px-2 py-1 text-xs ${
-                            apt.status === "confirmed" ?
-                              "bg-green-500/20 text-green-400"
-                            : apt.status === "pending" ?
-                              "bg-yellow-500/20 text-yellow-400"
-                            : "bg-blue-500/20 text-blue-400"
-                          }`}>
-                          {apt.status}
-                        </span>
-                      </div>
-                    ))
-                  : <p className='text-slate-400'>No upcoming appointments</p>}
+                      ))
+                    : <p className='text-slate-400'>No upcoming appointments</p>}
+                  </div>
                 </div>
 
                 {/* Quick Stats */}

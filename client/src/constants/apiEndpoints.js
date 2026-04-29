@@ -70,6 +70,10 @@ export const API_ENDPOINTS = {
     PATIENT_PROGRESS_STATUS: (id) => `/doctor/patients/${id}/progress/status`,
     PROGRESS_SUMMARY: "/doctor/progress/summary",
 
+    // Risk assessment
+    RISK_ASSIGNMENTS: "/doctor/risk/assignments",
+    RISK_ASSIGN: "/doctor/risk/assign",
+
     // Doctor profile management
     PROFILE: "/doctor/profile",
     PROFILE_UPDATE: "/doctor/profile",

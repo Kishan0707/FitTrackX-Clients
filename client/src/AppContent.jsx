@@ -80,6 +80,9 @@ import VideoConsult from "./pages/doctor/VideoConsult";
 import Chat from "./Chat";
 import ProgressTracking from "./pages/doctor/ProgressTracking";
 import DoctorsNotification from "./pages/doctor/DoctorsNotification";
+import RiskAssignments from "./pages/doctor/RiskAssignments";
+import DoctorDiet from "./pages/doctor/DoctorDiet";
+import WorkoutOverrides from "./pages/doctor/WorkoutOverrides";
 
 function AppContent() {
   const location = useLocation();
@@ -650,6 +653,31 @@ function AppContent() {
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
                 <ProgressTracking />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/risk'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <RiskAssignments />
+              </ProtectedRoutes>
+            }
+          />
+
+          <Route
+            path='/doctor/diet'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorDiet />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/workout-adjustments'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <WorkoutOverrides />
               </ProtectedRoutes>
             }
           />

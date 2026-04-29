@@ -261,7 +261,7 @@ export const SIDEBAR = [
   },
   {
     name: "Diet Plans",
-    path: "/doctor/diet-plans",
+    path: "/doctor/diet",
     icon: FaAppleAlt,
     roles: [ROLES.DOCTOR],
     section: "Planning",

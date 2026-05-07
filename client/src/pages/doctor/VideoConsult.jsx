@@ -60,45 +60,51 @@ export default function VideoConsult() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-   // Get API base URL from environment (works for both localhost and production)
-   const getBaseUrl = () => {
-     if (typeof window !== 'undefined') {
-       const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-       // For local development, use VITE_API_URL_LOCAL or fallback to http://localhost:5000
-       // For production, use VITE_API_URL or fallback to window.location.origin
-       if (isLocal) {
-         return import.meta.env.VITE_API_URL_LOCAL || import.meta.env.VITE_API_URL || 'http://localhost:5000';
-       }
-       return import.meta.env.VITE_API_URL || window.location.origin;
-     }
-     // During SSR (if any), fallback to local dev
-     return import.meta.env.VITE_API_URL_LOCAL || 'http://localhost:5000';
-   };
+  // Get API base URL from environment (works for both localhost and production)
+  const getBaseUrl = () => {
+    if (typeof window !== "undefined") {
+      const isLocal = ["localhost", "127.0.0.1"].includes(
+        window.location.hostname,
+      );
+      // For local development, use VITE_API_URL_LOCAL or fallback to http://localhost:5000
+      // For production, use VITE_API_URL or fallback to window.location.origin
+      if (isLocal) {
+        return (
+          import.meta.env.VITE_API_URL_LOCAL ||
+          import.meta.env.VITE_API_URL ||
+          "http://localhost:5000"
+        );
+      }
+      return import.meta.env.VITE_API_URL || window.location.origin;
+    }
+    // During SSR (if any), fallback to local dev
+    return import.meta.env.VITE_API_URL_LOCAL || "http://localhost:5000";
+  };
 
-   useEffect(() => {
-     if (!appointment) return;
+  useEffect(() => {
+    if (!appointment) return;
 
-     const s = io(getBaseUrl(), {
-       auth: {
-         token: localStorage.getItem("token"),
-       },
-     });
+    const s = io(getBaseUrl(), {
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+    });
 
-     setSocket(s);
-     startCall(s, appointment.roomId);
+    setSocket(s);
+    startCall(s, appointment.roomId);
 
-     return () => {
-       s.disconnect();
-       // Clean up socket listeners to prevent memory leaks
-       if (socket) {
-         socket.off("offer");
-         socket.off("answer");
-         socket.off("ice-candidate");
-         socket.off("chat");
-         socket.off("call-ended");
-       }
-     };
-   }, [appointment]);
+    return () => {
+      s.disconnect();
+      // Clean up socket listeners to prevent memory leaks
+      if (socket) {
+        socket.off("offer");
+        socket.off("answer");
+        socket.off("ice-candidate");
+        socket.off("chat");
+        socket.off("call-ended");
+      }
+    };
+  }, [appointment]);
 
   const startCall = async (socket, roomId) => {
     try {
@@ -110,9 +116,9 @@ export default function VideoConsult() {
       setLocalStream(stream);
       localRef.current.srcObject = stream;
 
-       const iceServers = await fetch(
-         `${getBaseUrl()}/api/webrtc/ice`,
-       ).then((r) => r.json());
+      const iceServers = await fetch(`${getBaseUrl()}/api/webrtc/ice`).then(
+        (r) => r.json(),
+      );
 
       const peer = new RTCPeerConnection({ iceServers });
       peerRef.current = peer;
@@ -168,15 +174,17 @@ export default function VideoConsult() {
         endCall();
       });
 
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          setTimeout(() => {
-            new Notification("🎥 Call Started", {
-              body: "Video consultation is now active",
-            });
-          }, 1000);
-        }
-      });
+      if ("Notification" in window) {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            setTimeout(() => {
+              new Notification("🎥 Call Started", {
+                body: "Video consultation is now active",
+              });
+            }, 1000);
+          }
+        });
+      }
     } catch (err) {
       console.error("Call start error:", err);
       setCallStatus("error");

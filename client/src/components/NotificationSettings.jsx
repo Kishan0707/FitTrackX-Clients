@@ -95,7 +95,8 @@ const PermissionCard = ({
 const NotificationSettings = ({ onClose }) => {
   const { theme } = useTheme();
   const [permissions, setPermissions] = useState({
-    notifications: Notification.permission === "granted",
+    notifications:
+      "Notification" in window && Notification.permission === "granted",
     location: localStorage.getItem("locationPermission") === "granted",
   });
 
@@ -110,7 +111,8 @@ const NotificationSettings = ({ onClose }) => {
 
   const refreshPermissions = () => {
     setPermissions({
-      notifications: Notification.permission === "granted",
+      notifications:
+        "Notification" in window && Notification.permission === "granted",
       location: localStorage.getItem("locationPermission") === "granted",
     });
   };

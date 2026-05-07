@@ -14,7 +14,7 @@ export default function InstallButton() {
     window.addEventListener("beforeinstallprompt", handler);
 
     // Check if notifications already granted
-    if (Notification.permission === "granted") {
+    if ("Notification" in window && Notification.permission === "granted") {
       setNotifEnabled(true);
     }
 
@@ -30,7 +30,7 @@ export default function InstallButton() {
 
   const enableNotifications = async () => {
     await requestPermission();
-    if (Notification.permission === "granted") {
+    if ("Notification" in window && Notification.permission === "granted") {
       setNotifEnabled(true);
     }
   };

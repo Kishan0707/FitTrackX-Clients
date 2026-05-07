@@ -3,7 +3,7 @@ import { messaging } from "./firebase";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY || "";
-const SOUND_URL = "/sounds/notification.mp3";
+const SOUND_URL = "public/audi/universfield-new-notification-036-485897.mp3";
 
 // Play notification sound
 export const playSound = () => {

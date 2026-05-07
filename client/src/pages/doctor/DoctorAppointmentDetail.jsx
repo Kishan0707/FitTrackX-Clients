@@ -134,9 +134,9 @@ const DoctorAppointmentDetail = () => {
                 Patient Information
               </h3>
               <div className='flex items-center gap-4'>
-                <div className='h-16 w-16 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-2xl font-bold text-white'>
-                  {appointment?.patientId?.name?.charAt(0)}
-                </div>
+                 <div className='h-16 w-16 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-2xl font-bold text-white'>
+                   {appointment?.patientId?.name?.[0] ?? ''}
+                 </div>
                 <div>
                   <p className='text-lg font-semibold text-slate-900 dark:text-white'>
                     {appointment?.patientId?.name || "Unknown"}
@@ -163,9 +163,9 @@ const DoctorAppointmentDetail = () => {
                   <p className='text-sm text-slate-600 dark:text-slate-400'>
                     Date
                   </p>
-                  <p className='font-semibold text-slate-900 dark:text-white'>
-                    {new Date(appointment?.date).toLocaleDateString()}
-                  </p>
+                   <p className='font-semibold text-slate-900 dark:text-white'>
+                     {appointment?.date ? new Date(appointment?.date).toLocaleDateString() : ''}
+                   </p>
                 </div>
                 <div>
                   <p className='text-sm text-slate-600 dark:text-slate-400'>
@@ -179,17 +179,18 @@ const DoctorAppointmentDetail = () => {
                   <p className='text-sm text-slate-600 dark:text-slate-400'>
                     Status
                   </p>
-                  <span
-                    className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${
-                      appointment?.status === "scheduled"
-                        ? "bg-blue-500/20 text-blue-400"
-                        : appointment?.status === "completed"
-                        ? "bg-green-500/20 text-green-400"
-                        : "bg-red-500/20 text-red-400"
-                    }`}>
-                    {appointment?.status?.charAt(0).toUpperCase() +
-                      appointment?.status?.slice(1)}
-                  </span>
+                 <span
+                     className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${
+                       appointment?.status === "scheduled"
+                         ? "bg-blue-500/20 text-blue-400"
+                         : appointment?.status === "completed"
+                         ? "bg-green-500/20 text-green-400"
+                         : appointment?.status === "cancelled"
+                         ? "bg-red-500/20 text-red-400"
+                         : "bg-gray-500/20 text-gray-400"
+                     }`}>
+                     {appointment?.status ? appointment?.status.charAt(0).toUpperCase() + appointment?.status.slice(1) : ''}
+                   </span>
                 </div>
                 <div>
                   <p className='text-sm text-slate-600 dark:text-slate-400'>
@@ -218,12 +219,16 @@ const DoctorAppointmentDetail = () => {
                 Quick Actions
               </h3>
               <div className='flex flex-wrap gap-3'>
-                <button
-                  onClick={() => navigate(`/doctor/patient/${appointment?.patientId?._id}`)}
-                  className='flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'>
-                  <FaUserMd size={14} />
-                  View Patient Profile
-                </button>
+                 <button
+                   onClick={() => {
+                     if (appointment?.patientId?._id) {
+                       navigate(`/doctor/patient/${appointment?.patientId._id}`);
+                     }
+                   }}
+                   className='flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'>
+                   <FaUserMd size={14} />
+                   View Patient Profile
+                 </button>
                 <button
                   onClick={() => navigate(`/doctor/prescriptions?patient=${appointment?.patientId?._id}`)}
                   className='flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'>

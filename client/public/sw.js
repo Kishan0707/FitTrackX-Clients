@@ -175,12 +175,11 @@ self.addEventListener("fetch", (event) => {
   }
   
   // Static assets - cache first
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    }),
-  );
-});
+event.respondWith(
+  caches.match(event.request).then((response) => {
+    return response || fetch(event.request);
+  })
+);
 
 self.addEventListener("activate", (event) => {
   const whitelist = [CACHE_NAME];

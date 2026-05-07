@@ -25,7 +25,7 @@ export const vibrate = (pattern = [200, 100, 200]) => {
 
 // Speech synthesis
 export const speakNotification = (text) => {
-  if (!('speechSynthesis' in window)) return;
+  if (!("speechSynthesis" in window)) return;
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.volume = 1;
   utterance.rate = 1;
@@ -36,33 +36,38 @@ export const speakNotification = (text) => {
 // App badge management
 export const setAppBadge = async (count) => {
   try {
-    if ('setAppBadge' in navigator) {
+    if ("setAppBadge" in navigator) {
       await navigator.setAppBadge(count);
-    } else if ('setAppBadge' in navigator.serviceWorker) {
+    } else if ("setAppBadge" in navigator.serviceWorker) {
       const registration = await navigator.serviceWorker.ready;
       await registration.setAppBadge(count);
     }
   } catch {
-    console.log('Badge not supported');
+    console.log("Badge not supported");
   }
 };
 
 export const clearAppBadge = async () => {
   try {
-    if ('clearAppBadge' in navigator) {
+    if ("clearAppBadge" in navigator) {
       await navigator.clearAppBadge();
-    } else if ('setAppBadge' in navigator.serviceWorker) {
+    } else if ("setAppBadge" in navigator.serviceWorker) {
       const registration = await navigator.serviceWorker.ready;
       await registration.clearAppBadge();
     }
   } catch {
-    console.log('Clear badge not supported');
+    console.log("Clear badge not supported");
   }
 };
 
 // Request notification permission
 export const requestPermission = async () => {
   try {
+    if (!("Notification" in window)) {
+      console.log("Notifications not supported");
+      return false;
+    }
+
     const permission = await Notification.requestPermission();
 
     if (permission !== "granted") {
@@ -105,11 +110,11 @@ export const requestLocationPermission = () => {
       resolve(false);
       return;
     }
-    
+
     navigator.geolocation.getCurrentPosition(
       () => resolve(true),
       () => resolve(false),
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 10000 },
     );
   });
 };
@@ -117,9 +122,9 @@ export const requestLocationPermission = () => {
 // Show notification via service worker
 const showNotificationViaSW = async (title, options = {}) => {
   try {
-    if (!('serviceWorker' in navigator)) return;
+    if (!("serviceWorker" in navigator)) return;
     const registration = await navigator.serviceWorker.ready;
-    
+
     const defaultOptions = {
       icon: "/icons/icon-192.png",
       badge: "/icons/icon-192.png",
@@ -127,10 +132,10 @@ const showNotificationViaSW = async (title, options = {}) => {
       requireInteraction: true,
       actions: [
         { action: "view", title: "View" },
-        { action: "dismiss", title: "Dismiss" }
+        { action: "dismiss", title: "Dismiss" },
       ],
     };
-    
+
     registration.showNotification(title, { ...defaultOptions, ...options });
   } catch (err) {
     console.error("SW notification error:", err);
@@ -146,26 +151,26 @@ export const listenNotifications = (showNotification) => {
 
   onMessage(messaging, (payload) => {
     console.log("Foreground notification:", payload);
-    
+
     const { title, body, image } = payload.notification || {};
     const data = payload.data || {};
-    
+
     if (title) {
       showNotificationViaSW(title, {
         body,
         icon: image,
         data,
-        tag: data.tag || title
+        tag: data.tag || title,
       });
-      
+
       playSound();
       vibrate();
-      speakNotification(`${title}. ${body || ''}`);
-      
+      speakNotification(`${title}. ${body || ""}`);
+
       if (showNotification) {
         showNotification(body || title, "success");
       }
-      
+
       setAppBadge(1).catch(() => {});
     }
   });
@@ -174,10 +179,10 @@ export const listenNotifications = (showNotification) => {
 // Background sync registration
 export const registerBackgroundSync = async () => {
   try {
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       const registration = await navigator.serviceWorker.ready;
-      if ('sync' in registration) {
-        await registration.sync.register('sync-offline-actions');
+      if ("sync" in registration) {
+        await registration.sync.register("sync-offline-actions");
         console.log("Background sync registered");
         return true;
       }
@@ -191,11 +196,11 @@ export const registerBackgroundSync = async () => {
 // Periodic sync registration
 export const registerPeriodicSync = async (interval = 24 * 60 * 60 * 1000) => {
   try {
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       const registration = await navigator.serviceWorker.ready;
-      if ('periodicSync' in registration) {
-        await registration.periodicSync.register('sync-progress', {
-          minInterval: interval
+      if ("periodicSync" in registration) {
+        await registration.periodicSync.register("sync-progress", {
+          minInterval: interval,
         });
         console.log("Periodic sync registered");
         return true;
@@ -206,4 +211,3 @@ export const registerPeriodicSync = async (interval = 24 * 60 * 60 * 1000) => {
   }
   return false;
 };
-

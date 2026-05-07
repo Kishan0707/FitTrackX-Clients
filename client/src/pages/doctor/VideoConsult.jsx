@@ -60,34 +60,53 @@ export default function VideoConsult() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const fetchAppointment = async () => {
-    try {
-      const res = await API.get(`/appointment/${appointmentId}`);
-      setAppointment(res);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+   // Get API base URL from environment (works for both localhost and production)
+   const getBaseUrl = () => {
+     if (typeof window !== 'undefined') {
+       const origin = window.location.origin;
+       // In development, use localhost:5000 for socket connection
+       // In production, use the same origin as the frontend
+       if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+         return 'http://localhost:5000';
+       }
+       return origin; // For production, use same origin
+     }
+     return 'http://localhost:5000'; // fallback
+   };
 
-  useEffect(() => {
-    if (!appointment) return;
+   const fetchAppointment = async () => {
+     try {
+       const res = await API.get(`/appointment/${appointmentId}`);
+       setAppointment(res);
+     } catch (err) {
+       console.error(err);
+     }
+   };
 
-    const s = io("http://localhost:5000", {
-      auth: {
-        token: localStorage.getItem("token"),
-      },
-    });
+   useEffect(() => {
+     if (!appointment) return;
 
-    setSocket(s);
-    startCall(s, appointment.roomId);
+     const s = io(getBaseUrl(), {
+       auth: {
+         token: localStorage.getItem("token"),
+       },
+     });
 
-    return () => {
-      s.disconnect();
-      socket.off("offer");
-      socket.off("answer");
-      socket.off("ice-candidate");
-    };
-  }, [appointment]);
+     setSocket(s);
+     startCall(s, appointment.roomId);
+
+     return () => {
+       s.disconnect();
+       // Clean up socket listeners to prevent memory leaks
+       if (socket) {
+         socket.off("offer");
+         socket.off("answer");
+         socket.off("ice-candidate");
+         socket.off("chat");
+         socket.off("call-ended");
+       }
+     };
+   }, [appointment]);
 
   const startCall = async (socket, roomId) => {
     try {
@@ -99,9 +118,9 @@ export default function VideoConsult() {
       setLocalStream(stream);
       localRef.current.srcObject = stream;
 
-      const iceServers = await fetch(
-        "http://localhost:5000/api/webrtc/ice",
-      ).then((r) => r.json());
+       const iceServers = await fetch(
+         `${getBaseUrl()}/api/webrtc/ice`,
+       ).then((r) => r.json());
 
       const peer = new RTCPeerConnection({ iceServers });
       peerRef.current = peer;

@@ -371,7 +371,13 @@ const PrescriptionsManagement = () => {
                           className='rounded-lg bg-slate-700 p-3 text-slate-300 transition hover:bg-slate-600 hover:text-white'>
                           <FaEye />
                         </button>
-                        <button className='rounded-lg bg-slate-700 p-3 text-slate-300 transition hover:bg-slate-600 hover:text-white'>
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/doctor/prescriptions/${prescription._id}/edit`,
+                            )
+                          }
+                          className='rounded-lg bg-slate-700 p-3 text-slate-300 transition hover:bg-slate-600 hover:text-white'>
                           <FaEdit />
                         </button>
                         <button className='rounded-lg bg-red-500/20 p-3 text-red-400 transition hover:bg-red-500/30'>

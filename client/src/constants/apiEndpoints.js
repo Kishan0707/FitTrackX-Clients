@@ -15,21 +15,21 @@ export const API_ENDPOINTS = {
   USERS: {
     // Admin: list all NON-DOCTOR users only (filters: ?role=user|coach|seller|affiliate)
     ADMIN_LIST: "/admin/users",
-    
+
     // Coach: list clients assigned to this coach (no params needed, backend scoped)
     COACH_CLIENTS: "/coach/clients",
     COACH_PENDING: "/coach/pending-requests",
     COACH_ASSIGN: (clientId) => `/coach/${clientId}/assign`,
-    
+
     // Doctor: list patients assigned to this doctor (backend scoped)
     DOCTOR_PATIENTS: "/doctor/patients",
-    
+
     // User: view own profile
     USER_PROFILE: "/user/profile",
 
     // User: medical history
     MEDICAL_HISTORY: "/user/medical-history",
-    
+
     // Admin: get single user by ID
     ADMIN_GET: (userId) => `/admin/users/${userId}`,
     ADMIN_UPDATE: (userId) => `/admin/users/${userId}`,
@@ -59,6 +59,11 @@ export const API_ENDPOINTS = {
     // Patient medical data (doctor only)
     PATIENT_NOTES: (userId) => `/doctor/patient/${userId}/notes`,
     PRESCRIBE: "/doctor/prescriptions",
+    PRESCRIPTION_DETAIL: (id) => `/doctor/prescriptions/${id}`,
+    PRESCRIPTION_UPDATE: (id) => `/doctor/prescriptions/${id}`,
+    FOLLOW_UPS: "/doctor/follow-ups",
+    FOLLOW_UP_DETAIL: (id) => `/doctor/follow-ups/${id}`,
+    FOLLOW_UP_UPDATE: (id) => `/doctor/follow-ups/${id}`,
 
     // Progress tracking
     PATIENT_PROGRESS: (id) => `/doctor/patients/${id}/progress`,
@@ -66,7 +71,8 @@ export const API_ENDPOINTS = {
     PATIENT_PROGRESS_PHOTO: (id) => `/doctor/patients/${id}/progress/photo`,
     PATIENT_PROGRESS_GOALS: (id) => `/doctor/patients/${id}/progress/goals`,
     PATIENT_PROGRESS_NOTE: (id) => `/doctor/patients/${id}/progress/note`,
-    PATIENT_PROGRESS_ANALYTICS: (id) => `/doctor/patients/${id}/progress/analytics`,
+    PATIENT_PROGRESS_ANALYTICS: (id) =>
+      `/doctor/patients/${id}/progress/analytics`,
     PATIENT_PROGRESS_STATUS: (id) => `/doctor/patients/${id}/progress/status`,
     PROGRESS_SUMMARY: "/doctor/progress/summary",
 
@@ -83,7 +89,8 @@ export const API_ENDPOINTS = {
 
     // Video consultation
     VIDEO_CONSULT_START: "/doctor/video-consult/start",
-    VIDEO_CONSULT_END: (appointmentId) => `/doctor/video-consult/${appointmentId}/end`,
+    VIDEO_CONSULT_END: (appointmentId) =>
+      `/doctor/video-consult/${appointmentId}/end`,
     VIDEO_CONSULT_HISTORY: "/doctor/video-consult/history",
 
     // Schedule
@@ -99,6 +106,7 @@ export const API_ENDPOINTS = {
     // User: book appointment
     BOOK: "/appointments",
     USER_LIST: "/user/appointments",
+    USER_DETAIL: (id) => `/user/appointments/${id}`,
 
     // Doctor: view/manage appointments
     DOCTOR_LIST: "/doctor/appointments",
@@ -184,7 +192,9 @@ export const getAdminUserQuery = (excludeRoles = [], includeRoles = []) => {
   if (excludeRoles.length) params.set("excludeRoles", excludeRoles.join(","));
   if (includeRoles.length) params.set("includeRoles", includeRoles.join(","));
   const query = params.toString();
-  return query ? `${API_ENDPOINTS.USERS.ADMIN_LIST}?${query}` : API_ENDPOINTS.USERS.ADMIN_LIST;
+  return query ?
+      `${API_ENDPOINTS.USERS.ADMIN_LIST}?${query}`
+    : API_ENDPOINTS.USERS.ADMIN_LIST;
 };
 
 // Example usage:

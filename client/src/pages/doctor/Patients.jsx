@@ -83,7 +83,7 @@ const Patients = () => {
   return (
     <DashboardLayout>
       <div className='p-4 space-y-6'>
-        <h2 className='text-2xl font-bold text-white'>My Patients</h2>
+        <h2 className='text-2xl font-bold text-white'>All Patients</h2>
         <div className='flex items-center justify-between gap-4'>
           <div className='flex items-center gap-2 flex-1'>
             <FaSearch className='text-slate-400' />
@@ -202,27 +202,27 @@ const Patients = () => {
                       </div>
                     </td>
                     <td className='py-4 text-slate-300'>{patient.email}</td>
-<td className='py-4 flex items-center gap-2'>
-                       <button
-                         onClick={() =>
-                           navigate(`/doctor/patient/${patient._id}`)
-                         }
-                         className='text-blue-400 hover:text-blue-300 hover:underline'>
-                         View Profile
-                       </button>
-                       <button
-                         onClick={() =>
-                           navigate(`/doctor/medical-history/${patient._id}`)
-                         }
-                         className='text-purple-400 hover:text-purple-300 hover:underline'>
-                         Medical History
-                       </button>
-                       <button
-                         onClick={() => handleRemovePatient(patient._id)}
-                         className='text-red-400 hover:text-red-300 hover:underline flex items-center gap-1'>
-                         <FaTrash /> Remove
-                       </button>
-                     </td>
+                    <td className='py-4 flex items-center gap-2'>
+                      <button
+                        onClick={() =>
+                          navigate(`/doctor/patient/${patient._id}`)
+                        }
+                        className='text-blue-400 hover:text-blue-300 hover:underline'>
+                        View Profile
+                      </button>
+                      <button
+                        onClick={() =>
+                          navigate(`/doctor/medical-history/${patient._id}`)
+                        }
+                        className='text-purple-400 hover:text-purple-300 hover:underline'>
+                        Medical History
+                      </button>
+                      <button
+                        onClick={() => handleRemovePatient(patient._id)}
+                        className='text-red-400 hover:text-red-300 hover:underline flex items-center gap-1'>
+                        <FaTrash /> Remove
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

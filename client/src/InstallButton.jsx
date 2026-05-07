@@ -45,7 +45,7 @@ export default function InstallButton() {
             bottom: 20,
             right: 20,
             padding: "12px 18px",
-            background: theme === "dark" ? "#f97316" : "#ea580c",
+            background: theme === "dark" ? "#0f172a" : "#161E31",
             color: "white",
             borderRadius: "10px",
             border: "none",

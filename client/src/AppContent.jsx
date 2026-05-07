@@ -72,9 +72,11 @@ import BookAppointment from "./pages/doctor/BookAppointment";
 import PatientMedicalHistory from "./pages/doctor/PatientMedicalHistory";
 import MedicalHistory from "./pages/doctor/MedicalHistory";
 import PrescriptionsManagement from "./pages/doctor/PrescriptionsManagement";
+import PrescriptionForm from "./pages/doctor/PrescriptionForm";
 import LabReports from "./pages/doctor/LabReports";
 import Patients from "./pages/doctor/Patients";
 import AddPatient from "./pages/doctor/AddPatient";
+import DoctorFollowUps from "./pages/doctor/DoctorFollowUps";
 import MedicalHistoryPage from "./pages/health/MedicalHistory";
 import { useEffect } from "react";
 import VideoConsult from "./pages/doctor/VideoConsult";
@@ -592,6 +594,30 @@ function AppContent() {
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
                 <PrescriptionsManagement />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/prescriptions/new'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <PrescriptionForm />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/prescriptions/:prescriptionId/edit'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <PrescriptionForm />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/follow-ups'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorFollowUps />
               </ProtectedRoutes>
             }
           />

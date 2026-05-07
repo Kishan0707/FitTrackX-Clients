@@ -56,6 +56,9 @@ const PatientMedicalHistory = () => {
             API_ENDPOINTS.DOCTORS.PATIENT_HISTORY(patientId),
           );
           historyData = historyRes.data.data;
+          if (!patientData && historyData?.patient) {
+            patientData = historyData.patient;
+          }
         } catch {
           // History endpoint may return 403 - will use empty state
         }
@@ -86,7 +89,9 @@ const PatientMedicalHistory = () => {
         setReports(reportsData);
 
         if (!patientData && !historyData) {
-          setError("Patient data not available. Backend API may need configuration.");
+          setError(
+            "Patient data not available. Backend API may need configuration.",
+          );
         }
       } catch (error) {
         console.error("Failed to fetch patient data:", error);
@@ -136,34 +141,34 @@ const PatientMedicalHistory = () => {
 
   // Extract data from medical history
   const { history } = medicalHistory || {};
-  const {
-    historyAppointments = [],
-    bodyMeasurements,
-  } = history || {};
+  const historyAppointments = history?.appointments || [];
+  const historyPrescriptions = history?.prescriptions || [];
+  const historyReports = history?.reports || [];
+  const bodyMeasurements = history?.bodyMeasurements || null;
 
-   return (
-     <DashboardLayout>
-       <div className='min-h-screen bg-slate-950 p-4 md:p-8'>
-         <div className='mx-auto max-w-7xl'>
-           {/* Patient Header */}
-           <div className='mb-8 rounded-2xl border border-slate-700 bg-slate-900 p-6'>
-             <div className='flex flex-wrap items-start justify-between gap-6'>
-               <div className='flex items-center gap-6'>
-                 <div className='h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-4xl font-bold text-white'>
-                   {patient?.name?.charAt(0)}
-                 </div>
-                 <div>
-                   <h1 className='text-2xl font-bold text-white'>
-                     {patient?.name}
-                   </h1>
-                   <p className='text-blue-400'>
-                     Age: {patient?.age} • Gender: {patient?.gender}
-                   </p>
-                   <p className='mt-1 text-sm text-slate-400'>
-                     Patient ID: {patientId}
-                   </p>
-                 </div>
-               </div>
+  return (
+    <DashboardLayout>
+      <div className='min-h-screen bg-slate-950 p-4 md:p-8'>
+        <div className='mx-auto max-w-7xl'>
+          {/* Patient Header */}
+          <div className='mb-8 rounded-2xl border border-slate-700 bg-slate-900 p-6'>
+            <div className='flex flex-wrap items-start justify-between gap-6'>
+              <div className='flex items-center gap-6'>
+                <div className='h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-4xl font-bold text-white'>
+                  {patient?.name?.charAt(0)}
+                </div>
+                <div>
+                  <h1 className='text-2xl font-bold text-white'>
+                    {patient?.name}
+                  </h1>
+                  <p className='text-blue-400'>
+                    Age: {patient?.age} • Gender: {patient?.gender}
+                  </p>
+                  <p className='mt-1 text-sm text-slate-400'>
+                    Patient ID: {patientId}
+                  </p>
+                </div>
+              </div>
 
               <button className='rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 transition'>
                 <FaPrescription className='mr-2 inline' /> New Prescription

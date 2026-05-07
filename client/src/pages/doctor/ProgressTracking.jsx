@@ -103,17 +103,17 @@ const ProgressTracking = () => {
   const fetchPatients = useCallback(async () => {
     try {
       const res = await API.get(API_ENDPOINTS.DOCTORS.PATIENTS);
-      if (res.data?.success) {
-        const patientsData = res.data.data || [];
-        console.log(
-          "Fetched patients raw data:",
-          JSON.stringify(patientsData, null, 2),
-        );
-        console.log("First patient structure:", patientsData[0]);
-        setPatients(patientsData);
-        if (patientsData.length > 0 && !selectedPatient) {
-          setSelectedPatient(patientsData[0]);
-        }
+      const patientsData =
+        res.data?.data || (res.data?.success === false ? [] : res.data) || [];
+
+      console.log(
+        "Fetched patients raw data:",
+        JSON.stringify(patientsData, null, 2),
+      );
+      console.log("First patient structure:", patientsData[0]);
+      setPatients(patientsData);
+      if (patientsData.length > 0 && !selectedPatient) {
+        setSelectedPatient(patientsData[0]);
       }
       setError(null);
     } catch (err) {
@@ -138,8 +138,11 @@ const ProgressTracking = () => {
       console.log("Token present:", !!token);
       try {
         const res = await API.get(endpoint);
-        if (res.data?.success) {
-          setPatientProgress(res.data.data);
+        const progressPayload =
+          res.data?.data ?? (res.data?.success === false ? null : res.data);
+
+        if (progressPayload) {
+          setPatientProgress(progressPayload);
         }
       } catch (err) {
         console.error("Error fetching progress:", err);
@@ -308,6 +311,20 @@ const ProgressTracking = () => {
     navigate(`/doctor/patients/${patientId}/progress/analytics`);
   };
 
+  const calculateWeightProgress = (progress) => {
+    const currentWeight = Number(progress?.currentStats?.weight);
+    const startWeight = Number(
+      progress?.startingStats?.weight ||
+        progress?.initialStats?.weight ||
+        progress?.currentStats?.startingWeight ||
+        0,
+    );
+    if (!currentWeight || !startWeight) return null;
+    return ((currentWeight - startWeight) / startWeight) * 100;
+  };
+
+  const progressPercent = calculateWeightProgress(patientProgress);
+
   const fmt = (date) =>
     new Date(date).toLocaleDateString("en-IN", {
       day: "2-digit",
@@ -430,7 +447,7 @@ const ProgressTracking = () => {
               </div>
 
               {selectedPatient && patientProgress && (
-                <>
+                <div className='space-y-8'>
                   {/* Overview Stats */}
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
                     <div className='bg-slate-900 border border-slate-800 rounded-2xl p-6'>
@@ -468,10 +485,9 @@ const ProgressTracking = () => {
                         <FaPercent className='text-blue-500' />
                       </div>
                       <p className='text-white text-xl font-bold'>
-                        {patientProgress
-                          .calculateWeightProgress()
-                          ?.toFixed(1) || 0}
-                        %
+                        {progressPercent !== null ?
+                          `${progressPercent.toFixed(1)}%`
+                        : "N/A"}
                       </p>
                     </div>
 
@@ -715,7 +731,24 @@ const ProgressTracking = () => {
                         </div>
                       </div>
                     )}
-                </>
+                </div>
+              )}
+              {selectedPatient && !patientProgress && !loading && !error && (
+                <div className='bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center'>
+                  <h2 className='text-2xl font-semibold text-white mb-3'>
+                    No progress data available yet
+                  </h2>
+                  <p className='text-slate-400 mb-6'>
+                    This patient has been selected, but there is no progress
+                    report to display yet. Add progress data to see charts,
+                    goals, notes, and alerts.
+                  </p>
+                  <button
+                    onClick={() => setShowAddProgressModal(true)}
+                    className='inline-flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 text-white transition hover:bg-orange-600'>
+                    <FaPlus /> Add Progress Entry
+                  </button>
+                </div>
               )}
             </>
           }

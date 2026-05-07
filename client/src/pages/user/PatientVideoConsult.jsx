@@ -22,7 +22,7 @@ import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
-export default function VideoConsult() {
+export default function PatientVideoConsult() {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
 
@@ -52,9 +52,7 @@ export default function VideoConsult() {
       return;
     }
     try {
-      const res = await API.get(
-        API_ENDPOINTS.APPOINTMENTS.DOCTOR_DETAIL(appointmentId),
-      );
+      const res = await API.get(`/user/appointments/${appointmentId}`);
       const appointmentData = res.data.data || res.data;
       setAppointment(appointmentData);
       setError(null);
@@ -71,7 +69,6 @@ export default function VideoConsult() {
     fetchAppointment();
   }, [appointmentId]);
 
-  // Get API base URL from environment (works for both localhost and production)
   const getBaseUrl = () => {
     if (typeof window !== "undefined") {
       const isLocal = ["localhost", "127.0.0.1"].includes(
@@ -90,10 +87,6 @@ export default function VideoConsult() {
   };
 
   useEffect(() => {
-    fetchAppointment();
-  }, [appointmentId]);
-
-  useEffect(() => {
     let interval;
     if (callStatus === "connected") {
       interval = setInterval(() => {
@@ -107,7 +100,6 @@ export default function VideoConsult() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Initialize socket and start call when appointment is ready
   useEffect(() => {
     if (!appointment) return;
 
@@ -156,12 +148,10 @@ export default function VideoConsult() {
         const peer = new RTCPeerConnection({ iceServers });
         peerRef.current = peer;
 
-        // Add local tracks to peer connection
         stream.getTracks().forEach((track) => {
           peer.addTrack(track, stream);
         });
 
-        // Handle remote stream
         peer.ontrack = (e) => {
           console.log("Remote track received");
           if (remoteRef.current) {
@@ -171,7 +161,6 @@ export default function VideoConsult() {
           setLoading(false);
         };
 
-        // Handle ICE candidates
         peer.onicecandidate = (e) => {
           if (e.candidate) {
             s.emit("ice-candidate", {
@@ -188,28 +177,25 @@ export default function VideoConsult() {
           }
         };
 
-        // Notify server we're joining
         s.emit("join-call", { roomId: appointment.roomId });
 
-        // Doctor creates and sends offer
-        const offer = await peer.createOffer();
-        await peer.setLocalDescription(offer);
-
-        s.emit("offer", {
-          offer,
-          roomId: appointment.roomId,
-        });
-
-        // Listen for answer from patient
-        s.on("answer", async (answer) => {
+        s.on("offer", async (offer) => {
           try {
-            await peer.setRemoteDescription(new RTCSessionDescription(answer));
+            await peer.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await peer.createAnswer();
+            await peer.setLocalDescription(answer);
+            s.emit("answer", {
+              answer,
+              roomId: appointment.roomId,
+            });
           } catch (err) {
-            console.error("Error setting remote description:", err);
+            console.error("Error handling offer:", err);
+            setError("Failed to establish connection");
+            setCallStatus("error");
+            setLoading(false);
           }
         });
 
-        // Listen for ICE candidates from patient
         s.on("ice-candidate", async (candidate) => {
           try {
             if (candidate) {
@@ -220,17 +206,14 @@ export default function VideoConsult() {
           }
         });
 
-        // Listen for chat messages
         s.on("chat", (msg) => {
           setMessages((prev) => [...prev, msg]);
         });
 
-        // Listen for call end from patient
         s.on("call-ended", () => {
           endCall();
         });
 
-        // Request notification permission
         if ("Notification" in window) {
           Notification.requestPermission().then((permission) => {
             if (permission === "granted") {
@@ -248,7 +231,6 @@ export default function VideoConsult() {
         setCallStatus("error");
         setLoading(false);
 
-        // Cleanup on error
         s.disconnect();
         if (localStream) {
           localStream.getTracks().forEach((track) => track.stop());
@@ -258,11 +240,10 @@ export default function VideoConsult() {
 
     initCall();
 
-    // Cleanup function
     return () => {
       setLoading(false);
       if (socket) {
-        socket.off("answer");
+        socket.off("offer");
         socket.off("ice-candidate");
         socket.off("chat");
         socket.off("call-ended");
@@ -301,11 +282,11 @@ export default function VideoConsult() {
     socket?.emit("chat", {
       roomId: appointment?.roomId,
       message: text,
-      sender: "doctor",
+      sender: "patient",
       timestamp: Date.now(),
     });
 
-    setMessages((prev) => [...prev, { message: text, sender: "doctor" }]);
+    setMessages((prev) => [...prev, { message: text, sender: "patient" }]);
     setText("");
   };
 
@@ -313,7 +294,7 @@ export default function VideoConsult() {
     localStream?.getTracks().forEach((track) => track.stop());
     peerRef.current?.close();
     socket?.emit("end-call", { roomId: appointment?.roomId });
-    navigate("/doctor");
+    navigate("/dashboard");
   }, [localStream, socket, appointment, navigate]);
 
   const toggleFullscreen = () => {
@@ -338,14 +319,12 @@ export default function VideoConsult() {
   return (
     <DashboardLayout>
       <div className='relative h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'>
-        {/* Animated Background */}
         <div className='absolute inset-0 overflow-hidden'>
           <div className='absolute -top-40 -right-40 h-80 w-80 animate-pulse rounded-full bg-orange-500/10 blur-3xl'></div>
           <div className='absolute -bottom-40 -left-40 h-80 w-80 animate-pulse rounded-full bg-blue-500/10 blur-3xl'></div>
           <div className='absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-purple-500/5 to-pink-500/5 blur-3xl'></div>
         </div>
 
-        {/* Loading/Error States */}
         {loading && (
           <div className='absolute inset-0 z-20 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm'>
             <div className='text-center'>
@@ -367,7 +346,7 @@ export default function VideoConsult() {
                 Retry
               </button>
               <button
-                onClick={() => navigate("/doctor")}
+                onClick={() => navigate("/dashboard")}
                 className='ml-3 rounded-lg bg-slate-700 px-6 py-2 text-white hover:bg-slate-600'>
                 Go Back
               </button>
@@ -375,9 +354,7 @@ export default function VideoConsult() {
           </div>
         )}
 
-        {/* Main Content */}
         <div className='relative z-10 flex h-full flex-col p-4'>
-          {/* Header Bar */}
           <div className='mb-4 flex items-center justify-between rounded-2xl border border-slate-800/50 bg-slate-900/50 p-4 backdrop-blur-xl'>
             <div className='flex items-center gap-4'>
               <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25'>
@@ -402,15 +379,13 @@ export default function VideoConsult() {
               <div
                 className={`flex items-center gap-2 rounded-full px-4 py-2 ${
                   callStatus === "connected" ? "bg-green-500/20 text-green-400"
-                  : callStatus === "connecting" ?
-                    "bg-yellow-500/20 text-yellow-400"
+                  : callStatus === "connecting" ? "bg-yellow-500/20 text-yellow-400"
                   : "bg-red-500/20 text-red-400"
                 }`}>
                 <div
                   className={`h-2 w-2 rounded-full ${
                     callStatus === "connected" ? "bg-green-400 animate-pulse"
-                    : callStatus === "connecting" ?
-                      "bg-yellow-400 animate-pulse"
+                    : callStatus === "connecting" ? "bg-yellow-400 animate-pulse"
                     : "bg-red-400"
                   }`}></div>
                 <span className='text-sm font-medium capitalize'>
@@ -421,16 +396,12 @@ export default function VideoConsult() {
               <button
                 onClick={toggleFullscreen}
                 className='rounded-xl bg-slate-800/50 p-3 text-slate-300 transition hover:bg-slate-800 hover:text-white'>
-                {isFullscreen ?
-                  <FaCompress />
-                : <FaExpand />}
+                {isFullscreen ? <FaCompress /> : <FaExpand />}
               </button>
             </div>
           </div>
 
-          {/* Video Area */}
           <div className='relative flex-1 overflow-hidden rounded-2xl border border-slate-800/50 bg-slate-950'>
-            {/* Remote Video (Full) */}
             <video
               ref={remoteRef}
               autoPlay
@@ -438,7 +409,6 @@ export default function VideoConsult() {
               style={{ transform: "scaleX(-1)" }}
             />
 
-            {/* Remote Video Placeholder */}
             {callStatus !== "connected" && (
               <div className='absolute inset-0 flex items-center justify-center bg-slate-950'>
                 <div className='text-center'>
@@ -446,9 +416,7 @@ export default function VideoConsult() {
                     <FaUser className='text-6xl text-slate-600' />
                   </div>
                   <p className='text-lg font-semibold text-slate-400'>
-                    {callStatus === "connecting" ?
-                      "Connecting..."
-                    : "Waiting for patient to join"}
+                    {callStatus === "connecting" ? "Connecting..." : "Waiting for doctor to join"}
                   </p>
                   <div className='mt-4 flex justify-center gap-1'>
                     {[0, 1, 2].map((i) => (
@@ -462,7 +430,6 @@ export default function VideoConsult() {
               </div>
             )}
 
-            {/* Local Video (PiP) */}
             <div className='group absolute bottom-4 right-4 h-48 w-36 overflow-hidden rounded-2xl border-2 border-slate-700 bg-slate-900 shadow-2xl transition-all duration-300 hover:scale-110 hover:border-orange-500'>
               <video
                 ref={localRef}
@@ -481,7 +448,6 @@ export default function VideoConsult() {
               </div>
             </div>
 
-            {/* Chat Toggle Button */}
             <button
               onClick={() => setIsChatOpen(!isChatOpen)}
               className='absolute bottom-4 left-4 flex items-center gap-2 rounded-xl bg-slate-800/90 px-4 py-3 text-white backdrop-blur transition hover:bg-slate-700'>
@@ -495,18 +461,14 @@ export default function VideoConsult() {
             </button>
           </div>
 
-          {/* Controls Bar */}
           <div className='mt-4 flex items-center justify-center gap-3'>
             <button
               onClick={toggleMute}
               className={`group relative rounded-2xl p-4 transition-all duration-300 ${
-                isMuted ?
-                  "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                isMuted ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
                 : "bg-slate-800/50 text-white hover:bg-slate-800"
               }`}>
-              {isMuted ?
-                <FaMicrophoneSlash size={20} />
-              : <FaMicrophone size={20} />}
+              {isMuted ? <FaMicrophoneSlash size={20} /> : <FaMicrophone size={20} />}
               <span className='absolute -top-8 left-1/2 -translate-x-1/2 scale-0 rounded-lg bg-slate-800 px-2 py-1 text-xs text-white transition group-hover:scale-100'>
                 {isMuted ? "Unmute" : "Mute"}
               </span>
@@ -515,13 +477,10 @@ export default function VideoConsult() {
             <button
               onClick={toggleVideo}
               className={`group relative rounded-2xl p-4 transition-all duration-300 ${
-                isVideoOff ?
-                  "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                isVideoOff ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
                 : "bg-slate-800/50 text-white hover:bg-slate-800"
               }`}>
-              {isVideoOff ?
-                <FaVideoSlash size={20} />
-              : <FaVideo size={20} />}
+              {isVideoOff ? <FaVideoSlash size={20} /> : <FaVideo size={20} />}
               <span className='absolute -top-8 left-1/2 -translate-x-1/2 scale-0 rounded-lg bg-slate-800 px-2 py-1 text-xs text-white transition group-hover:scale-100'>
                 {isVideoOff ? "Turn On" : "Turn Off"}
               </span>
@@ -545,12 +504,10 @@ export default function VideoConsult() {
           </div>
         </div>
 
-        {/* Chat Sidebar */}
         <div
           className={`absolute right-0 top-0 z-20 flex h-full w-96 transform flex-col rounded-l-2xl border-l border-slate-800/50 bg-slate-900/95 backdrop-blur-xl transition-transform duration-500 ${
             isChatOpen ? "translate-x-0" : "translate-x-full"
           }`}>
-          {/* Chat Header */}
           <div className='flex items-center justify-between border-b border-slate-800 p-4'>
             <h3 className='text-lg font-bold text-white'>Chat</h3>
             <button
@@ -560,26 +517,22 @@ export default function VideoConsult() {
             </button>
           </div>
 
-          {/* Messages */}
           <div className='flex-1 space-y-3 overflow-y-auto p-4'>
             {messages.map((m, idx) => (
               <div
                 key={idx}
-                className={`flex ${m.sender === "doctor" ? "justify-end" : "justify-start"}`}>
+                className={`flex ${m.sender === "patient" ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                    m.sender === "doctor" ?
-                      "bg-gradient-to-r from-orange-500 to-orange-600 text-white"
+                    m.sender === "patient" ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white"
                     : "bg-slate-800 text-slate-200"
                   }`}>
                   <p className='text-sm'>{m.message}</p>
                   <p className='mt-1 text-right text-xs opacity-70'>
-                    {m.timestamp ?
-                      new Date(m.timestamp).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                    : ""}
+                    {m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }) : ""}
                   </p>
                 </div>
               </div>
@@ -587,7 +540,6 @@ export default function VideoConsult() {
             <div ref={chatEndRef} />
           </div>
 
-          {/* Chat Input */}
           <div className='border-t border-slate-800 p-4'>
             <div className='flex gap-2'>
               <input
@@ -606,7 +558,6 @@ export default function VideoConsult() {
           </div>
         </div>
 
-        {/* Overlay when chat is open */}
         {isChatOpen && (
           <div
             className='absolute inset-0 z-10 bg-black/20 backdrop-blur-sm'

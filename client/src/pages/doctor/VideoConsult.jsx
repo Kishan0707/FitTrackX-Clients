@@ -63,24 +63,16 @@ export default function VideoConsult() {
    // Get API base URL from environment (works for both localhost and production)
    const getBaseUrl = () => {
      if (typeof window !== 'undefined') {
-       const origin = window.location.origin;
-       // In development, use localhost:5000 for socket connection
-       // In production, use the same origin as the frontend
-       if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-         return 'http://localhost:5000';
+       const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+       // For local development, use VITE_API_URL_LOCAL or fallback to http://localhost:5000
+       // For production, use VITE_API_URL or fallback to window.location.origin
+       if (isLocal) {
+         return import.meta.env.VITE_API_URL_LOCAL || import.meta.env.VITE_API_URL || 'http://localhost:5000';
        }
-       return origin; // For production, use same origin
+       return import.meta.env.VITE_API_URL || window.location.origin;
      }
-     return 'http://localhost:5000'; // fallback
-   };
-
-   const fetchAppointment = async () => {
-     try {
-       const res = await API.get(`/appointment/${appointmentId}`);
-       setAppointment(res);
-     } catch (err) {
-       console.error(err);
-     }
+     // During SSR (if any), fallback to local dev
+     return import.meta.env.VITE_API_URL_LOCAL || 'http://localhost:5000';
    };
 
    useEffect(() => {

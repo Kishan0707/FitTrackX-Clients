@@ -10,6 +10,10 @@ import {
 } from "react-icons/fa";
 import { MdNotificationAdd, MdVibration } from "react-icons/md";
 import { useTheme } from "../context/themeContext";
+import {
+  requestPermission,
+  requestLocationPermission,
+} from "../firebase/notification";
 
 const NOTIFICATION_CATEGORIES = [
   {
@@ -158,8 +162,6 @@ const NotificationSettings = ({ onClose }) => {
             description='Receive workout reminders, progress alerts, and coach messages'
             granted={permissions.notifications}
             onRequest={async () => {
-              const { requestPermission } =
-                await import("../firebase/notification");
               const granted = await requestPermission();
               refreshPermissions();
             }}
@@ -241,8 +243,6 @@ const NotificationSettings = ({ onClose }) => {
             description='Required for gym arrival/departure detection'
             granted={permissions.location}
             onRequest={async () => {
-              const { requestLocationPermission } =
-                await import("../firebase/notification");
               const granted = await requestLocationPermission();
               refreshPermissions();
             }}

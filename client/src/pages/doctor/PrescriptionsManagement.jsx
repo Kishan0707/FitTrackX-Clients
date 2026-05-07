@@ -253,7 +253,7 @@ const PrescriptionsManagement = () => {
                 className='w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3 pl-12 pr-4 text-white placeholder-slate-400 focus:border-orange-500 focus:outline-none'
               />
             </div>
-            <div className='flex gap-2'>
+            <div className='flex gap-2 overflow-x-scroll'>
               {["all", "active", "emergency", "completed"].map((filter) => (
                 <button
                   key={filter}

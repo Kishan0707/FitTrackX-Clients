@@ -160,10 +160,14 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          return caches.open("api-cache").then((cache) => {
-            cache.put(event.request, response.clone());
-            return response;
-          });
+          // Only cache GET requests, skip POST/PUT/DELETE/PATCH
+          if (event.request.method === "GET") {
+            return caches.open("api-cache").then((cache) => {
+              cache.put(event.request, response.clone());
+              return response;
+            });
+          }
+          return response;
         })
         .catch(() => caches.match(event.request)),
     );

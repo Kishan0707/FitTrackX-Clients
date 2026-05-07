@@ -31,11 +31,15 @@ export const AuthProvider = ({ children }) => {
     }
 
     const storedFlag = getStoredOnboardingFlag();
+    const backendValue = userData.onboardingComplete;
+
+    // If localStorage says true, trust it. Otherwise use backend value if boolean.
     const derived =
-      typeof userData.onboardingComplete === "boolean" ?
-        userData.onboardingComplete
+      storedFlag ? true
+      : typeof backendValue === "boolean" ? backendValue
       : storedFlag;
 
+    // Ensure localStorage matches derived state
     if (derived) {
       localStorage.setItem("onboardingComplete", "true");
     }

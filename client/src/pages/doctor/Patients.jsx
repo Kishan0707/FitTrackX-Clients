@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
-import { FaUser, FaSearch, FaTrash } from "react-icons/fa";
+import { FaUser, FaSearch, FaTrash, FaNotesMedical } from "react-icons/fa";
 import { RiUserAddLine } from "react-icons/ri";
 
 const Patients = () => {
@@ -202,20 +202,27 @@ const Patients = () => {
                       </div>
                     </td>
                     <td className='py-4 text-slate-300'>{patient.email}</td>
-                    <td className='py-4 flex items-center gap-2'>
-                      <button
-                        onClick={() =>
-                          navigate(`/doctor/patient/${patient._id}`)
-                        }
-                        className='text-blue-400 hover:text-blue-300 hover:underline'>
-                        View Profile
-                      </button>
-                      <button
-                        onClick={() => handleRemovePatient(patient._id)}
-                        className='text-red-400 hover:text-red-300 hover:underline flex items-center gap-1'>
-                        <FaTrash /> Remove
-                      </button>
-                    </td>
+<td className='py-4 flex items-center gap-2'>
+                       <button
+                         onClick={() =>
+                           navigate(`/doctor/patient/${patient._id}`)
+                         }
+                         className='text-blue-400 hover:text-blue-300 hover:underline'>
+                         View Profile
+                       </button>
+                       <button
+                         onClick={() =>
+                           navigate(`/doctor/medical-history/${patient._id}`)
+                         }
+                         className='text-purple-400 hover:text-purple-300 hover:underline'>
+                         Medical History
+                       </button>
+                       <button
+                         onClick={() => handleRemovePatient(patient._id)}
+                         className='text-red-400 hover:text-red-300 hover:underline flex items-center gap-1'>
+                         <FaTrash /> Remove
+                       </button>
+                     </td>
                   </tr>
                 ))}
               </tbody>

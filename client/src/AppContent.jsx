@@ -67,6 +67,7 @@ import DoctorsList from "./pages/doctor/DoctorsList";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
+import DoctorAppointmentDetail from "./pages/doctor/DoctorAppointmentDetail";
 import BookAppointment from "./pages/doctor/BookAppointment";
 import PatientMedicalHistory from "./pages/doctor/PatientMedicalHistory";
 import MedicalHistory from "./pages/doctor/MedicalHistory";
@@ -77,12 +78,26 @@ import AddPatient from "./pages/doctor/AddPatient";
 import MedicalHistoryPage from "./pages/health/MedicalHistory";
 import { useEffect } from "react";
 import VideoConsult from "./pages/doctor/VideoConsult";
-import Chat from "./Chat";
+import VideoConsultStart from "./pages/doctor/VideoConsultStart";
+import VideoConsultHistory from "./pages/doctor/VideoConsultHistory";
+import Chat from "./pages/doctor/Chat";
 import ProgressTracking from "./pages/doctor/ProgressTracking";
 import DoctorsNotification from "./pages/doctor/DoctorsNotification";
 import RiskAssignments from "./pages/doctor/RiskAssignments";
 import DoctorDiet from "./pages/doctor/DoctorDiet";
 import WorkoutOverrides from "./pages/doctor/WorkoutOverrides";
+import DoctorAvailability from "./pages/doctor/DoctorAvailability";
+import DoctorSchedule from "./pages/doctor/DoctorSchedule";
+import DoctorReportsSummary from "./pages/doctor/DoctorReportsSummary";
+
+// User pages
+import UserAppointments from "./pages/UserAppointments";
+import WorkoutDetail from "./pages/workouts/WorkoutDetail";
+import DietPlansPage from "./pages/diet/DietPlansPage";
+import UserDietPage from "./pages/diet/UserDietPage";
+import ProgressWeight from "./pages/progress/ProgressWeight";
+import ProgressMeasurements from "./pages/progress/ProgressMeasurements";
+import DoctorEarnings from "./pages/doctor/DoctorEarnings";
 
 function AppContent() {
   const location = useLocation();
@@ -286,13 +301,12 @@ function AppContent() {
           />
 
           <Route
-            path='/coachDashboard'
+            path='/coach/dashboard'
             element={
               <ProtectedRoutes allowedRoles={["coach"]}>
                 <CoachDashboard />
               </ProtectedRoutes>
             }
-            index
           />
           <Route
             path='/coach/clients'
@@ -496,7 +510,7 @@ function AppContent() {
           <Route
             path='/doctors'
             element={
-              <ProtectedRoutes allowedRoles={["doctor", "user"]}>
+              <ProtectedRoutes>
                 <DoctorsList />
               </ProtectedRoutes>
             }
@@ -534,7 +548,7 @@ function AppContent() {
             }
           />
           <Route
-            path='/doctor/patient/:userId'
+            path='/doctor/patient/:patientId'
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
                 <PatientMedicalHistory />
@@ -542,7 +556,15 @@ function AppContent() {
             }
           />
           <Route
-            path='/doctor/medical-history/:userId'
+            path='/doctor/medical-history/:patientId'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <MedicalHistory />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/medical-history'
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
                 <MedicalHistory />
@@ -585,7 +607,7 @@ function AppContent() {
             path='/doctor/earnings'
             element={
               <ProtectedRoutes allowedRoles={["doctor"]}>
-                <div className='p-8 text-white'>Earnings Dashboard</div>
+                <DoctorEarnings />
               </ProtectedRoutes>
             }
           />
@@ -683,6 +705,115 @@ function AppContent() {
           />
 
           <Route path='/doctor/chat' element={<Chat />} />
+
+          {/* Doctor Management Routes */}
+          <Route
+            path='/doctor/profile'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorProfile />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/availability'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorAvailability />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/schedule'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorSchedule />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/appointments/:id'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorAppointmentDetail />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/video-consult/start/:appointmentId'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <VideoConsultStart />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/video-consult/history'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <VideoConsultHistory />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/doctor/reports/summary/appointments'
+            element={
+              <ProtectedRoutes allowedRoles={["doctor"]}>
+                <DoctorReportsSummary />
+              </ProtectedRoutes>
+            }
+          />
+
+          {/* User Routes */}
+          <Route
+            path='/appointments'
+            element={
+              <ProtectedRoutes>
+                <UserAppointments />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/workouts/:id'
+            element={
+              <ProtectedRoutes>
+                <WorkoutDetail />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/diet/plans'
+            element={
+              <ProtectedRoutes>
+                <DietPlansPage />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/diet/my'
+            element={
+              <ProtectedRoutes>
+                <UserDietPage />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/progress/weight'
+            element={
+              <ProtectedRoutes>
+                <ProgressWeight />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path='/progress/measurements'
+            element={
+              <ProtectedRoutes>
+                <ProgressMeasurements />
+              </ProtectedRoutes>
+            }
+          />
+
           <Route path='/order/:id' element={<OrderDetail />} />
           <Route path='/success' element={<Success />} />
           <Route path='/cancel' element={<Cancel />} />

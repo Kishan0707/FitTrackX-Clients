@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   FaUserMd,
   FaFileMedical,
@@ -17,32 +16,78 @@ import DashboardLayout from "../../layout/DashboardLayout";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
 const PatientMedicalHistory = () => {
-  const { userId } = useParams();
-  const [activeTab, setActiveTab] = useState("overview");
+  const { patientId } = useParams();
+  const navigate = useNavigate();
+
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [prescriptions, setPrescriptions] = useState([]);
   const [reports, setReports] = useState([]);
-  const [appointments, setAppointments] = useState([]);
   const [medicalHistory, setMedicalHistory] = useState(null);
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
+    if (!patientId) {
+      navigate("/doctor/patients");
+      return;
+    }
+
     const fetchPatientData = async () => {
       try {
-        const [patientRes, historyRes, prescriptionsRes, reportsRes] =
-          await Promise.all([
-            API.get(API_ENDPOINTS.DOCTORS.PATIENT_DETAILS(userId)),
-            API.get(API_ENDPOINTS.DOCTORS.PATIENT_HISTORY(userId)),
-            API.get(`${API_ENDPOINTS.DOCTORS.PRESCRIPTIONS}?userId=${userId}`),
-            API.get(`${API_ENDPOINTS.DOCTORS.REPORTS}?userId=${userId}`),
-          ]);
+        let patientData = null;
+        let historyData = null;
+        let prescriptionsData = [];
+        let reportsData = [];
 
-        setPatient(patientRes.data.data);
-        setMedicalHistory(historyRes.data.data);
-        setPrescriptions(prescriptionsRes.data.data || []);
-        setReports(reportsRes.data.data || []);
-        setError(null);
+        // Fetch patient details (may fail if not implemented)
+        try {
+          const patientRes = await API.get(
+            API_ENDPOINTS.DOCTORS.PATIENT_DETAILS(patientId),
+          );
+          patientData = patientRes.data.data;
+        } catch {
+          // Patient endpoint not available - will use fallback
+        }
+
+        // Fetch medical history (may fail if forbidden)
+        try {
+          const historyRes = await API.get(
+            API_ENDPOINTS.DOCTORS.PATIENT_HISTORY(patientId),
+          );
+          historyData = historyRes.data.data;
+        } catch {
+          // History endpoint may return 403 - will use empty state
+        }
+
+        // Fetch prescriptions
+        try {
+          const prescriptionsRes = await API.get(
+            `${API_ENDPOINTS.DOCTORS.PRESCRIPTIONS}?userId=${patientId}`,
+          );
+          prescriptionsData = prescriptionsRes.data.data || [];
+        } catch {
+          prescriptionsData = [];
+        }
+
+        // Fetch reports
+        try {
+          const reportsRes = await API.get(
+            `${API_ENDPOINTS.DOCTORS.REPORTS}?userId=${patientId}`,
+          );
+          reportsData = reportsRes.data.data || [];
+        } catch {
+          reportsData = [];
+        }
+
+        setPatient(patientData);
+        setMedicalHistory(historyData);
+        setPrescriptions(prescriptionsData);
+        setReports(reportsData);
+
+        if (!patientData && !historyData) {
+          setError("Patient data not available. Backend API may need configuration.");
+        }
       } catch (error) {
         console.error("Failed to fetch patient data:", error);
         setError(
@@ -52,10 +97,9 @@ const PatientMedicalHistory = () => {
         setLoading(false);
       }
     };
-    if (userId) {
-      fetchPatientData();
-    }
-  }, [userId]);
+
+    fetchPatientData();
+  }, [patientId, navigate]);
 
   const tabs = [
     { id: "overview", label: "Overview", icon: <MdTimeline /> },
@@ -91,38 +135,35 @@ const PatientMedicalHistory = () => {
   }
 
   // Extract data from medical history
-  const { history, patient: patientDetails } = medicalHistory || {};
+  const { history } = medicalHistory || {};
   const {
     historyAppointments = [],
-    prescriptions: historyPrescriptions = [],
-    reports: historyReports = [],
     bodyMeasurements,
-    progressRecords,
   } = history || {};
 
-  return (
-    <DashboardLayout>
-      <div className='min-h-screen bg-slate-950 p-4 md:p-8'>
-        <div className='mx-auto max-w-7xl'>
-          {/* Patient Header */}
-          <div className='mb-8 rounded-2xl border border-slate-700 bg-slate-900 p-6'>
-            <div className='flex flex-wrap items-start justify-between gap-6'>
-              <div className='flex items-center gap-6'>
-                <div className='h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-4xl font-bold text-white'>
-                  {patient?.name?.charAt(0)}
-                </div>
-                <div>
-                  <h1 className='text-2xl font-bold text-white'>
-                    {patient?.name}
-                  </h1>
-                  <p className='text-blue-400'>
-                    Age: {patient?.age} • Gender: {patient?.gender}
-                  </p>
-                  <p className='mt-1 text-sm text-slate-400'>
-                    Patient ID: {userId}
-                  </p>
-                </div>
-              </div>
+   return (
+     <DashboardLayout>
+       <div className='min-h-screen bg-slate-950 p-4 md:p-8'>
+         <div className='mx-auto max-w-7xl'>
+           {/* Patient Header */}
+           <div className='mb-8 rounded-2xl border border-slate-700 bg-slate-900 p-6'>
+             <div className='flex flex-wrap items-start justify-between gap-6'>
+               <div className='flex items-center gap-6'>
+                 <div className='h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-4xl font-bold text-white'>
+                   {patient?.name?.charAt(0)}
+                 </div>
+                 <div>
+                   <h1 className='text-2xl font-bold text-white'>
+                     {patient?.name}
+                   </h1>
+                   <p className='text-blue-400'>
+                     Age: {patient?.age} • Gender: {patient?.gender}
+                   </p>
+                   <p className='mt-1 text-sm text-slate-400'>
+                     Patient ID: {patientId}
+                   </p>
+                 </div>
+               </div>
 
               <button className='rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 transition'>
                 <FaPrescription className='mr-2 inline' /> New Prescription

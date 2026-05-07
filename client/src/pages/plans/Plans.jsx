@@ -2,7 +2,18 @@ import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../layout/DashboardLayout";
 import API from "../../services/api";
 import { loadStripe } from "@stripe/stripe-js";
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
+// Initialize Stripe only if publishable key is available
+const getStripePromise = () => {
+  const key = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+  if (!key) {
+    console.error("VITE_STRIPE_PUBLIC_KEY is not set. Stripe payments will be unavailable.");
+    return null;
+  }
+  return loadStripe(key);
+};
+
+const stripePromise = getStripePromise();
 const Plans = () => {
   const [plans, setPlans] = useState([]);
   const [error, setError] = useState("");
@@ -28,6 +39,13 @@ const Plans = () => {
       }
     };
     fetchPlans();
+  }, []);
+
+  // Validate Stripe key on mount
+  useEffect(() => {
+    if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
+      console.error("Stripe publishable key is missing. Please set VITE_STRIPE_PUBLIC_KEY in .env");
+    }
   }, []);
   const handleStripePayment = async (planId) => {
     try {

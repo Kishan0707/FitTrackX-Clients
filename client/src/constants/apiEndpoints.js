@@ -113,8 +113,7 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     ADMIN: "/admin/dashboard",
     COACH: "/coach/dashboard",
-    USER: "/user/dashboard",
-    DOCTOR: "/doctor/dashboard",
+    USER: "/dashboard",
   },
 
   // ==================== WORKOUTS ====================

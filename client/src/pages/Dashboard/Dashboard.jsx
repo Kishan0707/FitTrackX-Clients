@@ -13,6 +13,7 @@ import DashboardLayout from "../../layout/DashboardLayout";
 import StatCard from "../../components/StatCard";
 import { AuthContext } from "../../context/authContext";
 import API from "../../services/api";
+import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 import UserDashboardContent from "./UserDashboardContent";
 
 const Dashboard = () => {
@@ -43,16 +44,12 @@ const Dashboard = () => {
 
       try {
         if (user?.role === "admin") {
-          const statsRes = await API.get("/admin/dashboard");
-
+          const statsRes = await API.get(API_ENDPOINTS.DASHBOARD.ADMIN);
           if (!isMounted) return;
-
           setStats(statsRes.data.data || {});
         } else if (user?.role === "coach") {
-          const statsRes = await API.get("/coach/dashboard");
-
+          const statsRes = await API.get(API_ENDPOINTS.DASHBOARD.COACH);
           if (!isMounted) return;
-
           setStats(statsRes.data.data || {});
         } else {
           const results = await Promise.allSettled([
@@ -70,25 +67,25 @@ const Dashboard = () => {
           const statsResult =
             results[0].status === "fulfilled" ? results[0].value.data.data : {};
           const progressResult =
-            results[1].status === "fulfilled" ?
-              results[1].value.data.data
-            : { weightHistory: [], caloriesBurned: [], proteinIntake: [] };
+            results[1].status === "fulfilled"
+              ? results[1].value.data.data
+              : { weightHistory: [], caloriesBurned: [], proteinIntake: [] };
           const workoutsResult =
             results[2].status === "fulfilled" ? results[2].value.data.data : [];
           const coachResult =
-            results[3].status === "fulfilled" ?
-              results[3].value.data.data
-            : null;
+            results[3].status === "fulfilled"
+              ? results[3].value.data.data
+              : null;
           const stepsResult =
             results[4].status === "fulfilled" ? results[4].value.data.data : [];
           const pendingStepsResult =
-            results[5].status === "fulfilled" ?
-              results[5].value.data.data
-            : null;
+            results[5].status === "fulfilled"
+              ? results[5].value.data.data
+              : null;
           const dietResult =
-            results[6].status === "fulfilled" ?
-              results[6].value.data.data
-            : null;
+            results[6].status === "fulfilled"
+              ? results[6].value.data.data
+              : null;
 
           setStats(statsResult || {});
           setProgressData({
@@ -98,13 +95,12 @@ const Dashboard = () => {
           });
           setWorkouts(Array.isArray(workoutsResult) ? workoutsResult : []);
           setCoachRequest(coachResult || null);
-          console.log("Coach request data:", coachResult.data);
           setStepRecords(Array.isArray(stepsResult) ? stepsResult : []);
           setPendingStepTarget(pendingStepsResult || null);
           setTodayDiet(
-            dietResult && Object.keys(dietResult).length > 0 ?
-              dietResult
-            : null,
+            dietResult && Object.keys(dietResult).length > 0
+              ? dietResult
+              : null,
           );
         }
       } catch (error) {
@@ -126,7 +122,6 @@ const Dashboard = () => {
 
     return () => {
       isMounted = false;
-
       if (intervalId) {
         window.clearInterval(intervalId);
       }
@@ -196,9 +191,9 @@ const Dashboard = () => {
               <div className='flex items-center justify-between'>
                 <span className='text-slate-600 dark:text-slate-400'>Avg. Calories/User</span>
                 <span className='font-semibold'>
-                  {stats.totalUsers && stats.totalCaloriesBurned ?
-                    Math.round(stats.totalCaloriesBurned / stats.totalUsers)
-                  : 0}
+                  {stats.totalUsers && stats.totalCaloriesBurned
+                    ? Math.round(stats.totalCaloriesBurned / stats.totalUsers)
+                    : 0}
                 </span>
               </div>
             </div>

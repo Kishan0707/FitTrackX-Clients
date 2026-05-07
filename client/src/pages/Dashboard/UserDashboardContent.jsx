@@ -114,17 +114,15 @@ const healthTips = [
 ];
 
 const UserDashboardContent = ({
-  coachRequest,
-  progressData,
   stats,
-  stepRecords,
-  todayDiet,
   user,
-  workouts,
+  workouts = [],
+  coachRequest = null,
+  stepRecords = [],
+  todayDiet = null,
+  progressData = {},
 }) => {
   const onboardingData = user?.onboardingData || null;
-  console.log("User data in dashboard:", user.goal);
-  console.log("Progress data:", progressData);
   const navigate = useNavigate();
   const [subscription, setSubscription] = useState("");
   const [pendingStepTarget, setPendingStepTarget] = useState(null);
@@ -138,34 +136,40 @@ const UserDashboardContent = ({
   useEffect(() => {
     const fetchSubscription = async () => {
       try {
-        const res = await API.get(`/subscriptions/my-subscription`);
+        const res = await API.get("/subscriptions/my-subscription");
         console.log("Subscription data:", res.data);
-        const coachName = res.data.data.planId?.coachId?.name || null;
-        const userGoal = res.data.data.userGoal;
+        const coachName = res.data.data?.planId?.coachId?.name || null;
+        const userGoal = res.data.data?.userGoal;
 
         // agar coach target system nahi hai abhi
         const finalGoal = userGoal;
         setSubscription(
-          res.data.data.planId?.coachId?.name ?
-            res.data.data.planId?.coachId?.name
+          res.data.data?.planId?.coachId?.name ?
+            res.data.data.planId.coachId.name
           : "Free Membership",
         );
-        setPlan(res.data.data.plan || null);
+        setPlan(res.data.data?.plan || null);
         setCoachData(coachName || null);
         setGoal(user?.goal || null);
         console.log("Goal", user);
         console.log("Goal from subscription:", res.data);
-        const endDate = res.data.data.endDate;
-        isExpired = new Date(endDate) < new Date();
+        const endDate = res.data.data?.endDate;
+        if (endDate) {
+          isExpired = new Date(endDate) < new Date();
+        }
       } catch (error) {
         console.log(error);
+        // Set defaults on error - user may not have subscription
+        setSubscription("Free Membership");
+        setPlan(null);
+        setCoachData(null);
       }
     };
     const fetchStepTarget = async () => {
       try {
         const res = await API.get("/steps/my");
 
-        const stepsArray = res.data.data; // ✅ correct
+        const stepsArray = res.data.data || []; // ✅ correct
 
         const latestStep = stepsArray.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
@@ -176,14 +180,20 @@ const UserDashboardContent = ({
         setPendingStepTarget(latestStep); // ✅ object set karo
       } catch (error) {
         console.log(error);
+        setPendingStepTarget(null);
       }
     };
     const fetchBodyMeasurement = async () => {
-      const res = await API.get("/body-measurements/latest");
-      console.log("Body measurement data:", res);
-      const latest = res.data.data;
-      setWeight(latest?.weight || 0);
-      console.log("Weight:", latest?.weight || 0);
+      try {
+        const res = await API.get("/body-measurements/latest");
+        console.log("Body measurement data:", res);
+        const latest = res.data.data;
+        setWeight(latest?.weight || 0);
+        console.log("Weight:", latest?.weight || 0);
+      } catch (error) {
+        console.log(error);
+        setWeight(null);
+      }
     };
 
     const fetchProducts = async () => {
@@ -193,6 +203,7 @@ const UserDashboardContent = ({
         setProducts(res.data.data || []);
       } catch (error) {
         console.error("Product fetch failed:", error);
+        setProducts([]);
       } finally {
         setLoadingProducts(false);
       }
@@ -204,11 +215,14 @@ const UserDashboardContent = ({
     fetchProducts();
   }, []);
 
-  const sortedWorkouts = [...workouts].sort(
-    (left, right) =>
-      new Date(right.createdAt || right.date) -
-      new Date(left.createdAt || left.date),
-  );
+  const sortedWorkouts =
+    Array.isArray(workouts) ?
+      [...workouts].sort(
+        (left, right) =>
+          new Date(right.createdAt || right.date) -
+          new Date(left.createdAt || left.date),
+      )
+    : [];
   const recentWorkouts = sortedWorkouts.slice(0, 4);
   const todayWorkoutEntries = sortedWorkouts.filter((workout) =>
     isSameDay(workout.createdAt || workout.date),
@@ -218,7 +232,10 @@ const UserDashboardContent = ({
     0,
   );
 
-  const weightHistory = progressData.weightHistory || [];
+  const weightHistory =
+    Array.isArray(progressData?.weightHistory) ?
+      progressData.weightHistory
+    : [];
   const latestWeight = weightHistory.at(-1)?.weight ?? user?.weight ?? null;
   const firstWeight = weightHistory[0]?.weight ?? latestWeight;
   const weightDelta =
@@ -227,15 +244,17 @@ const UserDashboardContent = ({
     : null;
 
   const todayStepRecord =
-    stepRecords.find((record) => isSameDay(record.date)) ||
-    stepRecords[0] ||
-    null;
+    Array.isArray(stepRecords) ?
+      stepRecords.find((record) => isSameDay(record.date)) ||
+      stepRecords[0] ||
+      null
+    : null;
   const stepGoal = pendingStepTarget?.goal || todayStepRecord?.goal || 0;
   const todaySteps = todayStepRecord?.steps || 0;
   const stepsCompletion =
     stepGoal > 0 ? Math.min(Math.round((todaySteps / stepGoal) * 100), 100) : 0;
 
-  const todayMeals = todayDiet?.meals || [];
+  const todayMeals = Array.isArray(todayDiet?.meals) ? todayDiet.meals : [];
   const membershipLabel =
     String(user?.subscription || "free").toLowerCase() === "paid" ?
       "Paid Membership"
@@ -283,11 +302,14 @@ const UserDashboardContent = ({
       (todayWorkoutEntries.length > 0 ? 30 : 0) +
       (todayDiet ? 30 : 0),
   );
-  const weeklyWorkouts = workouts.filter((w) => {
-    const date = new Date(w.createdAt);
-    const now = new Date();
-    return (now - date) / (1000 * 60 * 60 * 24) <= 7;
-  });
+  const weeklyWorkouts =
+    Array.isArray(workouts) ?
+      workouts.filter((w) => {
+        const date = new Date(w.createdAt);
+        const now = new Date();
+        return (now - date) / (1000 * 60 * 60 * 24) <= 7;
+      })
+    : [];
   return (
     <div className='flex flex-col gap-5 mb-28'>
       <div className='space-y-6'>

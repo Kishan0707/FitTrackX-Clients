@@ -26,6 +26,9 @@ import {
   FaStore,
   FaMoneyBill,
   FaStethoscope,
+  FaClock,
+  FaWeight,
+  FaRuler,
 } from "react-icons/fa";
 
 import {
@@ -91,7 +94,7 @@ export const SIDEBAR = [
   // ==================== COACH ====================
   {
     name: "Dashboard",
-    path: "/coachDashboard",
+    path: "/coach/dashboard",
     icon: FaChartLine,
     roles: [ROLES.COACH],
     section: "Overview",
@@ -218,13 +221,6 @@ export const SIDEBAR = [
     section: "Patients",
   },
   {
-    name: "Medical History",
-    path: "/doctor/medical-history",
-    icon: FaFileMedical,
-    roles: [ROLES.DOCTOR],
-    section: "Patients",
-  },
-  {
     name: "Appointments",
     path: "/doctor/appointments",
     icon: FaCalendarAlt,
@@ -272,6 +268,41 @@ export const SIDEBAR = [
     icon: FaDumbbell,
     roles: [ROLES.DOCTOR],
     section: "Planning",
+  },
+  {
+    name: "My Profile",
+    path: "/doctor/profile",
+    icon: FaUserMd,
+    roles: [ROLES.DOCTOR],
+    section: "Account",
+  },
+  {
+    name: "Availability",
+    path: "/doctor/availability",
+    icon: FaClock,
+    roles: [ROLES.DOCTOR],
+    section: "Schedule",
+  },
+  {
+    name: "Schedule",
+    path: "/doctor/schedule",
+    icon: FaCalendarAlt,
+    roles: [ROLES.DOCTOR],
+    section: "Schedule",
+  },
+  {
+    name: "Consultation History",
+    path: "/doctor/video-consult/history",
+    icon: FaHistory,
+    roles: [ROLES.DOCTOR],
+    section: "Communication",
+  },
+  {
+    name: "Reports Summary",
+    path: "/doctor/reports/summary/appointments",
+    icon: FaChartBar,
+    roles: [ROLES.DOCTOR],
+    section: "Analytics",
   },
   {
     name: "Chat",
@@ -332,6 +363,13 @@ export const SIDEBAR = [
     section: "Overview",
   },
   {
+    name: "My Appointments",
+    path: "/appointments",
+    icon: FaCalendarAlt,
+    roles: [ROLES.USER],
+    section: "Overview",
+  },
+  {
     name: "My Orders",
     path: "/orders",
     icon: FaClipboardList,
@@ -366,13 +404,27 @@ export const SIDEBAR = [
     roles: [ROLES.USER],
     section: "Workouts",
   },
-  {
-    name: "Add-Diet",
-    path: "/add-meal",
-    icon: FaAppleAlt,
-    roles: [ROLES.USER],
-    section: "Nutrition",
-  },
+   {
+     name: "Add-Diet",
+     path: "/add-meal",
+     icon: FaAppleAlt,
+     roles: [ROLES.USER],
+     section: "Nutrition",
+   },
+   {
+     name: "Diet Plans",
+     path: "/diet/plans",
+     icon: FaClipboardList,
+     roles: [ROLES.USER],
+     section: "Nutrition",
+   },
+   {
+     name: "My Diet",
+     path: "/diet/my",
+     icon: FaAppleAlt,
+     roles: [ROLES.USER],
+     section: "Nutrition",
+   },
   {
     name: "Chat",
     path: "/chat",
@@ -387,20 +439,34 @@ export const SIDEBAR = [
     roles: [ROLES.USER],
     section: "Communication",
   },
-  {
-    name: "Progress",
-    path: "/progress",
-    icon: FaChartBar,
-    roles: [ROLES.USER],
-    section: "Tracking",
-  },
-  {
-    name: "Steps",
-    path: "/steps",
-    icon: FaWalking,
-    roles: [ROLES.USER],
-    section: "Tracking",
-  },
+   {
+     name: "Progress",
+     path: "/progress",
+     icon: FaChartBar,
+     roles: [ROLES.USER],
+     section: "Tracking",
+   },
+   {
+     name: "Weight",
+     path: "/progress/weight",
+     icon: FaWeight,
+     roles: [ROLES.USER],
+     section: "Tracking",
+   },
+   {
+     name: "Body Measurements",
+     path: "/progress/measurements",
+     icon: FaRuler,
+     roles: [ROLES.USER],
+     section: "Tracking",
+   },
+   {
+     name: "Steps",
+     path: "/steps",
+     icon: FaWalking,
+     roles: [ROLES.USER],
+     section: "Tracking",
+   },
   {
     name: "AI Trainer",
     path: "/ai",
